@@ -1,10 +1,9 @@
-module org.hansib.javaFxApp {
-	requires org.hansib.javaFxApp.utilities;
+module org.hansib.simpleTimes {
 	requires org.apache.logging.log4j;
 
 	requires transitive javafx.controls;
 	requires javafx.fxml;
 	requires javafx.graphics;
-
-	exports javafx_app.app;
+	
+	exports org.hansib.simpleTimes;
 }
