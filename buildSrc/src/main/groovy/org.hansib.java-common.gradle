@@ -1,0 +1,28 @@
+plugins {
+	id 'org.hansib.with-spock'
+	id 'org.hansib.with-log4j'
+
+	id 'com.palantir.git-version'
+	id 'com.github.ben-manes.versions'
+}
+
+group 'org.hansib'
+version gitVersion()
+
+repositories {
+	mavenCentral()
+}
+
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+plugins.withType(JavaPlugin).configureEach {
+	java {
+		modularity.inferModulePath = true
+	}
+}
+
