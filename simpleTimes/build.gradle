@@ -15,10 +15,6 @@ javafx {
 	]
 }
 
-dependencies {
-	implementation project(':utilities')
-}
-
 jlink {
 
 	forceMerge 'jackson', 'log4j'
@@ -31,11 +27,11 @@ jlink {
 		'--no-man-pages'
 	]
 	launcher{
-		name = 'appFx'
+		name = 'simpleTimes'
 	}
 }
 
 application {
-	mainModule = 'org.hansib.javaFxApp'
-	mainClass = 'javafx_app.app.AppFx'
+	mainModule = 'org.hansib.simpleTimes'
+	mainClass = 'org.hansib.simpleTimes.TimesFx'
 }
