@@ -1,4 +1,0 @@
-plugins {
-    id 'org.hansib.java-common'
-    id 'java-library'
-}
