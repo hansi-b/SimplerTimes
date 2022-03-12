@@ -1,0 +1,11 @@
+package org.hansib.simplerTimes;
+
+/*
+ * Needed as a workaround for https://github.com/javafxports/openjdk-jfx/issues/236
+ */
+public class AppStarter {
+
+	public static void main(String[] args) {
+		TimesFx.main(args);
+	}
+}

@@ -1,4 +1,4 @@
-package org.hansib.simpleTimes;
+package org.hansib.simplerTimes;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +25,10 @@ public class TimesFx extends Application {
 		root.getChildren().add(btn);
 		primaryStage.setScene(new Scene(root, 300, 250));
 		primaryStage.show();
+	}
+
+	String getMessage() {
+		return "yes";
 	}
 
 	public static void main(String[] args) {
