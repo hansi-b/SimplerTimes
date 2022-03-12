@@ -1,0 +1,83 @@
+plugins {
+	id 'application'
+	id 'distribution'
+
+	id 'org.hansib.java-common'
+
+	id "org.openjfx.javafxplugin" version "0.0.12"
+	id 'org.beryx.runtime' version '1.12.7'
+}
+
+javafx {
+	version = '17'
+	modules = [
+		'javafx.controls',
+		'javafx.fxml',
+		'javafx.graphics'
+	]
+}
+
+application {
+	mainModule = 'org.hansib.simpleTimes'
+	mainClass = 'org.hansib.simpleTimes.AppStarter'
+}
+
+
+def versionedProjectName = "$project.name-${project.version}"
+
+def currentOs = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem.name.toLowerCase()
+def isWin = currentOs.contains('win')
+assert isWin || currentOs.contains('linux'): "Cannot handle OS \"$currentOs\""
+
+
+runtime {
+
+	modules = [
+		'jdk.localedata'
+	]
+	additive = true // add to suggested modules
+
+	options = [
+		'--strip-debug',
+		'--compress',
+		'2',
+		'--no-header-files',
+		'--no-man-pages'
+	]
+
+	launcher {
+		jvmArgs = [
+			'-Dlog4j.configurationFile=log4j2_prod.yaml',
+		]
+		noConsole = true
+	}
+
+	jpackage {
+
+		imageName = "${versionedProjectName}"
+
+		appVersion = "${project.version}".split('-')[0]
+		installerType = isWin ? "msi" : "deb"
+
+		def iconExt = isWin ? 'ico' : 'png'
+		/*imageOptions += [
+		 "--icon",
+		 "src/main/resources/logo.$iconExt"
+		 ]*/
+
+		installerOptions += [
+			"--resource-dir",
+			"src/main/resources",
+			"--file-associations",
+			"src/main/resources/file_assoc_aba.properties"
+		]
+		if (isWin) {
+			installerOptions += [
+				"--win-menu",
+				"--win-shortcut",
+				"--win-per-user-install"
+			]
+		}
+	}
+}
+

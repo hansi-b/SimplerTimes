@@ -1,2 +1,2 @@
-rootProject.name = 'SimpleTimes'
-include 'simpleTimes'
+rootProject.name = 'SimplerTimes'
+include 'simplerTimes'
