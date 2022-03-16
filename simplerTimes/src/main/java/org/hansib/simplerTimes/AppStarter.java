@@ -6,6 +6,6 @@ package org.hansib.simplerTimes;
 public class AppStarter {
 
 	public static void main(String[] args) {
-		TimesFx.main(args);
+		SimplerTimesFx.main(args);
 	}
 }

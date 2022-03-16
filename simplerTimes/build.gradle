@@ -18,8 +18,8 @@ javafx {
 }
 
 application {
-	mainModule = 'org.hansib.simpleTimes'
-	mainClass = 'org.hansib.simpleTimes.AppStarter'
+	mainModule = 'org.hansib.simplerTimes'
+	mainClass = 'org.hansib.simplerTimes.AppStarter'
 }
 
 
@@ -32,9 +32,7 @@ assert isWin || currentOs.contains('linux'): "Cannot handle OS \"$currentOs\""
 
 runtime {
 
-	modules = [
-		'jdk.localedata'
-	]
+	modules = ['jdk.localedata']
 	additive = true // add to suggested modules
 
 	options = [
@@ -60,10 +58,10 @@ runtime {
 		installerType = isWin ? "msi" : "deb"
 
 		def iconExt = isWin ? 'ico' : 'png'
-		/*imageOptions += [
-		 "--icon",
-		 "src/main/resources/logo.$iconExt"
-		 ]*/
+		imageOptions += [
+			"--icon",
+			"src/main/resources/logo.$iconExt"
+		]
 
 		installerOptions += [
 			"--resource-dir",
