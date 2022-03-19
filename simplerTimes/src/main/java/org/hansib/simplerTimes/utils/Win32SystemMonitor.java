@@ -109,16 +109,26 @@ public class Win32SystemMonitor implements WindowProc {
 		case Wtsapi32.WTS_SESSION_LOGOFF -> this.onMachineLogoff(lParam.intValue());
 		case Wtsapi32.WTS_SESSION_LOCK -> this.onMachineLocked(lParam.intValue());
 		case Wtsapi32.WTS_SESSION_UNLOCK -> this.onMachineUnlocked(lParam.intValue());
-		default -> throw new IllegalArgumentException(String.format("Unknown param %d", wParam.intValue()));
+		default -> this.onOther(wParam.intValue(), lParam.intValue());
+		}
+	}
+
+	protected void onOther(int wParam, int lParam) {
+		for (IWin32SystemMonitorListener l : LISTENERS) {
+			l.onOther(wParam, lParam);
 		}
 	}
 
 	protected void onPowerChange(WPARAM wParam, LPARAM lParam) {
 		switch (wParam.intValue()) {
-		case PBT_APMSUSPEND: {
-			this.onMachineGoingToSuspend();
-			break;
+		case PBT_APMSUSPEND -> this.onMachineGoingToSuspend();
+		default -> this.onOtherPowerChange(wParam.intValue(), lParam.intValue());
 		}
+	}
+
+	protected void onOtherPowerChange(int wParam, int lParam) {
+		for (IWin32SystemMonitorListener l : LISTENERS) {
+			l.onOtherPowerChange(wParam, lParam);
 		}
 	}
 
