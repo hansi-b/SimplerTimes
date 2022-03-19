@@ -3,6 +3,7 @@ package org.hansib.simplerTimes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplerTimes.utils.IWin32SystemMonitorListener;
+import org.hansib.simplerTimes.utils.LogoffHandler;
 import org.hansib.simplerTimes.utils.ResourceLoader;
 import org.hansib.simplerTimes.utils.Win32SystemMonitor;
 
@@ -36,7 +37,16 @@ public class SimplerTimesFx extends Application {
 			log("Received %s", e);
 		});
 
+		new LogoffHandler();
+		log("Started.");
+	}
+
+	void addListener() {
 		Win32SystemMonitor.addListener(new IWin32SystemMonitorListener() {
+			public void onMachineLogon() {
+				log("Logon");
+			}
+
 			public void onMachineLogoff() {
 				log("Logoff");
 			}
@@ -52,15 +62,21 @@ public class SimplerTimesFx extends Application {
 			public void onMachineGoingToSuspend() {
 				log("Suspend");
 			}
-		});
 
-		log("Started.");
+			public void onOther(int wParam, int lParam) {
+				log("Other: %s / %s", wParam, lParam);
+			}
+
+			public void onOtherPowerChange(int wParam, int lParam) {
+				log("Other power change: %s / %s", wParam, lParam);
+			}
+		});
 	}
 
 	void log(String fmt, Object... args) {
 		String msg = String.format(fmt, args);
 		if (appController != null)
-			appController.logArea.appendText(msg);
+			appController.logArea.appendText(msg + "\n");
 		log.info(msg);
 	}
 
