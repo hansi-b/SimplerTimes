@@ -1,18 +1,17 @@
 package org.hansib.simplerTimes;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 public class TimesMainController {
-
-	@FXML
-	TextArea logArea;
 
 	@FXML
 	TimesMainController timesMainController;
 
 	@FXML
+	TextField projectField;
+
+	@FXML
 	void initialize() {
-		logArea.setEditable(false);
 	}
 }
