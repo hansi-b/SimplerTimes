@@ -17,6 +17,11 @@ javafx {
 	]
 }
 
+dependencies {
+	implementation 'org.kordamp.ikonli:ikonli-javafx:12.2.0'
+	implementation 'org.kordamp.ikonli:ikonli-codicons-pack:12.2.0'
+}
+
 application {
 	mainModule = 'org.hansib.simplerTimes'
 	mainClass = 'org.hansib.simplerTimes.AppStarter'
