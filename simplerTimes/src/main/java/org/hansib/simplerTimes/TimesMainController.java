@@ -9,6 +9,9 @@ public class TimesMainController {
 	TextArea logArea;
 
 	@FXML
+	TimesMainController timesMainController;
+
+	@FXML
 	void initialize() {
 		logArea.setEditable(false);
 	}

@@ -9,7 +9,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class SimplerTimesFx extends Application {
 
@@ -20,7 +19,7 @@ public class SimplerTimesFx extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		log("Starting ...");
+		log.info("Starting ...");
 
 		final FXMLLoader fxmlLoader = ResourceLoader.get().getFxmlLoader("timesMain.fxml");
 		final Parent root = fxmlLoader.load();
@@ -29,19 +28,6 @@ public class SimplerTimesFx extends Application {
 		primaryStage.setTitle("SimplerTimes");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
-
-		primaryStage.getScene().getWindow().addEventFilter(WindowEvent.ANY, e -> {
-			log("Received %s", e);
-		});
-
-		log("Started.");
-	}
-
-	void log(String fmt, Object... args) {
-		String msg = String.format(fmt, args);
-		if (appController != null)
-			appController.logArea.appendText(msg + "\n");
-		log.info(msg);
 	}
 
 	public static void main(String[] args) {
