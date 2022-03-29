@@ -1,3 +1,4 @@
 .ikonli-font-icon {
-    -fx-icon-color: #FFA500;
+	-fx-icon-color: orange;
+	-fx-font-size: 16pt;
 }
