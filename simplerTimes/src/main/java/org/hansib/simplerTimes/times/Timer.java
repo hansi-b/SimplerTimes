@@ -4,24 +4,24 @@ import java.time.LocalDateTime;
 
 public class Timer {
 
-	private final TimesRepo store;
-
 	private LocalDateTime startedAt;
 
-	Timer(TimesRepo store) {
-		this.store = store;
+	public Timer() {
+		// nothing to do at the moment
 	}
 
-	public synchronized void start() {
+	public synchronized LocalDateTime start() {
 		if (startedAt != null)
 			throw new IllegalStateException("Timer already started");
 		startedAt = LocalDateTime.now();
+		return startedAt;
 	}
 
-	public synchronized void stop() {
+	public synchronized Span stopAndGet() {
 		if (startedAt == null)
 			throw new IllegalStateException("Timer not yet started");
-		store.addSpan(startedAt, LocalDateTime.now());
+		var result = new Span(startedAt, LocalDateTime.now());
 		startedAt = null;
+		return result;
 	}
 }

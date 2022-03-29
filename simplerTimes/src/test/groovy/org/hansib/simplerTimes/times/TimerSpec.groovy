@@ -4,29 +4,25 @@ import spock.lang.Specification
 
 public class TimerSpec extends Specification {
 
-	def TimesRepo repo = Spy()
-
-	def "when stopping, span is added to repo"() {
+	def "when stopping, span is returned"() {
 
 		given:
-		def timer = new Timer(repo)
-		timer.start()
+		def timer = new Timer()
+		def started = timer.start()
 		System.sleep(10)
 
 		when:
-		timer.stop()
+		def span = timer.stopAndGet()
+
 		then:
-		1 * repo.addSpan(*_) >> { args ->
-			def started = args[0]
-			def stopped = args[1]
-			assert started < stopped
-		}
+		span.start() == started
+		span.end() > span.start()
 	}
 
 	def "cannot start when running"() {
 
 		given:
-		def timer = new Timer(repo)
+		def timer = new Timer()
 		timer.start()
 
 		when:
@@ -38,10 +34,10 @@ public class TimerSpec extends Specification {
 	def "cannot stop new timer"() {
 
 		given:
-		def timer = new Timer(repo)
+		def timer = new Timer()
 
 		when:
-		timer.stop()
+		timer.stopAndGet()
 		then:
 		thrown IllegalStateException
 	}
