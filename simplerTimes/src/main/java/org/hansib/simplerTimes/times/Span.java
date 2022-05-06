@@ -2,7 +2,7 @@ package org.hansib.simplerTimes.times;
 
 import java.time.LocalDateTime;
 
-import org.hansib.simplerTimes.utils.Errors;
+import org.hansib.sundries.Errors;
 
 public record Span(LocalDateTime start, LocalDateTime end) {
 
