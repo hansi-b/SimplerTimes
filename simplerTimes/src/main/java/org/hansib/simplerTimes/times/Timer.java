@@ -1,5 +1,6 @@
 package org.hansib.simplerTimes.times;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Timer {
@@ -17,6 +18,10 @@ public class Timer {
 		return startedAt;
 	}
 
+	public Duration currentDuration() {
+		return Duration.between(startedAt, LocalDateTime.now());
+	}
+
 	public synchronized Span stopAndGet() {
 		if (startedAt == null)
 			throw new IllegalStateException("Timer not yet started");
@@ -24,4 +29,5 @@ public class Timer {
 		startedAt = null;
 		return result;
 	}
+
 }
