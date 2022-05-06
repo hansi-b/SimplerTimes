@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.hansib.sundries.Strings;
+
 public class Node<E> {
 
 	private E element;
