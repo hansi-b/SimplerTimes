@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 
 <HBox xmlns="http://javafx.com/javafx/17"
@@ -10,5 +11,6 @@
 	<children>
 		<Button fx:id="startButton" />
 		<Button fx:id="stopButton" />
+		<Label fx:id="elapsedTime" />
 	</children>
 </HBox>
