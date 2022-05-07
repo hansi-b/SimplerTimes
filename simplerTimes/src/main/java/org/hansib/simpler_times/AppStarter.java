@@ -1,4 +1,4 @@
-package org.hansib.simplerTimes;
+package org.hansib.simpler_times;
 
 /*
  * Needed as a workaround for https://github.com/javafxports/openjdk-jfx/issues/236

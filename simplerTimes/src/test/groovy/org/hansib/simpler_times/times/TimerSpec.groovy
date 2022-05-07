@@ -1,4 +1,6 @@
-package org.hansib.simplerTimes.times;
+package org.hansib.simpler_times.times;
+
+import org.hansib.simpler_times.times.Timer
 
 import spock.lang.Specification
 

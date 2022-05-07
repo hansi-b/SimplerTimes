@@ -1,4 +1,4 @@
-package org.hansib.simplerTimes;
+package org.hansib.simpler_times;
 
 import java.time.Duration;
 import java.util.concurrent.Executors;
@@ -6,8 +6,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.hansib.simplerTimes.times.Span;
-import org.hansib.simplerTimes.times.Timer;
+import org.hansib.simpler_times.times.Span;
+import org.hansib.simpler_times.times.Timer;
 import org.hansib.sundries.Errors;
 
 import javafx.application.Platform;

@@ -1,4 +1,4 @@
-package org.hansib.simplerTimes.utils;
+package org.hansib.simpler_times.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

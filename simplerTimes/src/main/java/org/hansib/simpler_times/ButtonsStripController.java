@@ -1,4 +1,4 @@
-package org.hansib.simplerTimes;
+package org.hansib.simpler_times;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

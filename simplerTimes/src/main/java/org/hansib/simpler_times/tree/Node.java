@@ -1,9 +1,10 @@
-package org.hansib.simplerTimes.tree;
+package org.hansib.simpler_times.tree;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.hansib.simpler_times.tree.Node;
 import org.hansib.sundries.Strings;
 
 public class Node<E> {
