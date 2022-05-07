@@ -29,5 +29,4 @@ public class Timer {
 		startedAt = null;
 		return result;
 	}
-
 }

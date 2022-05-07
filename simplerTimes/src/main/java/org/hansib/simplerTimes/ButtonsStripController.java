@@ -15,7 +15,7 @@ public class ButtonsStripController {
 	@FXML
 	Label elapsedTime;
 
-	private final SpanCollection spans;
+	private final LabelledSpans spans;
 
 	private TimerDisplay timerDisplay;
 
@@ -23,7 +23,7 @@ public class ButtonsStripController {
 		this(new SpanLogger());
 	}
 
-	ButtonsStripController(SpanCollection spans) {
+	ButtonsStripController(LabelledSpans spans) {
 		this.spans = spans;
 	}
 
@@ -48,6 +48,6 @@ public class ButtonsStripController {
 		stopButton.setDisable(true);
 		startButton.setDisable(false);
 
-		spans.add(timerDisplay.stopAndGet());
+		spans.add(LabelledSpan.of("abc", timerDisplay.stopAndGet()));
 	}
 }
