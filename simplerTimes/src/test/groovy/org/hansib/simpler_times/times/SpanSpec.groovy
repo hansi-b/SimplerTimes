@@ -2,12 +2,10 @@ package org.hansib.simpler_times.times;
 
 import java.time.LocalDateTime
 
-import org.hansib.simpler_times.times.Span
-
 import spock.lang.Specification
 
 public class SpanSpec extends Specification {
-	
+
 	def "zero-length span is legal"() {
 		given:
 		def start = LocalDateTime.now()
@@ -28,5 +26,15 @@ public class SpanSpec extends Specification {
 
 		then:
 		thrown IllegalArgumentException
+	}
+
+	def "ensure equals"() {
+		given:
+		def s1 = LocalDateTime.now()
+		def s2 = s1.plusMinutes(2)
+
+		expect:
+		new Span(s1, s2).equals(new Span(s1, s2))
+		!new Span(s1, s2).equals(new Span(s1, s2.plusMinutes(1)))
 	}
 }
