@@ -1,6 +1,6 @@
-package org.hansib.simplerTimes;
+package org.hansib.simpler_times;
 
-import org.hansib.simplerTimes.times.Span;
+import org.hansib.simpler_times.times.Span;
 
 record LabelledSpan(String label, Span span) {
 	static LabelledSpan of(String label, Span span) {

@@ -1,4 +1,4 @@
-package org.hansib.simplerTimes.times;
+package org.hansib.simpler_times.times;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

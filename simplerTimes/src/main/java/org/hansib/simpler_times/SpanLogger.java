@@ -1,4 +1,4 @@
-package org.hansib.simplerTimes;
+package org.hansib.simpler_times;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

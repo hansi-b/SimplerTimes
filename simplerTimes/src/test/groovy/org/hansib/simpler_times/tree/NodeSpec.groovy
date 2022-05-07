@@ -1,4 +1,6 @@
-package org.hansib.simplerTimes.tree;
+package org.hansib.simpler_times.tree;
+
+import org.hansib.simpler_times.tree.Node
 
 import spock.lang.Specification
 

@@ -1,8 +1,8 @@
-package org.hansib.simplerTimes;
+package org.hansib.simpler_times;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplerTimes.utils.ResourceLoader;
+import org.hansib.simpler_times.utils.ResourceLoader;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

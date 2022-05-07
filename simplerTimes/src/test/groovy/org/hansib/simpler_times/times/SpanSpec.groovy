@@ -1,6 +1,8 @@
-package org.hansib.simplerTimes.times;
+package org.hansib.simpler_times.times;
 
 import java.time.LocalDateTime
+
+import org.hansib.simpler_times.times.Span
 
 import spock.lang.Specification
 
