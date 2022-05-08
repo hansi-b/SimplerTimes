@@ -22,10 +22,10 @@ public class Timer {
 		return Duration.between(startedAt, LocalDateTime.now());
 	}
 
-	public synchronized Span stopAndGet() {
+	public synchronized Interval stopAndGet() {
 		if (startedAt == null)
 			throw new IllegalStateException("Timer not yet started");
-		var result = new Span(startedAt, LocalDateTime.now());
+		var result = new Interval(startedAt, LocalDateTime.now());
 		startedAt = null;
 		return result;
 	}

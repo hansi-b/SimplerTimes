@@ -6,7 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.hansib.simpler_times.times.Span;
+import org.hansib.simpler_times.times.Interval;
 import org.hansib.simpler_times.times.Timer;
 import org.hansib.sundries.Errors;
 
@@ -33,7 +33,7 @@ class TimerDisplay {
 				TimeUnit.MILLISECONDS);
 	}
 
-	synchronized Span stopAndGet() {
+	synchronized Interval stopAndGet() {
 		if (scheduleAtFixedRate == null)
 			throw Errors.illegalState("Timer was not started");
 		scheduleAtFixedRate.cancel(true);
