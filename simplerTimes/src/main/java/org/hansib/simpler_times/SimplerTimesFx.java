@@ -14,7 +14,7 @@ public class SimplerTimesFx extends Application {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private TimesMainController appController;
+	private TimesMainController timesMainController;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -23,11 +23,16 @@ public class SimplerTimesFx extends Application {
 
 		final FXMLLoader fxmlLoader = ResourceLoader.get().getFxmlLoader("timesMain.fxml");
 		final Parent root = fxmlLoader.load();
-		appController = fxmlLoader.getController();
+		timesMainController = fxmlLoader.getController();
 
 		primaryStage.setTitle("SimplerTimes");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
+	}
+
+	@Override
+	public void stop() {
+		timesMainController.saveUserSpans();
 	}
 
 	public static void main(String[] args) {
