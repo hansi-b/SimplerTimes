@@ -1,9 +1,12 @@
 package org.hansib.simpler_times;
 
+import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simpler_times.spans.Span;
 import org.hansib.simpler_times.spans.SpansCollection;
+import org.hansib.simpler_times.spans.UserSpans;
 import org.hansib.simpler_times.times.Interval;
 
 import javafx.fxml.FXML;
@@ -21,14 +24,12 @@ public class TimesMainController {
 	@FXML
 	ButtonsStripController buttonsStripController;
 
+	private final UserSpans userSpans;
 	private final SpansCollection spans;
 
 	public TimesMainController() {
-		this(new SpansCollection());
-	}
-
-	TimesMainController(SpansCollection spans) {
-		this.spans = spans;
+		userSpans = new UserSpans();
+		spans = userSpans.getUserSpans();
 	}
 
 	@FXML
@@ -46,5 +47,13 @@ public class TimesMainController {
 	private void handleInterval(Interval t) {
 		log.info("{} {}", projectField.getText(), t);
 		spans.add(new Span(projectField.getText(), t.start(), t.end()));
+	}
+
+	public void saveUserSpans() {
+		try {
+			userSpans.saveSpans(spans);
+		} catch (IOException e) {
+			log.error("Could not save user spans", e);
+		}
 	}
 }
