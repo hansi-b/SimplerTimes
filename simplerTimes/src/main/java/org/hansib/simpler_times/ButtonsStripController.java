@@ -42,6 +42,7 @@ public class ButtonsStripController {
 	private void startTiming() {
 		startButton.setDisable(true);
 		stopButton.setDisable(false);
+		timerDisplay.start();
 	}
 
 	private void stopTiming() {
