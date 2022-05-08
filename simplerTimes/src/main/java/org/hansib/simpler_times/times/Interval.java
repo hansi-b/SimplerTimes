@@ -11,7 +11,7 @@ public record Interval(LocalDateTime start, LocalDateTime end) {
 		Objects.requireNonNull(start);
 		Objects.requireNonNull(end);
 
-		if (start.compareTo(end) > 0)
-			throw Errors.illegalArg("Start (%s) cannot be after end (%s)");
+		if (start.compareTo(end) >= 0)
+			throw Errors.illegalArg("End (%s) must be after start (%s)", end, start);
 	}
 }
