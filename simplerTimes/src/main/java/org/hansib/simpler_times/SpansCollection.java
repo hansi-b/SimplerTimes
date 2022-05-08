@@ -3,17 +3,14 @@ package org.hansib.simpler_times;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hansib.simpler_times.yaml.YamlMapper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 class SpansCollection implements Spans {
-
-	private static final Logger log = LogManager.getLogger();
 
 	public final List<Span> spans;
 
@@ -24,6 +21,13 @@ class SpansCollection implements Spans {
 	@JsonCreator
 	public SpansCollection(@JsonProperty("spans") List<Span> spans) {
 		this.spans = spans;
+	}
+
+	static SpansCollection with(Span... spans) {
+		SpansCollection sc = new SpansCollection();
+		for (Span s : spans)
+			sc.add(s);
+		return sc;
 	}
 
 	static SpansCollection fromYaml(String yamlString) throws IOException {
@@ -44,6 +48,11 @@ class SpansCollection implements Spans {
 		if (!(obj instanceof SpansCollection other))
 			return false;
 		return spans.equals(other.spans);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(spans.hashCode());
 	}
 
 	@Override
