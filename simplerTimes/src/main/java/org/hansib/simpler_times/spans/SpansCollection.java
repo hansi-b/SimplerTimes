@@ -1,4 +1,4 @@
-package org.hansib.simpler_times;
+package org.hansib.simpler_times.spans;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,11 +10,11 @@ import org.hansib.simpler_times.yaml.YamlMapper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-class SpansCollection implements Spans {
+public class SpansCollection implements Spans {
 
 	public final List<Span> spans;
 
-	SpansCollection() {
+	public SpansCollection() {
 		spans = new ArrayList<>();
 	}
 

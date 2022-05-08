@@ -1,4 +1,4 @@
-package org.hansib.simpler_times;
+package org.hansib.simpler_times.spans;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;

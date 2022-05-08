@@ -1,10 +1,18 @@
 package org.hansib.simpler_times;
 
+import java.util.function.Consumer;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hansib.simpler_times.times.Interval;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 public class ButtonsStripController {
+
+	private static final Logger log = LogManager.getLogger();
 
 	@FXML
 	Button startButton;
@@ -15,17 +23,9 @@ public class ButtonsStripController {
 	@FXML
 	Label elapsedTime;
 
-	private final Spans spans;
-
 	private TimerDisplay timerDisplay;
 
-	public ButtonsStripController() {
-		this(new SpansCollection());
-	}
-
-	ButtonsStripController(Spans spans) {
-		this.spans = spans;
-	}
+	private Consumer<Interval> intervalReceiver;
 
 	@FXML
 	void initialize() {
@@ -39,6 +39,10 @@ public class ButtonsStripController {
 		stopButton.setOnAction(a -> stopTiming());
 	}
 
+	void setIntervalReceiver(Consumer<Interval> intervalReceiver) {
+		this.intervalReceiver = intervalReceiver;
+	}
+
 	private void startTiming() {
 		startButton.setDisable(true);
 		stopButton.setDisable(false);
@@ -49,6 +53,6 @@ public class ButtonsStripController {
 		stopButton.setDisable(true);
 		startButton.setDisable(false);
 
-		spans.add(Span.of("abc", timerDisplay.stopAndGet()));
+		intervalReceiver.accept(timerDisplay.stopAndGet());
 	}
 }
