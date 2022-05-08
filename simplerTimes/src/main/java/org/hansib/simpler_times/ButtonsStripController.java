@@ -2,8 +2,6 @@ package org.hansib.simpler_times;
 
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hansib.simpler_times.times.Interval;
 
 import javafx.fxml.FXML;
@@ -11,8 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 public class ButtonsStripController {
-
-	private static final Logger log = LogManager.getLogger();
 
 	@FXML
 	Button startButton;
