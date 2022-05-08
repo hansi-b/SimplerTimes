@@ -5,9 +5,9 @@ import java.util.Objects;
 
 import org.hansib.sundries.Errors;
 
-public record Span(LocalDateTime start, LocalDateTime end) {
+public record Interval(LocalDateTime start, LocalDateTime end) {
 
-	public Span {
+	public Interval {
 		Objects.requireNonNull(start);
 		Objects.requireNonNull(end);
 
