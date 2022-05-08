@@ -6,7 +6,7 @@
 
 <HBox xmlns="http://javafx.com/javafx/17"
 	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="org.hansib.simplerTimes.ButtonsStripController"
+	fx:controller="org.hansib.simpler_times.ButtonsStripController"
 	stylesheets="fxml/app.css, fxml/buttonsStrip.css">
 	<children>
 		<Button fx:id="startButton" />
