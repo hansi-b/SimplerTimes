@@ -10,7 +10,7 @@ import org.hansib.simpler_times.yaml.YamlMapper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SpansCollection implements Spans {
+public class SpansCollection {
 
 	public final List<Span> spans;
 
@@ -38,7 +38,6 @@ public class SpansCollection implements Spans {
 		return YamlMapper.instance().asString(this);
 	}
 
-	@Override
 	public void add(Span span) {
 		spans.add(span);
 	}
