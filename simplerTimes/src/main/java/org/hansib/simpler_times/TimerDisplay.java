@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.hansib.simpler_times.times.Interval;
@@ -14,7 +15,16 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 
 class TimerDisplay {
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private static class DaemonFactory implements ThreadFactory {
+		@Override
+		public Thread newThread(Runnable r) {
+			Thread t = new Thread(r);
+			t.setDaemon(true);
+			return t;
+		}
+	}
+
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0, new DaemonFactory());
 	private ScheduledFuture<?> scheduleAtFixedRate;
 
 	private final Timer timer;
@@ -28,9 +38,16 @@ class TimerDisplay {
 
 	synchronized void start() {
 		timer.start();
-		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(
-				() -> Platform.runLater(() -> elapsedTime.setText(fmtTime(timer.currentDuration()))), 0, 40,
+		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(() -> Platform.runLater(() -> updateTime()), 0, 40,
 				TimeUnit.MILLISECONDS);
+	}
+
+	private void updateTime() {
+		Duration duration = timer.currentDuration();
+		if (duration == null)
+			return;
+		elapsedTime.setText(
+				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart()));
 	}
 
 	synchronized Interval stopAndGet() {
@@ -38,9 +55,5 @@ class TimerDisplay {
 			throw Errors.illegalState("Timer was not started");
 		scheduleAtFixedRate.cancel(true);
 		return timer.stopAndGet();
-	}
-
-	private static String fmtTime(Duration d) {
-		return String.format("%d:%02d:%02d", d.toHours(), d.toMinutesPart(), d.toSecondsPart());
 	}
 }
