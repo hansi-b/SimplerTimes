@@ -10,18 +10,17 @@ import org.apache.logging.log4j.Logger;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
-public class UserSpans {
+public class SpansStore {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private final Path userDataDir;
+	private final Path spansPath;
 
-	public UserSpans() {
-		userDataDir = userDataDir();
+	public SpansStore() {
+		this.spansPath = spansPath();
 	}
 
-	public SpansCollection getUserSpans() {
-		Path spansPath = spansFile();
+	public SpansCollection load() {
 		if (!spansPath.toFile().isFile())
 			return new SpansCollection();
 		try {
@@ -32,19 +31,15 @@ public class UserSpans {
 		return new SpansCollection();
 	}
 
-	public void saveSpans(SpansCollection spans) throws IOException {
-		Files.writeString(spansFile(), spans.toYaml());
+	public void save(SpansCollection spans) throws IOException {
+		Files.writeString(spansPath(), spans.toYaml());
 	}
 
-	private Path spansFile() {
-		return userDataDir.resolve("spans.yml");
-	}
-
-	private static Path userDataDir() {
+	private static Path spansPath() {
 		AppDirs appDirs = AppDirsFactory.getInstance();
 		Path path = Path.of(appDirs.getUserDataDir("SimplerTimes", "", "HansiB"));
 		if (!path.toFile().exists())
 			path.toFile().mkdirs();
-		return path;
+		return path.resolve("spans.yml");
 	}
 }
