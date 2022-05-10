@@ -6,6 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.hansib.simpler_times.times.Interval;
 import org.hansib.simpler_times.times.Timer;
@@ -27,33 +28,36 @@ class TimerDisplay {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0, new DaemonFactory());
 	private ScheduledFuture<?> scheduleAtFixedRate;
 
-	private final Timer timer;
+	private final AtomicReference<Timer> timerRef;
 
-	private final Label elapsedTime;
+	private final Label elapsedTimeLabel;
 
 	TimerDisplay(Label timeLabel) {
-		this.elapsedTime = timeLabel;
-		this.timer = new Timer();
+		this.elapsedTimeLabel = timeLabel;
+		this.timerRef = new AtomicReference<>();
 	}
 
-	synchronized void start() {
-		timer.start();
-		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(() -> Platform.runLater(() -> updateTime()), 0, 40,
+	void start() {
+		timerRef.set(Timer.start());
+		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(() -> Platform.runLater(this::updateTimeLabel), 0, 40,
 				TimeUnit.MILLISECONDS);
 	}
 
-	private void updateTime() {
-		Duration duration = timer.currentDuration();
-		if (duration == null)
+	private void updateTimeLabel() {
+		Timer timer = timerRef.get();
+		if (timer == null)
 			return;
-		elapsedTime.setText(
+
+		Duration duration = timer.duration();
+		elapsedTimeLabel.setText(
 				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart()));
 	}
 
-	synchronized Interval stopAndGet() {
-		if (scheduleAtFixedRate == null)
+	Interval stopAndGet() {
+		Timer timer = timerRef.get();
+		if (scheduleAtFixedRate == null || timer == null)
 			throw Errors.illegalState("Timer was not started");
 		scheduleAtFixedRate.cancel(true);
-		return timer.stopAndGet();
+		return timer.interval();
 	}
 }

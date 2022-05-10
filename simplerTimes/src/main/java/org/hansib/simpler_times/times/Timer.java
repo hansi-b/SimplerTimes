@@ -5,30 +5,21 @@ import java.time.LocalDateTime;
 
 public class Timer {
 
-	private LocalDateTime startedAt;
+	private final LocalDateTime startedAt;
 
-	public Timer() {
-		// nothing to do at the moment
-	}
-
-	public synchronized LocalDateTime start() {
-		if (startedAt != null)
-			throw new IllegalStateException("Timer already started");
+	private Timer() {
 		startedAt = LocalDateTime.now();
-		return startedAt;
 	}
 
-	public synchronized Duration currentDuration() {
-		if (startedAt == null)
-			return null;
+	public static Timer start() {
+		return new Timer();
+	}
+
+	public Duration duration() {
 		return Duration.between(startedAt, LocalDateTime.now());
 	}
 
-	public synchronized Interval stopAndGet() {
-		if (startedAt == null)
-			throw new IllegalStateException("Timer not yet started");
-		var result = new Interval(startedAt, LocalDateTime.now());
-		startedAt = null;
-		return result;
+	public Interval interval() {
+		return new Interval(startedAt, LocalDateTime.now());
 	}
 }

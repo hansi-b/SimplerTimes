@@ -6,17 +6,6 @@ import spock.lang.Specification
 
 public class IntervalSpec extends Specification {
 
-	def "zero-length span is legal"() {
-		given:
-		def start = LocalDateTime.now()
-
-		when:
-		def s = new Interval(start, start)
-
-		then:
-		s.start() == s.end()
-	}
-
 	def "illegal arg for end before start"() {
 		given:
 		def start = LocalDateTime.now()
