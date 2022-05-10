@@ -1,7 +1,10 @@
 package org.hansib.simpler_times;
 
+import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simpler_times.spans.SpansStore;
 import org.hansib.simpler_times.utils.ResourceLoader;
 
 import javafx.application.Application;
@@ -19,20 +22,24 @@ public class SimplerTimesFx extends Application {
 
 	private static final Logger log = LogManager.getLogger();
 
+	private SpansStore spansStore;
 	private TimesMainController timesMainController;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
 		log.info("Starting ...");
+		spansStore = new SpansStore();
 
 		final FXMLLoader fxmlLoader = ResourceLoader.get().getFxmlLoader("timesMain.fxml");
 		final Parent root = fxmlLoader.load();
 		timesMainController = fxmlLoader.getController();
+		timesMainController.setSpans(spansStore.load());
 
 		primaryStage.setTitle("SimplerTimes");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
+
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
 			if (ev.getCode() == KeyCode.Q && ev.isControlDown()) {
 				Window window = primaryStage.getScene().getWindow();
@@ -44,7 +51,11 @@ public class SimplerTimesFx extends Application {
 
 	@Override
 	public void stop() {
-		timesMainController.saveUserSpans();
+		try {
+			spansStore.save(timesMainController.getSpans());
+		} catch (IOException e) {
+			log.error("Could not save spans", e);
+		}
 	}
 
 	public static void main(String[] args) {
