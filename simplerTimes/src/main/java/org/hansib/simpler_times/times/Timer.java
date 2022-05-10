@@ -18,7 +18,9 @@ public class Timer {
 		return startedAt;
 	}
 
-	public Duration currentDuration() {
+	public synchronized Duration currentDuration() {
+		if (startedAt == null)
+			return null;
 		return Duration.between(startedAt, LocalDateTime.now());
 	}
 
