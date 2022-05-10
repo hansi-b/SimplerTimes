@@ -5,10 +5,15 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simpler_times.utils.ResourceLoader;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 public class SimplerTimesFx extends Application {
 
@@ -28,6 +33,13 @@ public class SimplerTimesFx extends Application {
 		primaryStage.setTitle("SimplerTimes");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
+		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
+			if (ev.getCode() == KeyCode.Q && ev.isControlDown()) {
+				Window window = primaryStage.getScene().getWindow();
+				window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
+				Platform.exit();
+			}
+		});
 	}
 
 	@Override
