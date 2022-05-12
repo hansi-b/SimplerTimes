@@ -19,6 +19,9 @@ public class ButtonsStripController {
 	@FXML
 	Label elapsedTime;
 
+	@FXML
+	Button editTreeButton;
+
 	private TimerDisplay timerDisplay;
 
 	private Consumer<Interval> intervalReceiver;
@@ -29,7 +32,11 @@ public class ButtonsStripController {
 
 		startButton.setGraphic(Icons.start());
 		stopButton.setGraphic(Icons.stop());
+
 		stopButton.setDisable(true);
+
+		editTreeButton.setGraphic(Icons.editTree());
+		editTreeButton.setOnAction(event -> TreeViewWindow.openTreeViewWindow(editTreeButton));
 
 		startButton.setOnAction(a -> startTiming());
 		stopButton.setOnAction(a -> stopTiming());
