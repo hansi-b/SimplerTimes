@@ -13,4 +13,8 @@ class Icons {
 	static final Node stop() {
 		return new FontIcon("codicon-stop-circle");
 	}
+
+	static final Node editTree() {
+		return new FontIcon("codicon-list-tree");
+	}
 }
