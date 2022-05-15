@@ -1,8 +1,9 @@
-package org.hansib.simpler_times;
+package org.hansib.simpler_times.fx;
 
 import java.util.function.Consumer;
 
 import org.hansib.simpler_times.times.Interval;
+import org.hansib.simpler_times.tree.TreeViewWindow;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
