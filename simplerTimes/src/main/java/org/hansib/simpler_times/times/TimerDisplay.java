@@ -1,4 +1,4 @@
-package org.hansib.simpler_times.fx;
+package org.hansib.simpler_times.times;
 
 import java.time.Duration;
 import java.util.concurrent.Executors;
@@ -7,15 +7,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
-import org.hansib.simpler_times.times.Interval;
-import org.hansib.simpler_times.times.Timer;
 import org.hansib.sundries.Errors;
 
-import javafx.application.Platform;
-import javafx.scene.control.Label;
-
-class TimerDisplay {
+public class TimerDisplay {
 	private static class DaemonFactory implements ThreadFactory {
 		@Override
 		public Thread newThread(Runnable r) {
@@ -30,30 +26,27 @@ class TimerDisplay {
 
 	private final AtomicReference<Timer> timerRef;
 
-	private final Label elapsedTimeLabel;
+	private final Consumer<Duration> durationReceiver;
 
-	TimerDisplay(Label timeLabel) {
-		this.elapsedTimeLabel = timeLabel;
+	public TimerDisplay(Consumer<Duration> durationReceiver) {
+		this.durationReceiver = durationReceiver;
 		this.timerRef = new AtomicReference<>();
 	}
 
-	void start() {
+	public void start() {
 		timerRef.set(Timer.start());
-		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(() -> Platform.runLater(this::updateTimeLabel), 0, 40,
-				TimeUnit.MILLISECONDS);
+		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateTime, 0, 40, TimeUnit.MILLISECONDS);
 	}
 
-	private void updateTimeLabel() {
+	private void updateTime() {
 		Timer timer = timerRef.get();
 		if (timer == null)
 			return;
 
-		Duration duration = timer.duration();
-		elapsedTimeLabel.setText(
-				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart()));
+		durationReceiver.accept(timer.duration());
 	}
 
-	Interval stopAndGet() {
+	public Interval stopAndGet() {
 		Timer timer = timerRef.get();
 		if (scheduleAtFixedRate == null || timer == null)
 			throw Errors.illegalState("Timer was not started");
