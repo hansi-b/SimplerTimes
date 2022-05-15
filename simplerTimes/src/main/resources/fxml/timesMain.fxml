@@ -5,7 +5,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/17"
 	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="org.hansib.simpler_times.TimesMainController"
+	fx:controller="org.hansib.simpler_times.fx.TimesMainController"
 	stylesheets="fxml/app.css">
 	<children>
 		<TextField fx:id="projectField" />

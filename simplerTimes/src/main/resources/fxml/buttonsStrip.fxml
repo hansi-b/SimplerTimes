@@ -8,12 +8,12 @@
 
 <HBox xmlns="http://javafx.com/javafx/17"
 	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="org.hansib.simpler_times.ButtonsStripController"
+	fx:controller="org.hansib.simpler_times.fx.ButtonsStripController"
 	stylesheets="fxml/app.css, fxml/buttonsStrip.css">
 	<children>
 		<Button fx:id="startButton" />
 		<Button fx:id="stopButton" />
-		<Region fx:id="spring" HBox.hgrow="ALWAYS" />
+		<Region HBox.hgrow="ALWAYS" />
 		<Label fx:id="elapsedTime" />
 		<Button fx:id="editTreeButton" />
 	</children>

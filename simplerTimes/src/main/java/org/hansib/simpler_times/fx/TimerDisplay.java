@@ -1,4 +1,4 @@
-package org.hansib.simpler_times;
+package org.hansib.simpler_times.fx;
 
 import java.time.Duration;
 import java.util.concurrent.Executors;
