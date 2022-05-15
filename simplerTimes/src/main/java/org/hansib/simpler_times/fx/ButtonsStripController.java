@@ -1,10 +1,13 @@
 package org.hansib.simpler_times.fx;
 
+import java.time.Duration;
 import java.util.function.Consumer;
 
 import org.hansib.simpler_times.times.Interval;
+import org.hansib.simpler_times.times.TimerDisplay;
 import org.hansib.simpler_times.tree.TreeViewWindow;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,7 +32,7 @@ public class ButtonsStripController {
 
 	@FXML
 	void initialize() {
-		timerDisplay = new TimerDisplay(elapsedTime);
+		timerDisplay = new TimerDisplay(this::updateTime);
 
 		startButton.setGraphic(Icons.start());
 		stopButton.setGraphic(Icons.stop());
@@ -41,6 +44,11 @@ public class ButtonsStripController {
 
 		startButton.setOnAction(a -> startTiming());
 		stopButton.setOnAction(a -> stopTiming());
+	}
+
+	private void updateTime(Duration duration) {
+		Platform.runLater(() -> elapsedTime.setText(
+				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart())));
 	}
 
 	void setIntervalReceiver(Consumer<Interval> intervalReceiver) {
