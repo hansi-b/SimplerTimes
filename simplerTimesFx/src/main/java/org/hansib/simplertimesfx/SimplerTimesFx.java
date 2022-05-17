@@ -1,11 +1,11 @@
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimesfx;
 
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.spans.SpansStore;
-import org.hansib.simplertimes.utils.ResourceLoader;
+import org.hansib.simplertimesfx.utils.ResourceLoader;
 
 import javafx.application.Application;
 import javafx.application.Platform;

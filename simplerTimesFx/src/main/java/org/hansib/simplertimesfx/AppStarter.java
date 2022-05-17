@@ -1,6 +1,4 @@
-package org.hansib.simplertimes;
-
-import org.hansib.simplertimes.fx.SimplerTimesFx;
+package org.hansib.simplertimesfx;
 
 /*
  * Needed as a workaround for https://github.com/javafxports/openjdk-jfx/issues/236

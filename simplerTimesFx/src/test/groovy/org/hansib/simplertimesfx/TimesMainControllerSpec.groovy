@@ -1,11 +1,10 @@
-package org.hansib.simplertimes.fx
+package org.hansib.simplertimesfx
 
 import java.time.LocalDateTime
 
-import org.hansib.simplertimes.fx.TimesMainController
 import org.hansib.simplertimes.spans.SpansCollection
 import org.hansib.simplertimes.times.Interval
-import org.hansib.simplertimes.utils.ResourceLoader
+import org.hansib.simplertimesfx.utils.ResourceLoader
 import org.testfx.framework.spock.ApplicationSpec
 
 import javafx.fxml.FXMLLoader
