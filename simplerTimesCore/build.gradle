@@ -1,0 +1,13 @@
+plugins {
+	id 'org.hansib.java-common'
+}
+
+dependencies {
+
+	implementation 'org.hansib:sundries:0.4.0'
+
+	implementation 'net.harawata:appdirs:1.2.1'
+
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
+}
