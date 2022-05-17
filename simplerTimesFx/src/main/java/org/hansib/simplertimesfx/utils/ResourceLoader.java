@@ -1,9 +1,11 @@
-package org.hansib.simplertimes.utils;
+package org.hansib.simplertimesfx.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import org.hansib.simplertimesfx.utils.ResourceLoader;
 
 import javafx.fxml.FXMLLoader;
 

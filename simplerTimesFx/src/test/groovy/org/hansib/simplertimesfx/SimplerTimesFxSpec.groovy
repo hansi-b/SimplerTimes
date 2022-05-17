@@ -1,6 +1,6 @@
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimesfx;
 
-import org.hansib.simplertimes.fx.SimplerTimesFx
+import org.hansib.simplertimesfx.SimplerTimesFx
 
 import spock.lang.Specification
 

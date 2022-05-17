@@ -1,4 +1,4 @@
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimesfx;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;

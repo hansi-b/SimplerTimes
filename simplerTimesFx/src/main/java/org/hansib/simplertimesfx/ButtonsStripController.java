@@ -1,4 +1,4 @@
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimesfx;
 
 import java.time.Duration;
 import java.util.function.Consumer;

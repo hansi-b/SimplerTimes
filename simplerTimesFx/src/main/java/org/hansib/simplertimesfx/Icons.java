@@ -1,4 +1,4 @@
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimesfx;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
