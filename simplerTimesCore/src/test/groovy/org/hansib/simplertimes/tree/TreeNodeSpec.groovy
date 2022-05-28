@@ -1,15 +1,13 @@
 package org.hansib.simplertimes.tree;
 
-import org.hansib.simplertimes.tree.Node
-
 import spock.lang.Specification
 
-public class NodeSpec extends Specification {
+public class TreeNodeSpec extends Specification {
 
 	def "can get root"() {
 
 		when:
-		def n = Node.root()
+		def n = TreeNode.root()
 
 		then:
 		n.element() == null
@@ -19,16 +17,16 @@ public class NodeSpec extends Specification {
 	def "can add child"() {
 
 		given:
-		def n = Node.<String>root()
+		def n = TreeNode.<Nameable>root()
 
 		when:
-		def m = n.add("hello")
+		def m = n.add(new Nameable("hello"))
 
 		then:
 		n.children() == [m]
 
 		when:
-		def o = n.add("world")
+		def o = n.add(new Nameable("world"))
 
 		then:
 		n.children() == [m, o]
@@ -37,9 +35,9 @@ public class NodeSpec extends Specification {
 	def "can remove child"() {
 
 		given:
-		def n = Node.<String>root()
-		def m = n.add("hello")
-		def o = n.add("world")
+		def n = TreeNode.<Nameable>root()
+		def m = n.add(new Nameable("hello"))
+		def o = n.add(new Nameable("world"))
 
 		when:
 		def m2 = n.remove(m)
@@ -52,9 +50,9 @@ public class NodeSpec extends Specification {
 	def "unkonwn child throws exception"() {
 
 		given:
-		def n = Node.<String>root()
-		def m = n.add("hello")
-		def o = Node.<String>root()
+		def n = TreeNode.<Nameable>root()
+		def m = n.add(new Nameable("hello"))
+		def o = TreeNode.<Nameable>root()
 
 		when:
 		n.remove(o)

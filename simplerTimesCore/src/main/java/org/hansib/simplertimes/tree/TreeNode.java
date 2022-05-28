@@ -4,40 +4,39 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.hansib.simplertimes.tree.Node;
 import org.hansib.sundries.Strings;
 
-public class Node<E> {
+public class TreeNode<E extends Nameable> {
 
 	private E element;
 
-	private Node<E> parent;
+	private TreeNode<E> parent;
 
-	private List<Node<E>> children;
+	private final List<TreeNode<E>> children;
 
-	private Node(Node<E> parent, E element, List<Node<E>> children) {
+	TreeNode(TreeNode<E> parent, E element, List<TreeNode<E>> children) {
 		this.element = element;
 		this.parent = parent;
 		this.children = children;
 	}
 
-	public static <F> Node<F> root() {
-		return new Node<>(null, null, new ArrayList<>());
+	public static <F extends Nameable> TreeNode<F> root() {
+		return new TreeNode<>(null, null, new ArrayList<>());
 	}
 
-	public Node<E> add(E element) {
-		Node<E> child = new Node<>(this, element, new ArrayList<>());
+	public TreeNode<E> add(E element) {
+		TreeNode<E> child = new TreeNode<>(this, element, new ArrayList<>());
 		children.add(child);
 		return child;
 	}
 
-	public Node<E> remove(Node<E> child) {
+	public TreeNode<E> remove(TreeNode<E> child) {
 
 		int i = children.indexOf(child);
 		if (i < 0)
 			throw new IllegalArgumentException(
 					String.format("Unknown child %s for %s (have %s)", child, this, children));
-		Node<E> removed = children.remove(i);
+		TreeNode<E> removed = children.remove(i);
 		removed.parent = null;
 		return removed;
 	}
@@ -50,14 +49,15 @@ public class Node<E> {
 		this.element = element;
 	}
 
-	public Node<E> parent() {
+	public TreeNode<E> parent() {
 		return parent;
 	}
 
-	public List<Node<E>> children() {
+	public List<TreeNode<E>> children() {
 		return Collections.unmodifiableList(children);
 	}
 
+	@Override
 	public String toString() {
 		return Strings.idStr(this, String.valueOf(element));
 	}
