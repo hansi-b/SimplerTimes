@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.TimerDisplay;
+import org.hansib.simplertimesfx.tree.TreeViewWindow;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;

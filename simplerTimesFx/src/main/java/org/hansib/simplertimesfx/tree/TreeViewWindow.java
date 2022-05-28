@@ -1,4 +1,7 @@
-package org.hansib.simplertimesfx;
+package org.hansib.simplertimesfx.tree;
+
+import org.hansib.simplertimes.Project;
+import org.hansib.simplertimes.tree.TreeNode;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -12,11 +15,11 @@ public class TreeViewWindow {
 
 	public static void openTreeViewWindow(Node parent) {
 
-		TreeItem<String> rootItem = new TreeItem<>("abc");
-		TreeView<String> tree = new TreeView<>(rootItem);
+		TreeItem<TreeNode<Project>> rootItem = new TreeItem<>(TreeNode.root());
+		TreeView<TreeNode<Project>> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		// tree.setShowRoot(false);
-		tree.setCellFactory(p -> new TreeCellFactory());
+		tree.setCellFactory(p -> new TextFieldTreeCellImpl<Project>(tree, () -> new Project("New Project")));
 		rootItem.setExpanded(true);
 
 		StackPane treeLayout = new StackPane();
