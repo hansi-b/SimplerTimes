@@ -19,15 +19,14 @@ class TextFieldTreeCellImpl<E extends Nameable> extends TreeCell<TreeNode<E>> {
 	private TextField textField;
 	private ContextMenu contextMenu = new ContextMenu();
 
-	public TextFieldTreeCellImpl(TreeView<TreeNode<E>> tv, Supplier<E> nodeSupplier) {
-		contextMenu.getItems().add(getAddMenuItem(tv, nodeSupplier));
+	public TextFieldTreeCellImpl(TreeView<TreeNode<E>> treeview, Supplier<E> nodeSupplier) {
+		contextMenu.getItems().add(getAddMenuItem(treeview, nodeSupplier));
 		contextMenu.getItems().add(getRemoveMenuItem());
 	}
 
 	private MenuItem getAddMenuItem(TreeView<TreeNode<E>> treeview, Supplier<E> elementSupplier) {
 		MenuItem addMenuItem = new MenuItem("Add node");
 		addMenuItem.setOnAction(t -> {
-
 			TreeItem<TreeNode<E>> i = getTreeItem();
 			TreeItem<TreeNode<E>> current = i != null ? i : treeview.getRoot();
 			TreeNode<E> nodeChild = current.getValue().add(elementSupplier.get());
