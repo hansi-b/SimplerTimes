@@ -6,9 +6,7 @@ import java.nio.file.Path;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.harawata.appdirs.AppDirs;
-import net.harawata.appdirs.AppDirsFactory;
+import org.hansib.simplertimes.AppData;
 
 public class SpansStore {
 
@@ -17,7 +15,7 @@ public class SpansStore {
 	private final Path spansPath;
 
 	public SpansStore() {
-		this.spansPath = spansPath();
+		this.spansPath = new AppData().dataPath("spans.yml");
 	}
 
 	public SpansCollection load() {
@@ -32,14 +30,6 @@ public class SpansStore {
 	}
 
 	public void save(SpansCollection spans) throws IOException {
-		Files.writeString(spansPath(), spans.toYaml());
-	}
-
-	private static Path spansPath() {
-		AppDirs appDirs = AppDirsFactory.getInstance();
-		Path path = Path.of(appDirs.getUserDataDir("SimplerTimes", "", "HansiB"));
-		if (!path.toFile().exists())
-			path.toFile().mkdirs();
-		return path.resolve("spans.yml");
+		Files.writeString(spansPath, spans.toYaml());
 	}
 }
