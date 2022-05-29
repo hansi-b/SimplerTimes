@@ -13,14 +13,15 @@ import javafx.stage.Stage;
 
 public class TreeViewWindow {
 
-	public static void openTreeViewWindow(Node parent) {
+	public static void openTreeViewWindow(Node parent, TreeNode<Project> root) {
 
-		TreeItem<TreeNode<Project>> rootItem = new TreeItem<>(TreeNode.root());
+		TreeItem<TreeNode<Project>> rootItem = copyToTreeItem(root);
+		rootItem.setExpanded(true);
+
 		TreeView<TreeNode<Project>> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		// tree.setShowRoot(false);
 		tree.setCellFactory(p -> new TextFieldTreeCellImpl<Project>(tree, () -> new Project("New Project")));
-		rootItem.setExpanded(true);
 
 		StackPane treeLayout = new StackPane();
 		treeLayout.getChildren().add(tree);
@@ -36,5 +37,14 @@ public class TreeViewWindow {
 		window.setY(boundsInScene.getMinY());
 
 		window.show();
+	}
+
+	private static TreeItem<TreeNode<Project>> copyToTreeItem(TreeNode<Project> treeNode) {
+		TreeItem<TreeNode<Project>> treeItem = new TreeItem<>(treeNode);
+		treeNode.children().forEach(c -> {
+			TreeItem<TreeNode<Project>> i = copyToTreeItem(c);
+			treeItem.getChildren().add(i);
+		});
+		return treeItem;
 	}
 }
