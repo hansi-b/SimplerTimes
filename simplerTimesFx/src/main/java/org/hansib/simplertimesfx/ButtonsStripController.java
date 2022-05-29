@@ -3,8 +3,10 @@ package org.hansib.simplertimesfx;
 import java.time.Duration;
 import java.util.function.Consumer;
 
+import org.hansib.simplertimes.Project;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.TimerDisplay;
+import org.hansib.simplertimes.tree.TreeNode;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
 
 import javafx.application.Platform;
@@ -40,10 +42,20 @@ public class ButtonsStripController {
 		stopButton.setDisable(true);
 
 		editTreeButton.setGraphic(Icons.editTree());
-		editTreeButton.setOnAction(event -> TreeViewWindow.openTreeViewWindow(editTreeButton));
+		editTreeButton.setOnAction(event -> TreeViewWindow.openTreeViewWindow(editTreeButton, buildTree()));
 
 		startButton.setOnAction(a -> startTiming());
 		stopButton.setOnAction(a -> stopTiming());
+	}
+
+	private static TreeNode<Project> buildTree() {
+		TreeNode<Project> root = TreeNode.root();
+		TreeNode<Project> book = root.add(new Project("Book"));
+		book.add(new Project("Chapter 1"));
+		book.add(new Project("Chapter 2"));
+		TreeNode<Project> stuff = root.add(new Project("Stuff"));
+		stuff.add(new Project("clean"));
+		return root;
 	}
 
 	private void updateTime(Duration duration) {
