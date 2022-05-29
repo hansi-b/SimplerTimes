@@ -4,17 +4,19 @@ import java.time.OffsetDateTime
 
 import spock.lang.Specification
 
-public class SpansCollectionSpec extends Specification {
+public class SpansYamlConverterSpec extends Specification {
 
 	def now = OffsetDateTime.now()
 	def s1 = new Span("abc", now.minusMinutes(1), now)
 	def s2 = new Span("xyz", now.minusHours(2), now.minusHours(1))
 	def s3 = new Span("uvw", now.minusHours(2), now.minusHours(1))
 
-	def 'equals'() {
+	def 'can de/serialize'() {
 
-		expect:
-		SpansCollection.with(s1, s2).equals(SpansCollection.with(s1, s2))
-		!SpansCollection.with(s1, s2).equals(SpansCollection.with(s1, s3))
+		when:
+		def sc = SpansCollection.with(s1, s2)
+
+		then:
+		SpansYamlConverter.fromYaml(SpansYamlConverter.toYaml(sc)).equals(sc)
 	}
 }

@@ -22,14 +22,14 @@ public class SpansStore {
 		if (!spansPath.toFile().isFile())
 			return new SpansCollection();
 		try {
-			return SpansCollection.fromYaml(Files.readString(spansPath));
+			return SpansYamlConverter.fromYaml(Files.readString(spansPath));
 		} catch (IOException e) {
 			log.error(String.format("Encountered exception while trying to read spans from '%s'", spansPath), e);
+			return new SpansCollection();
 		}
-		return new SpansCollection();
 	}
 
 	public void save(SpansCollection spans) throws IOException {
-		Files.writeString(spansPath, spans.toYaml());
+		Files.writeString(spansPath, SpansYamlConverter.toYaml(spans));
 	}
 }
