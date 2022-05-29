@@ -1,11 +1,8 @@
 package org.hansib.simplertimes.spans;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.hansib.simplertimes.yaml.YamlMapper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,14 +25,6 @@ public class SpansCollection {
 		for (Span s : spans)
 			sc.add(s);
 		return sc;
-	}
-
-	static SpansCollection fromYaml(String yamlString) throws IOException {
-		return YamlMapper.instance().fromString(yamlString, SpansCollection.class);
-	}
-
-	String toYaml() throws IOException {
-		return YamlMapper.instance().asString(this);
 	}
 
 	public void add(Span span) {
