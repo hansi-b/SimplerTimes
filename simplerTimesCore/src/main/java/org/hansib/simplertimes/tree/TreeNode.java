@@ -14,7 +14,7 @@ public class TreeNode<E extends Nameable> {
 
 	private final List<TreeNode<E>> children;
 
-	TreeNode(TreeNode<E> parent, E element, List<TreeNode<E>> children) {
+	public TreeNode(TreeNode<E> parent, E element, List<TreeNode<E>> children) {
 		this.element = element;
 		this.parent = parent;
 		this.children = children;
