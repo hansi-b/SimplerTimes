@@ -11,6 +11,10 @@ class PrettyPrinter<E extends Nameable> {
 	private final int indentation;
 	private final int currDepth;
 
+	PrettyPrinter(TreeNode<E> node) {
+		this(node, e -> e == null ? "<null>" : e.name());
+	}
+
 	PrettyPrinter(TreeNode<E> node, Function<E, String> element2String) {
 		this(node, element2String, DEFAULT_INDENTATION, 0);
 	}

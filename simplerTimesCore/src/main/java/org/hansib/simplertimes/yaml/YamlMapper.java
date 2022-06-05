@@ -3,6 +3,11 @@ package org.hansib.simplertimes.yaml;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hansib.simplertimes.Project;
+import org.hansib.simplertimes.tree.TreeNode;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -10,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -37,8 +43,15 @@ public class YamlMapper {
 	private static ObjectMapper createObjectMapper() {
 
 		final SimpleModule module = new SimpleModule("SimplerTimes", new Version(1, 0, 0, "", "", ""));
+
 		module.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer());
 		module.addDeserializer(OffsetDateTime.class, new OffsetDateTimeDeserializer());
+
+		module.addSerializer(Project.class, new ProjectSerializer());
+		module.addDeserializer(Project.class, new ProjectDeserializer());
+
+		module.addSerializer(new TreeNodeSerializer());
+		module.addDeserializer(TreeNode.class, new TreeNodeDeserializer());
 
 		return YAMLMapper.builder().addModule(module).build();
 	}
@@ -63,6 +76,65 @@ public class YamlMapper {
 		@Override
 		public OffsetDateTime deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
 			return OffsetDateTime.parse(p.getValueAsString(), dtFormatter);
+		}
+	}
+
+	private static class ProjectSerializer extends JsonSerializer<Project> {
+		@Override
+		public void serialize(final Project value, final JsonGenerator gen, final SerializerProvider serializers)
+				throws IOException {
+			gen.writeStartObject();
+			gen.writeStringField("name", value.name());
+			gen.writeEndObject();
+		}
+	}
+
+	private static class ProjectDeserializer extends JsonDeserializer<Project> {
+		@Override
+		public Project deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
+			JsonNode node = p.readValueAsTree();
+			JsonNode jsonNode = node.get("name");
+			return new Project(jsonNode.asText());
+		}
+	}
+
+	private static class TreeNodeSerializer extends JsonSerializer<TreeNode<Project>> {
+
+		@Override
+		public Class<TreeNode<Project>> handledType() {
+			TreeNode<Project> root = TreeNode.<Project>root();
+			return (Class<TreeNode<Project>>) root.getClass();
+		}
+
+		@Override
+		public void serialize(final TreeNode<Project> value, final JsonGenerator gen,
+				final SerializerProvider serializers) throws IOException {
+
+			gen.writeStartObject();
+			gen.writeFieldName("project");
+			gen.writeObject(value.element());
+			gen.writeArrayFieldStart("children");
+			List<TreeNode<Project>> children = value.children();
+			for (TreeNode<Project> c : children)
+				gen.writeObject(c);
+			gen.writeEndArray();
+			gen.writeEndObject();
+		}
+	}
+
+	private static class TreeNodeDeserializer extends JsonDeserializer<TreeNode<Project>> {
+
+		private static final ObjectMapper objectMapper = createObjectMapper();
+
+		@Override
+		public TreeNode<Project> deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
+			JsonNode node = p.readValueAsTree();
+			JsonNode projectNode = node.get("project");
+			JsonParser traverse = projectNode.traverse();
+			Project project = objectMapper.treeToValue(projectNode, Project.class);
+
+			// Project project = new ObjectMapper().readValue(traverse, Project.class);
+			return new TreeNode<>(null, project, new ArrayList<>());
 		}
 	}
 }
