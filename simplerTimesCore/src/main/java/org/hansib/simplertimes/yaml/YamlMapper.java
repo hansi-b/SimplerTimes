@@ -3,7 +3,7 @@ package org.hansib.simplertimes.yaml;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hansib.simplertimes.Project;
@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
@@ -129,12 +130,15 @@ public class YamlMapper {
 		@Override
 		public TreeNode<Project> deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
 			JsonNode node = p.readValueAsTree();
+
 			JsonNode projectNode = node.get("project");
-			JsonParser traverse = projectNode.traverse();
 			Project project = objectMapper.treeToValue(projectNode, Project.class);
 
-			// Project project = new ObjectMapper().readValue(traverse, Project.class);
-			return new TreeNode<>(null, project, new ArrayList<>());
+			JsonNode childrenNode = node.get("children");
+			ObjectReader childrenReader = objectMapper.readerForArrayOf(TreeNode.class);
+			TreeNode<Project>[] children = childrenReader.readValue(childrenNode);
+
+			return TreeNode.connected(project, Arrays.asList(children));
 		}
 	}
 }
