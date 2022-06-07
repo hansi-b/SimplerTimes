@@ -20,6 +20,12 @@ public class TreeNode<E extends Nameable> {
 		this.children = children;
 	}
 
+	public static <F extends Nameable> TreeNode<F> connected(F element, List<TreeNode<F>> children) {
+		TreeNode<F> node = new TreeNode<>(null, element, children);
+		node.children.forEach(c -> c.parent = node);
+		return node;
+	}
+
 	public static <F extends Nameable> TreeNode<F> root() {
 		return new TreeNode<>(null, null, new ArrayList<>());
 	}
