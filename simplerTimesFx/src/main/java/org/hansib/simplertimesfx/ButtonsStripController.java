@@ -2,6 +2,7 @@ package org.hansib.simplertimesfx;
 
 import java.time.Duration;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.hansib.simplertimes.Project;
 import org.hansib.simplertimes.times.Interval;
@@ -32,6 +33,8 @@ public class ButtonsStripController {
 
 	private Consumer<Interval> intervalReceiver;
 
+	private Supplier<TreeNode<Project>> projectsSupplier;
+
 	@FXML
 	void initialize() {
 		timerDisplay = new TimerDisplay(this::updateTime);
@@ -42,25 +45,19 @@ public class ButtonsStripController {
 		stopButton.setDisable(true);
 
 		editTreeButton.setGraphic(Icons.editTree());
-		editTreeButton.setOnAction(event -> TreeViewWindow.openTreeViewWindow(editTreeButton, buildTree()));
+		editTreeButton.setOnAction(event -> TreeViewWindow.openTreeViewWindow(editTreeButton, projectsSupplier.get()));
 
 		startButton.setOnAction(a -> startTiming());
 		stopButton.setOnAction(a -> stopTiming());
 	}
 
-	private static TreeNode<Project> buildTree() {
-		TreeNode<Project> root = TreeNode.root();
-		TreeNode<Project> book = root.add(new Project("Book"));
-		book.add(new Project("Chapter 1"));
-		book.add(new Project("Chapter 2"));
-		TreeNode<Project> stuff = root.add(new Project("Stuff"));
-		stuff.add(new Project("clean"));
-		return root;
-	}
-
 	private void updateTime(Duration duration) {
 		Platform.runLater(() -> elapsedTime.setText(
 				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart())));
+	}
+
+	void setProjectsSupplier(Supplier<TreeNode<Project>> projectsSupplier) {
+		this.projectsSupplier = projectsSupplier;
 	}
 
 	void setIntervalReceiver(Consumer<Interval> intervalReceiver) {
