@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.spans.SpansStore;
+import org.hansib.simplertimes.yaml.TreeStore;
 import org.hansib.simplertimesfx.utils.ResourceLoader;
 
 import javafx.application.Application;
@@ -23,6 +24,8 @@ public class SimplerTimesFx extends Application {
 	private static final Logger log = LogManager.getLogger();
 
 	private SpansStore spansStore;
+	private TreeStore treeStore;
+
 	private TimesMainController timesMainController;
 
 	@Override
@@ -30,11 +33,14 @@ public class SimplerTimesFx extends Application {
 
 		log.info("Starting ...");
 		spansStore = new SpansStore();
+		treeStore = new TreeStore();
 
 		final FXMLLoader fxmlLoader = ResourceLoader.get().getFxmlLoader("timesMain.fxml");
 		final Parent root = fxmlLoader.load();
 		timesMainController = fxmlLoader.getController();
+
 		timesMainController.setSpans(spansStore.load());
+		timesMainController.setProjects(treeStore.load());
 
 		primaryStage.setTitle("SimplerTimes");
 		primaryStage.setScene(new Scene(root));
@@ -53,6 +59,7 @@ public class SimplerTimesFx extends Application {
 	public void stop() {
 		try {
 			spansStore.save(timesMainController.getSpans());
+			treeStore.save(timesMainController.getProjects());
 		} catch (IOException e) {
 			log.error("Could not save spans", e);
 		}

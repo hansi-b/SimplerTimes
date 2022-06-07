@@ -2,9 +2,11 @@ package org.hansib.simplertimesfx;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Interval;
+import org.hansib.simplertimes.tree.TreeNode;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -22,10 +24,12 @@ public class TimesMainController {
 	ButtonsStripController buttonsStripController;
 
 	private SpansCollection spans;
+	private TreeNode<Project> projects;
 
 	@FXML
 	void initialize() {
 		buttonsStripController.setIntervalReceiver(this::handleInterval);
+		buttonsStripController.setProjectsSupplier(() -> projects);
 
 		projectField.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			if (e.getCode() == KeyCode.ENTER) {
@@ -39,8 +43,16 @@ public class TimesMainController {
 		this.spans = spans;
 	}
 
+	public void setProjects(TreeNode<Project> projects) {
+		this.projects = projects;
+	}
+
 	SpansCollection getSpans() {
 		return spans;
+	}
+
+	TreeNode<Project> getProjects() {
+		return projects;
 	}
 
 	void handleInterval(Interval t) {
