@@ -67,4 +67,23 @@ children:
 		def c = root.children()
 		c.size() == 2
 	}
+
+	def 'can modify after converting from yaml'() {
+
+		given:
+		def yaml = '''---
+project:
+  name: "root"
+children:
+- project:
+    name: "book"
+  children: []
+'''
+		when:
+		TreeNode<Project> root = new TreeNodeYamlConverter().fromYaml(yaml)
+		root.add(new Project("hello"))
+
+		then:
+		root.children.size() == 2
+	}
 }
