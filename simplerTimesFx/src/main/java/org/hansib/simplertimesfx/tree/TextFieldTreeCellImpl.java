@@ -17,15 +17,16 @@ import javafx.scene.input.KeyCode;
 class TextFieldTreeCellImpl<E extends Nameable> extends TreeCell<TreeNode<E>> {
 
 	private TextField textField;
-	private ContextMenu contextMenu = new ContextMenu();
+	private ContextMenu contextMenu;
 
 	public TextFieldTreeCellImpl(TreeView<TreeNode<E>> treeview, Supplier<E> nodeSupplier) {
+		contextMenu = new ContextMenu();
 		contextMenu.getItems().add(getAddMenuItem(treeview, nodeSupplier));
 		contextMenu.getItems().add(getRemoveMenuItem());
 	}
 
 	private MenuItem getAddMenuItem(TreeView<TreeNode<E>> treeview, Supplier<E> elementSupplier) {
-		MenuItem addMenuItem = new MenuItem("Add node");
+		MenuItem addMenuItem = new MenuItem("Add Subproject");
 		addMenuItem.setOnAction(t -> {
 			TreeItem<TreeNode<E>> i = getTreeItem();
 			TreeItem<TreeNode<E>> current = i != null ? i : treeview.getRoot();
@@ -39,7 +40,7 @@ class TextFieldTreeCellImpl<E extends Nameable> extends TreeCell<TreeNode<E>> {
 	}
 
 	private MenuItem getRemoveMenuItem() {
-		MenuItem removeMenuItem = new MenuItem("Remove node");
+		MenuItem removeMenuItem = new MenuItem("Remove Subproject");
 		removeMenuItem.setOnAction(t -> {
 			TreeItem<TreeNode<E>> current = getTreeItem();
 			TreeNode<E> nodeChild = current.getValue();
@@ -86,9 +87,9 @@ class TextFieldTreeCellImpl<E extends Nameable> extends TreeCell<TreeNode<E>> {
 			} else {
 				setText(getString());
 				setGraphic(getTreeItem().getGraphic());
-//				if (getTreeItem().getParent() != null) {
-				setContextMenu(contextMenu);
-//				}
+				if (getTreeItem().getParent() != null) {
+					setContextMenu(contextMenu);
+				}
 			}
 		}
 	}
