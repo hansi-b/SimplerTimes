@@ -45,7 +45,8 @@ public class ButtonsStripController {
 		stopButton.setDisable(true);
 
 		editTreeButton.setGraphic(Icons.editTree());
-		editTreeButton.setOnAction(event -> TreeViewWindow.openTreeViewWindow(editTreeButton, projectsSupplier.get()));
+		editTreeButton
+				.setOnAction(event -> new TreeViewWindow(projectsSupplier.get()).openTreeViewWindow(editTreeButton));
 
 		startButton.setOnAction(a -> startTiming());
 		stopButton.setOnAction(a -> stopTiming());
