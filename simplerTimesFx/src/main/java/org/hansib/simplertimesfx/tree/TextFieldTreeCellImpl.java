@@ -102,13 +102,13 @@ class TextFieldTreeCellImpl extends TreeCell<TreeNode> {
 		});
 		textField.setOnKeyReleased(t -> {
 			if (t.getCode() == KeyCode.ENTER) {
-				getItem().element().set(textField.getText());
+				getItem().project().set(textField.getText());
 				commitEdit(getItem());
 			}
 		});
 		textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (Boolean.FALSE.equals(newValue)) {
-				getItem().element().set(textField.getText());
+				getItem().project().set(textField.getText());
 				commitEdit(getItem());
 			} else if (Boolean.TRUE.equals(newValue)) {
 				Platform.runLater(() -> {
@@ -120,7 +120,7 @@ class TextFieldTreeCellImpl extends TreeCell<TreeNode> {
 	}
 
 	private String getString() {
-		Project e = getItem().element();
+		Project e = getItem().project();
 		return e == null ? "-" : e.name();
 	}
 }

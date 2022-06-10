@@ -31,7 +31,7 @@ class PrettyPrinter {
 	}
 
 	private String nameStr() {
-		Project e = node.element();
+		Project e = node.project();
 		return e == null ? "null" : e.name();
 	}
 }
