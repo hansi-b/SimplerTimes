@@ -112,7 +112,7 @@ public class YamlMapper {
 
 			gen.writeStartObject();
 			gen.writeFieldName("project");
-			gen.writeObject(value.element());
+			gen.writeObject(value.project());
 			gen.writeArrayFieldStart("children");
 			List<TreeNode> children = value.children();
 			for (TreeNode c : children)

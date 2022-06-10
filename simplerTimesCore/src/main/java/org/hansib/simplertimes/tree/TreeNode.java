@@ -8,14 +8,14 @@ import org.hansib.sundries.Strings;
 
 public class TreeNode {
 
-	private Project element;
+	private Project project;
 
 	private TreeNode parent;
 
 	private final List<TreeNode> children;
 
 	public TreeNode(TreeNode parent, Project element, List<TreeNode> children) {
-		this.element = element;
+		this.project = element;
 		this.parent = parent;
 		this.children = children;
 	}
@@ -30,8 +30,8 @@ public class TreeNode {
 		return new TreeNode(null, null, new ArrayList<>());
 	}
 
-	public TreeNode add(Project element) {
-		TreeNode child = new TreeNode(this, element, new ArrayList<>());
+	public TreeNode add(Project project) {
+		TreeNode child = new TreeNode(this, project, new ArrayList<>());
 		children.add(child);
 		return child;
 	}
@@ -47,12 +47,12 @@ public class TreeNode {
 		return removed;
 	}
 
-	public Project element() {
-		return element;
+	public Project project() {
+		return project;
 	}
 
-	public void setElement(Project element) {
-		this.element = element;
+	public void setProject(Project project) {
+		this.project = project;
 	}
 
 	public TreeNode parent() {
@@ -65,6 +65,6 @@ public class TreeNode {
 
 	@Override
 	public String toString() {
-		return Strings.idStr(this, String.valueOf(element));
+		return Strings.idStr(this, String.valueOf(project));
 	}
 }

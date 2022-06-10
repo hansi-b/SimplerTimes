@@ -8,7 +8,7 @@ public class TreeNodeYamlConverterSpec extends Specification {
 
 		given:
 		def tree = TreeNode<Project>.root()
-		tree.setElement(new Project("root"))
+		tree.setProject(new Project("root"))
 		def book = tree.add(new Project("book"))
 		book.add(new Project("chapter 1"))
 		book.add(new Project("chapter 2"))
@@ -61,7 +61,7 @@ children:
 		TreeNode root = new TreeNodeYamlConverter().fromYaml(yaml)
 
 		then:
-		root.element().name() == 'root'
+		root.project().name() == 'root'
 		def c = root.children()
 		c.size() == 2
 	}

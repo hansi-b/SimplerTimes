@@ -10,7 +10,7 @@ public class TreeNodeSpec extends Specification {
 		def n = TreeNode.root()
 
 		then:
-		n.element() == null
+		n.project() == null
 		n.parent() == null
 	}
 
