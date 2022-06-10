@@ -2,7 +2,7 @@ package org.hansib.simplertimesfx.tree;
 
 import java.util.function.Supplier;
 
-import org.hansib.simplertimes.Project;
+import org.hansib.simplertimes.tree.Project;
 import org.hansib.simplertimes.tree.TreeNode;
 
 import javafx.geometry.Bounds;

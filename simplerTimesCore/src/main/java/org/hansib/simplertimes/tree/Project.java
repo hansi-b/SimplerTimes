@@ -1,6 +1,4 @@
-package org.hansib.simplertimes;
-
-import org.hansib.simplertimes.tree.Nameable;
+package org.hansib.simplertimes.tree;
 
 public class Project extends Nameable {
 

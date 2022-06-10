@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hansib.simplertimes.Project;
+import org.hansib.simplertimes.tree.Project;
 import org.hansib.simplertimes.tree.TreeNode;
 
 import com.fasterxml.jackson.core.JsonGenerator;

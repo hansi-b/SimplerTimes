@@ -1,6 +1,5 @@
 package org.hansib.simplertimes.tree;
 
-import org.hansib.simplertimes.Project
 import org.hansib.simplertimes.yaml.YamlMapper
 
 import spock.lang.Specification
