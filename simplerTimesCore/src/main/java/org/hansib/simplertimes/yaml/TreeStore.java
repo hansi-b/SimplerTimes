@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.AppData;
-import org.hansib.simplertimes.Project;
+import org.hansib.simplertimes.tree.Project;
 import org.hansib.simplertimes.tree.TreeNode;
 import org.hansib.simplertimes.tree.TreeNodeYamlConverter;
 

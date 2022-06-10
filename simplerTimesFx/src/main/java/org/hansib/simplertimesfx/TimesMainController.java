@@ -2,10 +2,10 @@ package org.hansib.simplertimesfx;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Interval;
+import org.hansib.simplertimes.tree.Project;
 import org.hansib.simplertimes.tree.TreeNode;
 
 import javafx.fxml.FXML;

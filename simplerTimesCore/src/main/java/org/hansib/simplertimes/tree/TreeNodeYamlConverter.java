@@ -2,7 +2,6 @@ package org.hansib.simplertimes.tree;
 
 import java.io.IOException;
 
-import org.hansib.simplertimes.Project;
 import org.hansib.simplertimes.yaml.YamlMapper;
 
 public class TreeNodeYamlConverter {

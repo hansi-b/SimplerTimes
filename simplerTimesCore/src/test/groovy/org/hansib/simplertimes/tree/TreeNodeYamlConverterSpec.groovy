@@ -1,7 +1,5 @@
 package org.hansib.simplertimes.tree;
 
-import org.hansib.simplertimes.Project
-
 import spock.lang.Specification
 
 public class TreeNodeYamlConverterSpec extends Specification {

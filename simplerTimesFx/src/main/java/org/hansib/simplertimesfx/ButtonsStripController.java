@@ -4,9 +4,9 @@ import java.time.Duration;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.hansib.simplertimes.Project;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.TimerDisplay;
+import org.hansib.simplertimes.tree.Project;
 import org.hansib.simplertimes.tree.TreeNode;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
 
