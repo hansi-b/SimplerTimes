@@ -8,8 +8,7 @@
 
 <HBox xmlns="http://javafx.com/javafx/17"
 	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="org.hansib.simplertimesfx.ButtonsStripController"
-	stylesheets="fxml/app.css, fxml/buttonsStrip.css">
+	fx:controller="org.hansib.simplertimesfx.ButtonsStripController">
 	<children>
 		<Button fx:id="startButton" />
 		<Button fx:id="stopButton" />
