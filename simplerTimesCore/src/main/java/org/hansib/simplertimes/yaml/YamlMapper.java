@@ -99,37 +99,35 @@ public class YamlMapper {
 		}
 	}
 
-	private static class TreeNodeSerializer extends JsonSerializer<TreeNode<Project>> {
+	private static class TreeNodeSerializer extends JsonSerializer<TreeNode> {
 
 		@Override
-		@SuppressWarnings("unchecked")
-		public Class<TreeNode<Project>> handledType() {
-			TreeNode<Project> root = TreeNode.<Project>root();
-			return (Class<TreeNode<Project>>) root.getClass();
+		public Class<TreeNode> handledType() {
+			return TreeNode.class;
 		}
 
 		@Override
-		public void serialize(final TreeNode<Project> value, final JsonGenerator gen,
-				final SerializerProvider serializers) throws IOException {
+		public void serialize(final TreeNode value, final JsonGenerator gen, final SerializerProvider serializers)
+				throws IOException {
 
 			gen.writeStartObject();
 			gen.writeFieldName("project");
 			gen.writeObject(value.element());
 			gen.writeArrayFieldStart("children");
-			List<TreeNode<Project>> children = value.children();
-			for (TreeNode<Project> c : children)
+			List<TreeNode> children = value.children();
+			for (TreeNode c : children)
 				gen.writeObject(c);
 			gen.writeEndArray();
 			gen.writeEndObject();
 		}
 	}
 
-	private static class TreeNodeDeserializer extends JsonDeserializer<TreeNode<Project>> {
+	private static class TreeNodeDeserializer extends JsonDeserializer<TreeNode> {
 
 		private static final ObjectMapper objectMapper = createObjectMapper();
 
 		@Override
-		public TreeNode<Project> deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
+		public TreeNode deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
 			JsonNode node = p.readValueAsTree();
 
 			JsonNode projectNode = node.get("project");
@@ -137,7 +135,7 @@ public class YamlMapper {
 
 			JsonNode childrenNode = node.get("children");
 			ObjectReader childrenReader = objectMapper.readerForArrayOf(TreeNode.class);
-			TreeNode<Project>[] children = childrenReader.readValue(childrenNode);
+			TreeNode[] children = childrenReader.readValue(childrenNode);
 
 			return TreeNode.connected(project, Arrays.asList(children));
 		}

@@ -17,16 +17,16 @@ public class TreeNodeSpec extends Specification {
 	def "can add child"() {
 
 		given:
-		def n = TreeNode.<Nameable>root()
+		def n = TreeNode.root()
 
 		when:
-		def m = n.add(new Nameable("hello"))
+		def m = n.add(new Project("hello"))
 
 		then:
 		n.children() == [m]
 
 		when:
-		def o = n.add(new Nameable("world"))
+		def o = n.add(new Project("world"))
 
 		then:
 		n.children() == [m, o]
@@ -35,9 +35,9 @@ public class TreeNodeSpec extends Specification {
 	def "can remove child"() {
 
 		given:
-		def n = TreeNode.<Nameable>root()
-		def m = n.add(new Nameable("hello"))
-		def o = n.add(new Nameable("world"))
+		def n = TreeNode.root()
+		def m = n.add(new Project("hello"))
+		def o = n.add(new Project("world"))
 
 		when:
 		def m2 = n.remove(m)
@@ -50,9 +50,9 @@ public class TreeNodeSpec extends Specification {
 	def "unkonwn child throws exception"() {
 
 		given:
-		def n = TreeNode.<Nameable>root()
-		def m = n.add(new Nameable("hello"))
-		def o = TreeNode.<Nameable>root()
+		def n = TreeNode.root()
+		def m = n.add(new Project("hello"))
+		def o = TreeNode.root()
 
 		when:
 		n.remove(o)

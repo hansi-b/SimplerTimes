@@ -58,7 +58,7 @@ children:
   children: []
 '''
 		when:
-		TreeNode<Project> root = new TreeNodeYamlConverter().fromYaml(yaml)
+		TreeNode root = new TreeNodeYamlConverter().fromYaml(yaml)
 
 		then:
 		root.element().name() == 'root'
@@ -78,7 +78,7 @@ children:
   children: []
 '''
 		when:
-		TreeNode<Project> root = new TreeNodeYamlConverter().fromYaml(yaml)
+		TreeNode root = new TreeNodeYamlConverter().fromYaml(yaml)
 		root.add(new Project("hello"))
 
 		then:

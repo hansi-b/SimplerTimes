@@ -19,9 +19,9 @@ import javafx.stage.Window;
 
 public class TreeViewWindow {
 
-	private final TreeItem<TreeNode<Project>> rootItem;
+	private final TreeItem<TreeNode> rootItem;
 
-	public TreeViewWindow(TreeNode<Project> root) {
+	public TreeViewWindow(TreeNode root) {
 		rootItem = copyToTreeItem(root);
 	}
 
@@ -29,10 +29,10 @@ public class TreeViewWindow {
 
 		rootItem.setExpanded(true);
 
-		TreeView<TreeNode<Project>> tree = new TreeView<>(rootItem);
+		TreeView<TreeNode> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		tree.setShowRoot(false);
-		tree.setCellFactory(p -> new TextFieldTreeCellImpl<Project>(tree, () -> new Project("New Subproject")));
+		tree.setCellFactory(p -> new TextFieldTreeCellImpl(tree, () -> new Project("New Subproject")));
 
 		StackPane treeLayout = new StackPane();
 		treeLayout.getChildren().add(tree);
@@ -53,7 +53,7 @@ public class TreeViewWindow {
 		window.show();
 	}
 
-	private void showMenu(ContextMenuEvent e, Window owner, TreeView<TreeNode<Project>> tree,
+	private void showMenu(ContextMenuEvent e, Window owner, TreeView<TreeNode> tree,
 			Supplier<Project> newProjectSupplier) {
 		ContextMenu contextMenu = new ContextMenu();
 
@@ -61,12 +61,12 @@ public class TreeViewWindow {
 		contextMenu.show(owner, e.getScreenX(), e.getScreenY());
 	}
 
-	private MenuItem getAddMenuItem(TreeView<TreeNode<Project>> treeview, Supplier<Project> newProjectSupplier) {
+	private MenuItem getAddMenuItem(TreeView<TreeNode> treeview, Supplier<Project> newProjectSupplier) {
 		MenuItem addMenuItem = new MenuItem("New project");
 		addMenuItem.setOnAction(t -> {
-			TreeItem<TreeNode<Project>> current = treeview.getRoot();
-			TreeNode<Project> nodeChild = current.getValue().add(newProjectSupplier.get());
-			TreeItem<TreeNode<Project>> newItem = new TreeItem<>(nodeChild);
+			TreeItem<TreeNode> current = treeview.getRoot();
+			TreeNode nodeChild = current.getValue().add(newProjectSupplier.get());
+			TreeItem<TreeNode> newItem = new TreeItem<>(nodeChild);
 			current.getChildren().add(newItem);
 			treeview.getSelectionModel().select(newItem);
 			treeview.edit(newItem);
@@ -74,10 +74,10 @@ public class TreeViewWindow {
 		return addMenuItem;
 	}
 
-	private static TreeItem<TreeNode<Project>> copyToTreeItem(TreeNode<Project> treeNode) {
-		TreeItem<TreeNode<Project>> treeItem = new TreeItem<>(treeNode);
+	private static TreeItem<TreeNode> copyToTreeItem(TreeNode treeNode) {
+		TreeItem<TreeNode> treeItem = new TreeItem<>(treeNode);
 		treeNode.children().forEach(c -> {
-			TreeItem<TreeNode<Project>> i = copyToTreeItem(c);
+			TreeItem<TreeNode> i = copyToTreeItem(c);
 			treeItem.getChildren().add(i);
 		});
 		return treeItem;

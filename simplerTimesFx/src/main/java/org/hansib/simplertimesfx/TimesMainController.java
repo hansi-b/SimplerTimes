@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Interval;
-import org.hansib.simplertimes.tree.Project;
 import org.hansib.simplertimes.tree.TreeNode;
 
 import javafx.fxml.FXML;
@@ -24,7 +23,7 @@ public class TimesMainController {
 	ButtonsStripController buttonsStripController;
 
 	private SpansCollection spans;
-	private TreeNode<Project> projects;
+	private TreeNode projects;
 
 	@FXML
 	void initialize() {
@@ -43,7 +42,7 @@ public class TimesMainController {
 		this.spans = spans;
 	}
 
-	public void setProjects(TreeNode<Project> projects) {
+	public void setProjects(TreeNode projects) {
 		this.projects = projects;
 	}
 
@@ -51,7 +50,7 @@ public class TimesMainController {
 		return spans;
 	}
 
-	TreeNode<Project> getProjects() {
+	TreeNode getProjects() {
 		return projects;
 	}
 

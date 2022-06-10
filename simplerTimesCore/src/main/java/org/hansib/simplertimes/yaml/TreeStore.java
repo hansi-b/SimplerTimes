@@ -21,7 +21,7 @@ public class TreeStore {
 		this.projectsPath = new AppData().dataPath("projects.yml");
 	}
 
-	public TreeNode<Project> load() {
+	public TreeNode load() {
 		if (!projectsPath.toFile().isFile())
 			return emptyTree();
 		try {
@@ -32,13 +32,13 @@ public class TreeStore {
 		}
 	}
 
-	private static TreeNode<Project> emptyTree() {
-		TreeNode<Project> root = TreeNode.root();
+	private static TreeNode emptyTree() {
+		TreeNode root = TreeNode.root();
 		root.add(new Project("New Project"));
 		return root;
 	}
 
-	public void save(TreeNode<Project> tree) throws IOException {
+	public void save(TreeNode tree) throws IOException {
 		Files.writeString(projectsPath, new TreeNodeYamlConverter().toYaml(tree));
 	}
 }

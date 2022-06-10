@@ -12,12 +12,11 @@ public class TreeNodeYamlConverter {
 		mapper = YamlMapper.instance();
 	}
 
-	@SuppressWarnings("unchecked")
-	public TreeNode<Project> fromYaml(String yamlString) throws IOException {
+	public TreeNode fromYaml(String yamlString) throws IOException {
 		return mapper.fromString(yamlString, TreeNode.class);
 	}
 
-	public String toYaml(TreeNode<Project> tree) throws IOException {
+	public String toYaml(TreeNode tree) throws IOException {
 		return mapper.asString(tree);
 	}
 }

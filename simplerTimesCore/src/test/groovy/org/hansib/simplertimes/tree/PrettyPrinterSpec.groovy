@@ -7,9 +7,9 @@ public class PrettyPrinterSpec extends Specification {
 	def "can stringify root"() {
 		when:
 		def n = TreeNode.root()
-		n.add(new Nameable("xyz"))
+		n.add(new Project("xyz"))
 
 		then:
-		new PrettyPrinter(n, e-> e== null? "null" : e.name()).toPrettyString() == "null\n   xyz\n"
+		new PrettyPrinter(n).toPrettyString() == "null\n   xyz\n"
 	}
 }

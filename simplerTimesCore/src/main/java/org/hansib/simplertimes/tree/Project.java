@@ -1,8 +1,19 @@
 package org.hansib.simplertimes.tree;
 
-public class Project extends Nameable {
+public class Project {
+
+	private String name;
 
 	public Project(String name) {
-		super(name);
+		this.name = name;
 	}
+
+	public String name() {
+		return name;
+	}
+
+	public void set(String newName) {
+		this.name = newName;
+	}
+
 }
