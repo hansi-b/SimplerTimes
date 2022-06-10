@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.TimerDisplay;
-import org.hansib.simplertimes.tree.Project;
 import org.hansib.simplertimes.tree.TreeNode;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
 
@@ -33,7 +32,7 @@ public class ButtonsStripController {
 
 	private Consumer<Interval> intervalReceiver;
 
-	private Supplier<TreeNode<Project>> projectsSupplier;
+	private Supplier<TreeNode> projectsSupplier;
 
 	@FXML
 	void initialize() {
@@ -57,7 +56,7 @@ public class ButtonsStripController {
 				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart())));
 	}
 
-	void setProjectsSupplier(Supplier<TreeNode<Project>> projectsSupplier) {
+	void setProjectsSupplier(Supplier<TreeNode> projectsSupplier) {
 		this.projectsSupplier = projectsSupplier;
 	}
 

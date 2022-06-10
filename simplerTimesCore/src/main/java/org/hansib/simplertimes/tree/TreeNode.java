@@ -6,60 +6,60 @@ import java.util.List;
 
 import org.hansib.sundries.Strings;
 
-public class TreeNode<E extends Nameable> {
+public class TreeNode {
 
-	private E element;
+	private Project element;
 
-	private TreeNode<E> parent;
+	private TreeNode parent;
 
-	private final List<TreeNode<E>> children;
+	private final List<TreeNode> children;
 
-	public TreeNode(TreeNode<E> parent, E element, List<TreeNode<E>> children) {
+	public TreeNode(TreeNode parent, Project element, List<TreeNode> children) {
 		this.element = element;
 		this.parent = parent;
 		this.children = children;
 	}
 
-	public static <F extends Nameable> TreeNode<F> connected(F element, List<TreeNode<F>> children) {
-		TreeNode<F> node = new TreeNode<>(null, element, new ArrayList<>(children));
+	public static TreeNode connected(Project element, List<TreeNode> children) {
+		TreeNode node = new TreeNode(null, element, new ArrayList<>(children));
 		node.children.forEach(c -> c.parent = node);
 		return node;
 	}
 
-	public static <F extends Nameable> TreeNode<F> root() {
-		return new TreeNode<>(null, null, new ArrayList<>());
+	public static TreeNode root() {
+		return new TreeNode(null, null, new ArrayList<>());
 	}
 
-	public TreeNode<E> add(E element) {
-		TreeNode<E> child = new TreeNode<>(this, element, new ArrayList<>());
+	public TreeNode add(Project element) {
+		TreeNode child = new TreeNode(this, element, new ArrayList<>());
 		children.add(child);
 		return child;
 	}
 
-	public TreeNode<E> remove(TreeNode<E> child) {
+	public TreeNode remove(TreeNode child) {
 
 		int i = children.indexOf(child);
 		if (i < 0)
 			throw new IllegalArgumentException(
 					String.format("Unknown child %s for %s (have %s)", child, this, children));
-		TreeNode<E> removed = children.remove(i);
+		TreeNode removed = children.remove(i);
 		removed.parent = null;
 		return removed;
 	}
 
-	public E element() {
+	public Project element() {
 		return element;
 	}
 
-	public void setElement(E element) {
+	public void setElement(Project element) {
 		this.element = element;
 	}
 
-	public TreeNode<E> parent() {
+	public TreeNode parent() {
 		return parent;
 	}
 
-	public List<TreeNode<E>> children() {
+	public List<TreeNode> children() {
 		return Collections.unmodifiableList(children);
 	}
 
