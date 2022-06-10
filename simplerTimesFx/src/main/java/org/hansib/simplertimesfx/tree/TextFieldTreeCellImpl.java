@@ -77,19 +77,17 @@ class TextFieldTreeCellImpl<E extends Nameable> extends TreeCell<TreeNode<E>> {
 		if (empty) {
 			setText(null);
 			setGraphic(null);
+		} else if (isEditing()) {
+			if (textField != null) {
+				textField.setText(getString());
+			}
+			setText(null);
+			setGraphic(textField);
 		} else {
-			if (isEditing()) {
-				if (textField != null) {
-					textField.setText(getString());
-				}
-				setText(null);
-				setGraphic(textField);
-			} else {
-				setText(getString());
-				setGraphic(getTreeItem().getGraphic());
-				if (getTreeItem().getParent() != null) {
-					setContextMenu(contextMenu);
-				}
+			setText(getString());
+			setGraphic(getTreeItem().getGraphic());
+			if (getTreeItem().getParent() != null) {
+				setContextMenu(contextMenu);
 			}
 		}
 	}
