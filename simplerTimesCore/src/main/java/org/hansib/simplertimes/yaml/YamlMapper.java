@@ -102,6 +102,7 @@ public class YamlMapper {
 	private static class TreeNodeSerializer extends JsonSerializer<TreeNode<Project>> {
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public Class<TreeNode<Project>> handledType() {
 			TreeNode<Project> root = TreeNode.<Project>root();
 			return (Class<TreeNode<Project>>) root.getClass();
