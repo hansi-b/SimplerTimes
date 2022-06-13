@@ -47,7 +47,7 @@ public class TreeNodeSpec extends Specification {
 		n.children() == [o]
 	}
 
-	def "unkonwn child throws exception"() {
+	def "unknown child throws exception"() {
 
 		given:
 		def n = TreeNode.root()
