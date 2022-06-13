@@ -16,4 +16,9 @@ public class Project {
 		this.name = newName;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("Project[%s]", name);
+	}
+
 }
