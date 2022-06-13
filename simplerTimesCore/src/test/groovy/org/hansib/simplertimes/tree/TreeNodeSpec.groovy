@@ -60,4 +60,27 @@ public class TreeNodeSpec extends Specification {
 		then:
 		thrown IllegalArgumentException
 	}
+
+	def "can stream"() {
+
+		given:
+		def r = TreeNode.root()
+		def m = r.add(new Project("hello"))
+		m.add(new Project("a"))
+		m.add(new Project("b"))
+
+		def n = r.add(new Project("world"))
+
+		when:
+		def s = r.dfStream().map(c -> c.project() != null ? c.project().name : null ).toList()
+
+		then:
+		s == [
+			null,
+			'hello',
+			'a',
+			'b',
+			'world'
+		]
+	}
 }
