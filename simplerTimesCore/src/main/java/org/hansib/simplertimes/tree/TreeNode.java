@@ -3,6 +3,7 @@ package org.hansib.simplertimes.tree;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.hansib.sundries.Strings;
 
@@ -61,6 +62,11 @@ public class TreeNode {
 
 	public List<TreeNode> children() {
 		return Collections.unmodifiableList(children);
+	}
+
+	public Stream<TreeNode> dfStream() {
+		Stream<TreeNode> c = children.stream().flatMap(TreeNode::dfStream);
+		return Stream.concat(Stream.of(this), c);
 	}
 
 	@Override
