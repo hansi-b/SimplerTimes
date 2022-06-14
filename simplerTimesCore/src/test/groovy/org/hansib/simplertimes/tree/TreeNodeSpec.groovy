@@ -20,13 +20,13 @@ public class TreeNodeSpec extends Specification {
 		def n = TreeNode.root()
 
 		when:
-		def m = n.add(new Project("hello"))
+		def m = addProject(n, 'hello')
 
 		then:
 		n.children() == [m]
 
 		when:
-		def o = n.add(new Project("world"))
+		def o = addProject(n, 'world')
 
 		then:
 		n.children() == [m, o]
@@ -36,8 +36,8 @@ public class TreeNodeSpec extends Specification {
 
 		given:
 		def n = TreeNode.root()
-		def m = n.add(new Project("hello"))
-		def o = n.add(new Project("world"))
+		def m = addProject(n, 'hello')
+		def o = addProject(n, 'world')
 
 		when:
 		def m2 = n.remove(m)
@@ -51,7 +51,7 @@ public class TreeNodeSpec extends Specification {
 
 		given:
 		def n = TreeNode.root()
-		def m = n.add(new Project("hello"))
+		def m = addProject(n, 'hello')
 		def o = TreeNode.root()
 
 		when:
@@ -65,11 +65,11 @@ public class TreeNodeSpec extends Specification {
 
 		given:
 		def r = TreeNode.root()
-		def m = r.add(new Project("hello"))
-		m.add(new Project("a"))
-		m.add(new Project("b"))
+		def m = addProject(r, 'hello')
+		addProject(m, 'a')
+		addProject(m, 'b')
 
-		def n = r.add(new Project("world"))
+		addProject(r, 'world')
 
 		when:
 		def s = r.dfStream().map(c -> c.project() != null ? c.project().name : null ).toList()
@@ -82,5 +82,57 @@ public class TreeNodeSpec extends Specification {
 			'b',
 			'world'
 		]
+	}
+
+	def "can filter multiple words"() {
+
+		given:
+		def r = TreeNode.root()
+		addProject(r, 'hello world')
+		addProject(r, 'hello mars')
+
+		when:
+		def s = r.filter(['he', 'wo'] as Set).map(c -> c.project() != null ? c.project().name : null ).toList()
+
+		then:
+		s == ['hello world']
+	}
+
+	def "can filter multiple words from subprojects"() {
+
+		given:
+		def r = TreeNode.root()
+		def hello = addProject(r, 'hello')
+
+		addProject(hello, 'world')
+		addProject(hello, 'mars')
+
+		when:
+		def s = r.filter(['he', 'wo'] as Set).map(c -> c.project() != null ? c.project().name : null ).toList()
+
+		then:
+		s == ['world']
+	}
+
+	def "filter returns all children"() {
+
+		given:
+		def r = TreeNode.root()
+		def m = addProject(r, 'hello')
+		def a = addProject(m, 'a')
+		addProject(a, 'z')
+		addProject(m, 'b')
+
+		addProject(r, 'world')
+
+		when:
+		def s = r.filter(['hello'] as Set).map(c -> c.project() != null ? c.project().name : null ).toList()
+
+		then:
+		s == ['hello', 'a', 'z', 'b']
+	}
+
+	def addProject(node, name) {
+		return node.add(new Project(name))
 	}
 }
