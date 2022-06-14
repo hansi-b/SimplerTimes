@@ -3,6 +3,8 @@ package org.hansib.simplertimes.tree;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hansib.sundries.Strings;
@@ -67,6 +69,15 @@ public class TreeNode {
 	public Stream<TreeNode> dfStream() {
 		Stream<TreeNode> c = children.stream().flatMap(TreeNode::dfStream);
 		return Stream.concat(Stream.of(this), c);
+	}
+
+	Stream<TreeNode> filter(Set<String> words) {
+		if (words.isEmpty())
+			return dfStream();
+		Set<String> wordsStillMissing = project == null ? words
+				: words.stream().filter(w -> !project.name().contains(w)).collect(Collectors.toSet());
+		Stream<TreeNode> filteredChildren = children.stream().flatMap(c -> c.filter(wordsStillMissing));
+		return wordsStillMissing.isEmpty() ? Stream.concat(Stream.of(this), filteredChildren) : filteredChildren;
 	}
 
 	@Override
