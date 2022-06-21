@@ -6,8 +6,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hansib.simplertimes.tree.Project;
-import org.hansib.simplertimes.tree.TreeNode;
+import org.hansib.simplertimes.projects.Project;
+import org.hansib.simplertimes.projects.ProjectTree;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -52,7 +52,7 @@ public class YamlMapper {
 		module.addDeserializer(Project.class, new ProjectDeserializer());
 
 		module.addSerializer(new TreeNodeSerializer());
-		module.addDeserializer(TreeNode.class, new TreeNodeDeserializer());
+		module.addDeserializer(ProjectTree.class, new TreeNodeDeserializer());
 
 		return YAMLMapper.builder().addModule(module).build();
 	}
@@ -99,45 +99,45 @@ public class YamlMapper {
 		}
 	}
 
-	private static class TreeNodeSerializer extends JsonSerializer<TreeNode> {
+	private static class TreeNodeSerializer extends JsonSerializer<ProjectTree> {
 
 		@Override
-		public Class<TreeNode> handledType() {
-			return TreeNode.class;
+		public Class<ProjectTree> handledType() {
+			return ProjectTree.class;
 		}
 
 		@Override
-		public void serialize(final TreeNode value, final JsonGenerator gen, final SerializerProvider serializers)
+		public void serialize(final ProjectTree value, final JsonGenerator gen, final SerializerProvider serializers)
 				throws IOException {
 
 			gen.writeStartObject();
 			gen.writeFieldName("project");
 			gen.writeObject(value.project());
 			gen.writeArrayFieldStart("children");
-			List<TreeNode> children = value.children();
-			for (TreeNode c : children)
+			List<ProjectTree> children = value.children();
+			for (ProjectTree c : children)
 				gen.writeObject(c);
 			gen.writeEndArray();
 			gen.writeEndObject();
 		}
 	}
 
-	private static class TreeNodeDeserializer extends JsonDeserializer<TreeNode> {
+	private static class TreeNodeDeserializer extends JsonDeserializer<ProjectTree> {
 
 		private static final ObjectMapper objectMapper = createObjectMapper();
 
 		@Override
-		public TreeNode deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
+		public ProjectTree deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
 			JsonNode node = p.readValueAsTree();
 
 			JsonNode projectNode = node.get("project");
 			Project project = objectMapper.treeToValue(projectNode, Project.class);
 
 			JsonNode childrenNode = node.get("children");
-			ObjectReader childrenReader = objectMapper.readerForArrayOf(TreeNode.class);
-			TreeNode[] children = childrenReader.readValue(childrenNode);
+			ObjectReader childrenReader = objectMapper.readerForArrayOf(ProjectTree.class);
+			ProjectTree[] children = childrenReader.readValue(childrenNode);
 
-			return TreeNode.connected(project, Arrays.asList(children));
+			return ProjectTree.connected(project, Arrays.asList(children));
 		}
 	}
 }
