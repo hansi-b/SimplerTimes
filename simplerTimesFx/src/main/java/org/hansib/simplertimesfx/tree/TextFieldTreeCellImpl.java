@@ -2,8 +2,8 @@ package org.hansib.simplertimesfx.tree;
 
 import java.util.function.Supplier;
 
-import org.hansib.simplertimes.tree.Project;
-import org.hansib.simplertimes.tree.TreeNode;
+import org.hansib.simplertimes.projects.Project;
+import org.hansib.simplertimes.projects.ProjectTree;
 
 import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
@@ -14,24 +14,24 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 
-class TextFieldTreeCellImpl extends TreeCell<TreeNode> {
+class TextFieldTreeCellImpl extends TreeCell<ProjectTree> {
 
 	private TextField textField;
 	private ContextMenu contextMenu;
 
-	public TextFieldTreeCellImpl(TreeView<TreeNode> treeview, Supplier<Project> nodeSupplier) {
+	public TextFieldTreeCellImpl(TreeView<ProjectTree> treeview, Supplier<Project> nodeSupplier) {
 		contextMenu = new ContextMenu();
 		contextMenu.getItems().add(getAddMenuItem(treeview, nodeSupplier));
 		contextMenu.getItems().add(getRemoveMenuItem());
 	}
 
-	private MenuItem getAddMenuItem(TreeView<TreeNode> treeview, Supplier<Project> elementSupplier) {
+	private MenuItem getAddMenuItem(TreeView<ProjectTree> treeview, Supplier<Project> elementSupplier) {
 		MenuItem addMenuItem = new MenuItem("Add Subproject");
 		addMenuItem.setOnAction(t -> {
-			TreeItem<TreeNode> i = getTreeItem();
-			TreeItem<TreeNode> current = i != null ? i : treeview.getRoot();
-			TreeNode nodeChild = current.getValue().add(elementSupplier.get());
-			TreeItem<TreeNode> newItem = new TreeItem<>(nodeChild);
+			TreeItem<ProjectTree> i = getTreeItem();
+			TreeItem<ProjectTree> current = i != null ? i : treeview.getRoot();
+			ProjectTree nodeChild = current.getValue().add(elementSupplier.get());
+			TreeItem<ProjectTree> newItem = new TreeItem<>(nodeChild);
 			current.getChildren().add(newItem);
 			treeview.getSelectionModel().select(newItem);
 			treeview.edit(newItem);
@@ -42,8 +42,8 @@ class TextFieldTreeCellImpl extends TreeCell<TreeNode> {
 	private MenuItem getRemoveMenuItem() {
 		MenuItem removeMenuItem = new MenuItem("Remove Subproject");
 		removeMenuItem.setOnAction(t -> {
-			TreeItem<TreeNode> current = getTreeItem();
-			TreeNode nodeChild = current.getValue();
+			TreeItem<ProjectTree> current = getTreeItem();
+			ProjectTree nodeChild = current.getValue();
 			nodeChild.parent().remove(nodeChild);
 			current.getParent().getChildren().remove(current);
 		});
@@ -71,7 +71,7 @@ class TextFieldTreeCellImpl extends TreeCell<TreeNode> {
 	}
 
 	@Override
-	public void updateItem(TreeNode item, boolean empty) {
+	public void updateItem(ProjectTree item, boolean empty) {
 		super.updateItem(item, empty);
 
 		if (empty) {

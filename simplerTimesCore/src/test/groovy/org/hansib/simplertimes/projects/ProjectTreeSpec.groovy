@@ -1,13 +1,16 @@
-package org.hansib.simplertimes.tree;
+package org.hansib.simplertimes.projects;
+
+import org.hansib.simplertimes.projects.Project
+import org.hansib.simplertimes.projects.ProjectTree
 
 import spock.lang.Specification
 
-public class TreeNodeSpec extends Specification {
+public class ProjectTreeSpec extends Specification {
 
 	def "can get root"() {
 
 		when:
-		def n = TreeNode.root()
+		def n = ProjectTree.root()
 
 		then:
 		n.project() == null
@@ -17,7 +20,7 @@ public class TreeNodeSpec extends Specification {
 	def "can add child"() {
 
 		given:
-		def n = TreeNode.root()
+		def n = ProjectTree.root()
 
 		when:
 		def m = addProject(n, 'hello')
@@ -35,7 +38,7 @@ public class TreeNodeSpec extends Specification {
 	def "can remove child"() {
 
 		given:
-		def n = TreeNode.root()
+		def n = ProjectTree.root()
 		def m = addProject(n, 'hello')
 		def o = addProject(n, 'world')
 
@@ -50,9 +53,9 @@ public class TreeNodeSpec extends Specification {
 	def "unknown child throws exception"() {
 
 		given:
-		def n = TreeNode.root()
+		def n = ProjectTree.root()
 		def m = addProject(n, 'hello')
-		def o = TreeNode.root()
+		def o = ProjectTree.root()
 
 		when:
 		n.remove(o)
@@ -64,7 +67,7 @@ public class TreeNodeSpec extends Specification {
 	def "can stream"() {
 
 		given:
-		def r = TreeNode.root()
+		def r = ProjectTree.root()
 		def m = addProject(r, 'hello')
 		addProject(m, 'a')
 		addProject(m, 'b')
@@ -87,7 +90,7 @@ public class TreeNodeSpec extends Specification {
 	def "can filter multiple words"() {
 
 		given:
-		def r = TreeNode.root()
+		def r = ProjectTree.root()
 		addProject(r, 'hello world')
 		addProject(r, 'hello mars')
 
@@ -101,7 +104,7 @@ public class TreeNodeSpec extends Specification {
 	def "can filter multiple words from subprojects"() {
 
 		given:
-		def r = TreeNode.root()
+		def r = ProjectTree.root()
 		def hello = addProject(r, 'hello')
 
 		addProject(hello, 'world')
@@ -117,7 +120,7 @@ public class TreeNodeSpec extends Specification {
 	def "filter returns all children"() {
 
 		given:
-		def r = TreeNode.root()
+		def r = ProjectTree.root()
 		def m = addProject(r, 'hello')
 		def a = addProject(m, 'a')
 		addProject(a, 'z')

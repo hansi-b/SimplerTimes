@@ -1,22 +1,22 @@
-package org.hansib.simplertimes.tree;
+package org.hansib.simplertimes.projects;
 
 class PrettyPrinter {
 
 	private static final int DEFAULT_INDENTATION = 3;
 
-	private final TreeNode node;
+	private final ProjectTree node;
 	private final int indentation;
 	private final int currDepth;
 
-	PrettyPrinter(TreeNode node) {
+	PrettyPrinter(ProjectTree node) {
 		this(node, DEFAULT_INDENTATION, 0);
 	}
 
-	PrettyPrinter(TreeNode node, int indentation) {
+	PrettyPrinter(ProjectTree node, int indentation) {
 		this(node, indentation, 0);
 	}
 
-	private PrettyPrinter(TreeNode node, int indentation, int depth) {
+	private PrettyPrinter(ProjectTree node, int indentation, int depth) {
 		this.node = node;
 		this.indentation = indentation;
 		this.currDepth = depth;
@@ -24,7 +24,7 @@ class PrettyPrinter {
 
 	String toPrettyString() {
 		StringBuilder resultBuilder = new StringBuilder(" ".repeat(currDepth)).append(nameStr()).append('\n');
-		for (TreeNode c : node.children())
+		for (ProjectTree c : node.children())
 			resultBuilder.append(new PrettyPrinter(c, indentation, currDepth + indentation).toPrettyString());
 
 		return resultBuilder.toString();

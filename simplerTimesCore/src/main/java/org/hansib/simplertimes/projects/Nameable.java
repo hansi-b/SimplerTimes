@@ -1,4 +1,4 @@
-package org.hansib.simplertimes.tree;
+package org.hansib.simplertimes.projects;
 
 public class Nameable {
 
