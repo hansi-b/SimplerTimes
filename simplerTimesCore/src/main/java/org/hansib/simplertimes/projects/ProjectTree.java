@@ -2,6 +2,7 @@ package org.hansib.simplertimes.projects;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,6 +53,15 @@ public class ProjectTree {
 
 	public Project project() {
 		return project;
+	}
+
+	public String fullProjectName() {
+		LinkedList<String> hierarchy = new LinkedList<>();
+		for (ProjectTree current = this; current.parent != null; current = current.parent) {
+			if (current.project != null)
+				hierarchy.addFirst(current.project.name());
+		}
+		return String.join(">", hierarchy);
 	}
 
 	public void setProject(Project project) {
