@@ -7,8 +7,12 @@ import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Interval;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -17,7 +21,7 @@ public class TimesMainController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
-	TextField projectField;
+	ComboBox<String> projectField;
 
 	@FXML
 	ButtonsStripController buttonsStripController;
@@ -30,12 +34,26 @@ public class TimesMainController {
 		buttonsStripController.setIntervalReceiver(this::handleInterval);
 		buttonsStripController.setProjectsSupplier(() -> projects);
 
-		projectField.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+		projectField.setEditable(true);
+		projectField.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			if (e.getCode() == KeyCode.ENTER) {
 				buttonsStripController.startButton.requestFocus();
 				buttonsStripController.startButton.fire();
 			}
 		});
+		projectField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (Boolean.TRUE.equals(newValue)) {
+					projectField.setItems(getFilteredProjects());
+				}
+			}
+		});
+	}
+
+	private ObservableList<String> getFilteredProjects() {
+		return FXCollections.observableArrayList(
+				projects.dfStream().filter(p -> p.project() != null).map(p -> p.fullProjectName()).toList());
 	}
 
 	void setSpans(SpansCollection spans) {
@@ -55,9 +73,9 @@ public class TimesMainController {
 	}
 
 	void handleInterval(Interval t) {
-		log.info("Got interval: {} {}", projectField.getText(), t);
+		log.info("Got interval: {} {}", projectField.getEditor().getText(), t);
 		try {
-			spans.add(new Span(projectField.getText(), t.start(), t.end()));
+			spans.add(new Span(projectField.getEditor().getText(), t.start(), t.end()));
 		} catch (IllegalArgumentException ex) {
 			log.info("Ignoring invalid span: {}", ex.getMessage());
 		}
