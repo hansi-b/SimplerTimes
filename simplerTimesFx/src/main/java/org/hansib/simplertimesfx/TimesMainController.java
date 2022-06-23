@@ -2,6 +2,7 @@ package org.hansib.simplertimesfx;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.projects.ProjectTree;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
@@ -15,13 +16,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.util.StringConverter;
 
 public class TimesMainController {
 
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
-	ComboBox<String> projectField;
+	ComboBox<ProjectTree> projectField;
 
 	@FXML
 	ButtonsStripController buttonsStripController;
@@ -49,11 +51,21 @@ public class TimesMainController {
 				}
 			}
 		});
+		projectField.setConverter(new StringConverter<ProjectTree>() {
+			@Override
+			public String toString(ProjectTree proj) {
+				return proj == null ? "" : proj.fullProjectName();
+			}
+
+			@Override
+			public ProjectTree fromString(String projName) {
+				return projName == null || projects == null ? null : projects.add(new Project(projName));
+			}
+		});
 	}
 
-	private ObservableList<String> getFilteredProjects() {
-		return FXCollections.observableArrayList(
-				projects.dfStream().filter(p -> p.project() != null).map(p -> p.fullProjectName()).toList());
+	private ObservableList<ProjectTree> getFilteredProjects() {
+		return FXCollections.observableArrayList(projects.dfStream().filter(p -> p.project() != null).toList());
 	}
 
 	void setSpans(SpansCollection spans) {
