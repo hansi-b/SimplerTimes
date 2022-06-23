@@ -61,7 +61,7 @@ public class ProjectTree {
 			if (current.project != null)
 				hierarchy.addFirst(current.project.name());
 		}
-		return String.join(">", hierarchy);
+		return String.join(" ▸ ", hierarchy);
 	}
 
 	public void setProject(Project project) {
