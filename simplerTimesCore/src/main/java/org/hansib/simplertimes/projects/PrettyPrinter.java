@@ -23,15 +23,11 @@ class PrettyPrinter {
 	}
 
 	String toPrettyString() {
-		StringBuilder resultBuilder = new StringBuilder(" ".repeat(currDepth)).append(nameStr()).append('\n');
+		StringBuilder resultBuilder = new StringBuilder(" ".repeat(currDepth)).append(String.valueOf(node.name()))
+				.append('\n');
 		for (ProjectTree c : node.children())
 			resultBuilder.append(new PrettyPrinter(c, indentation, currDepth + indentation).toPrettyString());
 
 		return resultBuilder.toString();
-	}
-
-	private String nameStr() {
-		Project e = node.project();
-		return e == null ? "null" : e.name();
 	}
 }
