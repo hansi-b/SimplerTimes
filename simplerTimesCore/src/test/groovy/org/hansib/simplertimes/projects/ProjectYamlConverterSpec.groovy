@@ -2,12 +2,12 @@ package org.hansib.simplertimes.projects;
 
 import spock.lang.Specification
 
-public class ProjectTreeYamlConverterSpec extends Specification {
+public class ProjectYamlConverterSpec extends Specification {
 
 	def 'can convert to yaml'() {
 
 		given:
-		def tree = ProjectTree.root()
+		def tree = Project.root()
 		tree.setProject("root")
 		def book = tree.add("book")
 		book.add("chapter 1")
@@ -15,7 +15,7 @@ public class ProjectTreeYamlConverterSpec extends Specification {
 		tree.add("code")
 
 		when:
-		def yaml = new ProjectTreeYamlConverter().toYaml(tree)
+		def yaml = new ProjectYamlConverter().toYaml(tree)
 
 		then:
 		yaml == '''---
@@ -48,7 +48,7 @@ children:
   children: []
 '''
 		when:
-		ProjectTree root = new ProjectTreeYamlConverter().fromYaml(yaml)
+		Project root = new ProjectYamlConverter().fromYaml(yaml)
 
 		then:
 		root.name() == 'root'
@@ -68,7 +68,7 @@ children:
   children: []
 '''
 		when:
-		ProjectTree root = new ProjectTreeYamlConverter().fromYaml(yaml)
+		Project root = new ProjectYamlConverter().fromYaml(yaml)
 
 		then:
 		root.children.size() == 2

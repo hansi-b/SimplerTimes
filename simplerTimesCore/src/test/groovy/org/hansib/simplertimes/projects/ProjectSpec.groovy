@@ -2,12 +2,12 @@ package org.hansib.simplertimes.projects;
 
 import spock.lang.Specification
 
-public class ProjectTreeSpec extends Specification {
+public class ProjectSpec extends Specification {
 
 	def "can get root"() {
 
 		when:
-		def n = ProjectTree.root()
+		def n = Project.root()
 
 		then:
 		n.name() == null
@@ -17,7 +17,7 @@ public class ProjectTreeSpec extends Specification {
 	def "can add child"() {
 
 		given:
-		def n = ProjectTree.root()
+		def n = Project.root()
 
 		when:
 		def m = addProject(n, 'hello')
@@ -35,7 +35,7 @@ public class ProjectTreeSpec extends Specification {
 	def "can remove child"() {
 
 		given:
-		def n = ProjectTree.root()
+		def n = Project.root()
 		def m = addProject(n, 'hello')
 		def o = addProject(n, 'world')
 
@@ -50,9 +50,9 @@ public class ProjectTreeSpec extends Specification {
 	def "unknown child throws exception"() {
 
 		given:
-		def n = ProjectTree.root()
+		def n = Project.root()
 		def m = addProject(n, 'hello')
-		def o = ProjectTree.root()
+		def o = Project.root()
 
 		when:
 		n.remove(o)
@@ -64,7 +64,7 @@ public class ProjectTreeSpec extends Specification {
 	def "can stream"() {
 
 		given:
-		def r = ProjectTree.root()
+		def r = Project.root()
 		def m = addProject(r, 'hello')
 		addProject(m, 'a')
 		addProject(m, 'b')
@@ -87,7 +87,7 @@ public class ProjectTreeSpec extends Specification {
 	def "can filter multiple words"() {
 
 		given:
-		def r = ProjectTree.root()
+		def r = Project.root()
 		addProject(r, 'hello world')
 		addProject(r, 'hello mars')
 
@@ -101,7 +101,7 @@ public class ProjectTreeSpec extends Specification {
 	def "can filter multiple words from subprojects"() {
 
 		given:
-		def r = ProjectTree.root()
+		def r = Project.root()
 		def hello = addProject(r, 'hello')
 
 		addProject(hello, 'world')
@@ -117,7 +117,7 @@ public class ProjectTreeSpec extends Specification {
 	def "filter returns all children"() {
 
 		given:
-		def r = ProjectTree.root()
+		def r = Project.root()
 		def m = addProject(r, 'hello')
 		def a = addProject(m, 'a')
 		addProject(a, 'z')

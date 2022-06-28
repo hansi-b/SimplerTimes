@@ -2,7 +2,7 @@ package org.hansib.simplertimesfx;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.projects.ProjectTree;
+import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Interval;
@@ -22,13 +22,13 @@ public class TimesMainController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
-	ComboBox<ProjectTree> projectField;
+	ComboBox<Project> projectField;
 
 	@FXML
 	ButtonsStripController buttonsStripController;
 
 	private SpansCollection spans;
-	private ProjectTree projects;
+	private Project projects;
 
 	@FXML
 	void initialize() {
@@ -50,20 +50,20 @@ public class TimesMainController {
 				}
 			}
 		});
-		projectField.setConverter(new StringConverter<ProjectTree>() {
+		projectField.setConverter(new StringConverter<Project>() {
 			@Override
-			public String toString(ProjectTree proj) {
+			public String toString(Project proj) {
 				return proj == null ? "" : proj.fullProjectName();
 			}
 
 			@Override
-			public ProjectTree fromString(String projName) {
+			public Project fromString(String projName) {
 				return projName == null || projects == null ? null : projects.add(projName);
 			}
 		});
 	}
 
-	private ObservableList<ProjectTree> getFilteredProjects() {
+	private ObservableList<Project> getFilteredProjects() {
 		return FXCollections.observableArrayList(projects.dfStream().filter(p -> p.name() != null).toList());
 	}
 
@@ -71,7 +71,7 @@ public class TimesMainController {
 		this.spans = spans;
 	}
 
-	public void setProjects(ProjectTree projects) {
+	public void setProjects(Project projects) {
 		this.projects = projects;
 	}
 
@@ -79,7 +79,7 @@ public class TimesMainController {
 		return spans;
 	}
 
-	ProjectTree getProjects() {
+	Project getProjects() {
 		return projects;
 	}
 

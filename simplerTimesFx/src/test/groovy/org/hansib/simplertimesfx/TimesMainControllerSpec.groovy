@@ -2,6 +2,7 @@ package org.hansib.simplertimesfx
 
 import java.time.LocalDateTime
 
+import org.hansib.simplertimes.projects.Project
 import org.hansib.simplertimes.spans.SpansCollection
 import org.hansib.simplertimes.times.Interval
 import org.hansib.simplertimesfx.utils.ResourceLoader
@@ -15,6 +16,7 @@ import javafx.stage.Stage
 public class TimesMainControllerSpec extends ApplicationSpec {
 
 	SpansCollection spans = Mock()
+	Project rootProject = Project.root()
 
 	TimesMainController controller
 
@@ -24,6 +26,8 @@ public class TimesMainControllerSpec extends ApplicationSpec {
 		final FXMLLoader fxmlLoader = ResourceLoader.get().getFxmlLoader("timesMain.fxml")
 		Parent root = fxmlLoader.load()
 		controller = (TimesMainController) fxmlLoader.getController()
+
+		controller.setProjects(rootProject)
 		controller.setSpans(spans)
 
 		Scene scene = new Scene(root)
@@ -35,7 +39,7 @@ public class TimesMainControllerSpec extends ApplicationSpec {
 
 		given:
 		def ldt = LocalDateTime.now()
-		controller.projectField.setText('wired')
+		controller.projectField.getEditor().setText('wired')
 
 		when:
 		controller.handleInterval(new Interval(ldt.minusSeconds(2), ldt))
@@ -48,7 +52,7 @@ public class TimesMainControllerSpec extends ApplicationSpec {
 
 		given:
 		def ldt = LocalDateTime.now()
-		controller.projectField.setText('wired')
+		controller.projectField.getEditor().setText('wired')
 
 		when:
 		controller.handleInterval(new Interval(ldt.minusNanos(1000), ldt))

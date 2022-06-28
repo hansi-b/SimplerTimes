@@ -10,43 +10,43 @@ import java.util.stream.Stream;
 
 import org.hansib.sundries.Strings;
 
-public class ProjectTree {
+public class Project {
 
 	private String name;
 
-	private ProjectTree parent;
+	private Project parent;
 
-	private final List<ProjectTree> children;
+	private final List<Project> children;
 
-	public ProjectTree(ProjectTree parent, String name, List<ProjectTree> children) {
+	public Project(Project parent, String name, List<Project> children) {
 		this.name = name;
 		this.parent = parent;
 		this.children = children;
 	}
 
-	public static ProjectTree connected(String name, List<ProjectTree> children) {
-		ProjectTree node = new ProjectTree(null, name, new ArrayList<>(children));
+	public static Project connected(String name, List<Project> children) {
+		Project node = new Project(null, name, new ArrayList<>(children));
 		node.children.forEach(c -> c.parent = node);
 		return node;
 	}
 
-	public static ProjectTree root() {
-		return new ProjectTree(null, null, new ArrayList<>());
+	public static Project root() {
+		return new Project(null, null, new ArrayList<>());
 	}
 
-	public ProjectTree add(String name) {
-		ProjectTree child = new ProjectTree(this, name, new ArrayList<>());
+	public Project add(String name) {
+		Project child = new Project(this, name, new ArrayList<>());
 		children.add(child);
 		return child;
 	}
 
-	public ProjectTree remove(ProjectTree child) {
+	public Project remove(Project child) {
 
 		int i = children.indexOf(child);
 		if (i < 0)
 			throw new IllegalArgumentException(
 					String.format("Unknown child %s for %s (have %s)", child, this, children));
-		ProjectTree removed = children.remove(i);
+		Project removed = children.remove(i);
 		removed.parent = null;
 		return removed;
 	}
@@ -61,7 +61,7 @@ public class ProjectTree {
 
 	public String fullProjectName() {
 		LinkedList<String> hierarchy = new LinkedList<>();
-		for (ProjectTree current = this; current.parent != null; current = current.parent) {
+		for (Project current = this; current.parent != null; current = current.parent) {
 			if (current.name != null)
 				hierarchy.addFirst(current.name);
 		}
@@ -72,25 +72,25 @@ public class ProjectTree {
 		this.name = newName;
 	}
 
-	public ProjectTree parent() {
+	public Project parent() {
 		return parent;
 	}
 
-	public List<ProjectTree> children() {
+	public List<Project> children() {
 		return Collections.unmodifiableList(children);
 	}
 
-	public Stream<ProjectTree> dfStream() {
-		Stream<ProjectTree> c = children.stream().flatMap(ProjectTree::dfStream);
+	public Stream<Project> dfStream() {
+		Stream<Project> c = children.stream().flatMap(Project::dfStream);
 		return Stream.concat(Stream.of(this), c);
 	}
 
-	Stream<ProjectTree> filter(Set<String> words) {
+	Stream<Project> filter(Set<String> words) {
 		if (words.isEmpty())
 			return dfStream();
 		Set<String> wordsStillMissing = name == null ? words
 				: words.stream().filter(w -> !name.contains(w)).collect(Collectors.toSet());
-		Stream<ProjectTree> filteredChildren = children.stream().flatMap(c -> c.filter(wordsStillMissing));
+		Stream<Project> filteredChildren = children.stream().flatMap(c -> c.filter(wordsStillMissing));
 		return wordsStillMissing.isEmpty() ? Stream.concat(Stream.of(this), filteredChildren) : filteredChildren;
 	}
 
