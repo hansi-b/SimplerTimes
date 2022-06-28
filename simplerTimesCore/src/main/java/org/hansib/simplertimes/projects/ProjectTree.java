@@ -12,20 +12,20 @@ import org.hansib.sundries.Strings;
 
 public class ProjectTree {
 
-	private Project project;
+	private String name;
 
 	private ProjectTree parent;
 
 	private final List<ProjectTree> children;
 
-	public ProjectTree(ProjectTree parent, Project element, List<ProjectTree> children) {
-		this.project = element;
+	public ProjectTree(ProjectTree parent, String name, List<ProjectTree> children) {
+		this.name = name;
 		this.parent = parent;
 		this.children = children;
 	}
 
-	public static ProjectTree connected(Project element, List<ProjectTree> children) {
-		ProjectTree node = new ProjectTree(null, element, new ArrayList<>(children));
+	public static ProjectTree connected(String name, List<ProjectTree> children) {
+		ProjectTree node = new ProjectTree(null, name, new ArrayList<>(children));
 		node.children.forEach(c -> c.parent = node);
 		return node;
 	}
@@ -34,8 +34,8 @@ public class ProjectTree {
 		return new ProjectTree(null, null, new ArrayList<>());
 	}
 
-	public ProjectTree add(Project project) {
-		ProjectTree child = new ProjectTree(this, project, new ArrayList<>());
+	public ProjectTree add(String name) {
+		ProjectTree child = new ProjectTree(this, name, new ArrayList<>());
 		children.add(child);
 		return child;
 	}
@@ -51,21 +51,25 @@ public class ProjectTree {
 		return removed;
 	}
 
-	public Project project() {
-		return project;
+	public String name() {
+		return name;
+	}
+
+	public void setName(String newName) {
+		name = newName;
 	}
 
 	public String fullProjectName() {
 		LinkedList<String> hierarchy = new LinkedList<>();
 		for (ProjectTree current = this; current.parent != null; current = current.parent) {
-			if (current.project != null)
-				hierarchy.addFirst(current.project.name());
+			if (current.name != null)
+				hierarchy.addFirst(current.name);
 		}
 		return String.join(" ▸ ", hierarchy);
 	}
 
-	public void setProject(Project project) {
-		this.project = project;
+	public void setProject(String newName) {
+		this.name = newName;
 	}
 
 	public ProjectTree parent() {
@@ -84,14 +88,14 @@ public class ProjectTree {
 	Stream<ProjectTree> filter(Set<String> words) {
 		if (words.isEmpty())
 			return dfStream();
-		Set<String> wordsStillMissing = project == null ? words
-				: words.stream().filter(w -> !project.name().contains(w)).collect(Collectors.toSet());
+		Set<String> wordsStillMissing = name == null ? words
+				: words.stream().filter(w -> !name.contains(w)).collect(Collectors.toSet());
 		Stream<ProjectTree> filteredChildren = children.stream().flatMap(c -> c.filter(wordsStillMissing));
 		return wordsStillMissing.isEmpty() ? Stream.concat(Stream.of(this), filteredChildren) : filteredChildren;
 	}
 
 	@Override
 	public String toString() {
-		return Strings.idStr(this, String.valueOf(project));
+		return Strings.idStr(this, name);
 	}
 }

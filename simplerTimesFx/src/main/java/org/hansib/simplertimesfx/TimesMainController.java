@@ -2,7 +2,6 @@ package org.hansib.simplertimesfx;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.projects.ProjectTree;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
@@ -59,13 +58,13 @@ public class TimesMainController {
 
 			@Override
 			public ProjectTree fromString(String projName) {
-				return projName == null || projects == null ? null : projects.add(new Project(projName));
+				return projName == null || projects == null ? null : projects.add(projName);
 			}
 		});
 	}
 
 	private ObservableList<ProjectTree> getFilteredProjects() {
-		return FXCollections.observableArrayList(projects.dfStream().filter(p -> p.project() != null).toList());
+		return FXCollections.observableArrayList(projects.dfStream().filter(p -> p.name() != null).toList());
 	}
 
 	void setSpans(SpansCollection spans) {

@@ -2,7 +2,6 @@ package org.hansib.simplertimesfx.tree;
 
 import java.util.function.Supplier;
 
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.projects.ProjectTree;
 
 import javafx.geometry.Bounds;
@@ -32,13 +31,13 @@ public class TreeViewWindow {
 		TreeView<ProjectTree> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		tree.setShowRoot(false);
-		tree.setCellFactory(p -> new TextFieldTreeCellImpl(tree, () -> new Project("New Subproject")));
+		tree.setCellFactory(p -> new TextFieldTreeCellImpl(tree, () -> "New Subproject"));
 
 		StackPane treeLayout = new StackPane();
 		treeLayout.getChildren().add(tree);
 
 		treeLayout.setOnContextMenuRequested(
-				e -> showMenu(e, treeLayout.getScene().getWindow(), tree, () -> new Project("New Project")));
+				e -> showMenu(e, treeLayout.getScene().getWindow(), tree, () -> "New Project"));
 
 		Scene secondScene = new Scene(treeLayout, 230, 100);
 
@@ -54,14 +53,14 @@ public class TreeViewWindow {
 	}
 
 	private void showMenu(ContextMenuEvent e, Window owner, TreeView<ProjectTree> tree,
-			Supplier<Project> newProjectSupplier) {
+			Supplier<String> newProjectSupplier) {
 		ContextMenu contextMenu = new ContextMenu();
 
 		contextMenu.getItems().add(getAddMenuItem(tree, newProjectSupplier));
 		contextMenu.show(owner, e.getScreenX(), e.getScreenY());
 	}
 
-	private MenuItem getAddMenuItem(TreeView<ProjectTree> treeview, Supplier<Project> newProjectSupplier) {
+	private MenuItem getAddMenuItem(TreeView<ProjectTree> treeview, Supplier<String> newProjectSupplier) {
 		MenuItem addMenuItem = new MenuItem("New project");
 		addMenuItem.setOnAction(t -> {
 			TreeItem<ProjectTree> current = treeview.getRoot();

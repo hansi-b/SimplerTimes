@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.AppData;
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.projects.ProjectTree;
 import org.hansib.simplertimes.projects.ProjectTreeYamlConverter;
 
@@ -34,7 +33,7 @@ public class ProjectTreeStore {
 
 	private static ProjectTree emptyTree() {
 		ProjectTree root = ProjectTree.root();
-		root.add(new Project("New Project"));
+		root.add("New Project");
 		return root;
 	}
 

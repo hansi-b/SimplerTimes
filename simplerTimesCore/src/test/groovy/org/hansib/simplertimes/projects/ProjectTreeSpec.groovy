@@ -1,8 +1,5 @@
 package org.hansib.simplertimes.projects;
 
-import org.hansib.simplertimes.projects.Project
-import org.hansib.simplertimes.projects.ProjectTree
-
 import spock.lang.Specification
 
 public class ProjectTreeSpec extends Specification {
@@ -13,7 +10,7 @@ public class ProjectTreeSpec extends Specification {
 		def n = ProjectTree.root()
 
 		then:
-		n.project() == null
+		n.name() == null
 		n.parent() == null
 	}
 
@@ -75,7 +72,7 @@ public class ProjectTreeSpec extends Specification {
 		addProject(r, 'world')
 
 		when:
-		def s = r.dfStream().map(c -> c.project() != null ? c.project().name : null ).toList()
+		def s = r.dfStream().map(c -> c.name()).toList()
 
 		then:
 		s == [
@@ -95,7 +92,7 @@ public class ProjectTreeSpec extends Specification {
 		addProject(r, 'hello mars')
 
 		when:
-		def s = r.filter(['he', 'wo'] as Set).map(c -> c.project() != null ? c.project().name : null ).toList()
+		def s = r.filter(['he', 'wo'] as Set).map(c -> c.name()).toList()
 
 		then:
 		s == ['hello world']
@@ -111,7 +108,7 @@ public class ProjectTreeSpec extends Specification {
 		addProject(hello, 'mars')
 
 		when:
-		def s = r.filter(['he', 'wo'] as Set).map(c -> c.project() != null ? c.project().name : null ).toList()
+		def s = r.filter(['he', 'wo'] as Set).map(c -> c.name()).toList()
 
 		then:
 		s == ['world']
@@ -129,13 +126,13 @@ public class ProjectTreeSpec extends Specification {
 		addProject(r, 'world')
 
 		when:
-		def s = r.filter(['hello'] as Set).map(c -> c.project() != null ? c.project().name : null ).toList()
+		def s = r.filter(['hello'] as Set).map(c -> c.name()).toList()
 
 		then:
 		s == ['hello', 'a', 'z', 'b']
 	}
 
 	def addProject(node, name) {
-		return node.add(new Project(name))
+		return node.add(name)
 	}
 }

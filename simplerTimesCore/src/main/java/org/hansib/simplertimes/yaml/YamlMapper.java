@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.projects.ProjectTree;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -48,9 +47,6 @@ public class YamlMapper {
 		module.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer());
 		module.addDeserializer(OffsetDateTime.class, new OffsetDateTimeDeserializer());
 
-		module.addSerializer(Project.class, new ProjectSerializer());
-		module.addDeserializer(Project.class, new ProjectDeserializer());
-
 		module.addSerializer(new TreeNodeSerializer());
 		module.addDeserializer(ProjectTree.class, new TreeNodeDeserializer());
 
@@ -80,25 +76,6 @@ public class YamlMapper {
 		}
 	}
 
-	private static class ProjectSerializer extends JsonSerializer<Project> {
-		@Override
-		public void serialize(final Project value, final JsonGenerator gen, final SerializerProvider serializers)
-				throws IOException {
-			gen.writeStartObject();
-			gen.writeStringField("name", value.name());
-			gen.writeEndObject();
-		}
-	}
-
-	private static class ProjectDeserializer extends JsonDeserializer<Project> {
-		@Override
-		public Project deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
-			JsonNode node = p.readValueAsTree();
-			JsonNode jsonNode = node.get("name");
-			return new Project(jsonNode.asText());
-		}
-	}
-
 	private static class TreeNodeSerializer extends JsonSerializer<ProjectTree> {
 
 		@Override
@@ -111,8 +88,7 @@ public class YamlMapper {
 				throws IOException {
 
 			gen.writeStartObject();
-			gen.writeFieldName("project");
-			gen.writeObject(value.project());
+			gen.writeStringField("name", value.name());
 			gen.writeArrayFieldStart("children");
 			List<ProjectTree> children = value.children();
 			for (ProjectTree c : children)
@@ -130,8 +106,8 @@ public class YamlMapper {
 		public ProjectTree deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
 			JsonNode node = p.readValueAsTree();
 
-			JsonNode projectNode = node.get("project");
-			Project project = objectMapper.treeToValue(projectNode, Project.class);
+			JsonNode projectNode = node.get("name");
+			String project = objectMapper.treeToValue(projectNode, String.class);
 
 			JsonNode childrenNode = node.get("children");
 			ObjectReader childrenReader = objectMapper.readerForArrayOf(ProjectTree.class);
