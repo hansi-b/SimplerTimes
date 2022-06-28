@@ -113,7 +113,7 @@ public class YamlMapper {
 			ObjectReader childrenReader = objectMapper.readerForArrayOf(Project.class);
 			Project[] children = childrenReader.readValue(childrenNode);
 
-			return Project.connected(project, Arrays.asList(children));
+			return Project.rootWithChildren(project, Arrays.asList(children));
 		}
 	}
 }
