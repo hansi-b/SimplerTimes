@@ -18,13 +18,13 @@ public class Project {
 
 	private final List<Project> children;
 
-	public Project(Project parent, String name, List<Project> children) {
+	private Project(Project parent, String name, List<Project> children) {
 		this.name = name;
 		this.parent = parent;
 		this.children = children;
 	}
 
-	public static Project connected(String name, List<Project> children) {
+	public static Project rootWithChildren(String name, List<Project> children) {
 		Project node = new Project(null, name, new ArrayList<>(children));
 		node.children.forEach(c -> c.parent = node);
 		return node;
