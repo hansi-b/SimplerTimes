@@ -7,37 +7,37 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.AppData;
-import org.hansib.simplertimes.projects.ProjectTree;
-import org.hansib.simplertimes.projects.ProjectTreeYamlConverter;
+import org.hansib.simplertimes.projects.Project;
+import org.hansib.simplertimes.projects.ProjectYamlConverter;
 
-public class ProjectTreeStore {
+public class ProjectStore {
 
 	private static final Logger log = LogManager.getLogger();
 
 	private final Path projectsPath;
 
-	public ProjectTreeStore() {
+	public ProjectStore() {
 		this.projectsPath = new AppData().dataPath("projects.yml");
 	}
 
-	public ProjectTree load() {
+	public Project load() {
 		if (!projectsPath.toFile().isFile())
 			return emptyTree();
 		try {
-			return new ProjectTreeYamlConverter().fromYaml(Files.readString(projectsPath));
+			return new ProjectYamlConverter().fromYaml(Files.readString(projectsPath));
 		} catch (IOException e) {
 			log.error(String.format("Encountered exception while trying to read projects from '%s'", projectsPath), e);
 			return emptyTree();
 		}
 	}
 
-	private static ProjectTree emptyTree() {
-		ProjectTree root = ProjectTree.root();
+	private static Project emptyTree() {
+		Project root = Project.root();
 		root.add("New Project");
 		return root;
 	}
 
-	public void save(ProjectTree tree) throws IOException {
-		Files.writeString(projectsPath, new ProjectTreeYamlConverter().toYaml(tree));
+	public void save(Project tree) throws IOException {
+		Files.writeString(projectsPath, new ProjectYamlConverter().toYaml(tree));
 	}
 }

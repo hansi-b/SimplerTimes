@@ -6,7 +6,7 @@ public class PrettyPrinterSpec extends Specification {
 
 	def "can stringify root"() {
 		when:
-		def n = ProjectTree.root()
+		def n = Project.root()
 		n.add("xyz")
 
 		then:
