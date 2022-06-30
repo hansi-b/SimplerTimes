@@ -3,10 +3,10 @@ package org.hansib.simplertimes.yaml;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 
 import org.hansib.simplertimes.projects.Project;
+import org.hansib.simplertimes.projects.Project.Builder;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -23,6 +23,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 public class YamlMapper {
+
+	private static final String FIELD_ID = "id";
+	private static final String FIELD_NAME = "name";
+	private static final String FIELD_CHILDREN = "children";
 
 	private static final DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
@@ -48,7 +52,7 @@ public class YamlMapper {
 		module.addDeserializer(OffsetDateTime.class, new OffsetDateTimeDeserializer());
 
 		module.addSerializer(new ProjectSerializer());
-		module.addDeserializer(Project.class, new ProjectDeserializer());
+		module.addDeserializer(Project.Builder.class, new ProjectDeserializer());
 
 		return YAMLMapper.builder().addModule(module).build();
 	}
@@ -88,8 +92,10 @@ public class YamlMapper {
 				throws IOException {
 
 			gen.writeStartObject();
-			gen.writeStringField("name", value.name());
-			gen.writeArrayFieldStart("children");
+			gen.writeNumberField(FIELD_ID, value.id());
+
+			gen.writeStringField(FIELD_NAME, value.name());
+			gen.writeArrayFieldStart(FIELD_CHILDREN);
 			List<Project> children = value.children();
 			for (Project c : children)
 				gen.writeObject(c);
@@ -98,22 +104,27 @@ public class YamlMapper {
 		}
 	}
 
-	private static class ProjectDeserializer extends JsonDeserializer<Project> {
+	private static class ProjectDeserializer extends JsonDeserializer<Project.Builder> {
 
 		private static final ObjectMapper objectMapper = createObjectMapper();
 
 		@Override
-		public Project deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
+		public Project.Builder deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
 			JsonNode node = p.readValueAsTree();
 
-			JsonNode projectNode = node.get("name");
-			String project = objectMapper.treeToValue(projectNode, String.class);
+			Long id = objectMapper.treeToValue(node.get(FIELD_ID), Long.class);
+			String name = objectMapper.treeToValue(node.get(FIELD_NAME), String.class);
 
-			JsonNode childrenNode = node.get("children");
-			ObjectReader childrenReader = objectMapper.readerForArrayOf(Project.class);
-			Project[] children = childrenReader.readValue(childrenNode);
+			Builder builder = new Project.Builder(id, name);
 
-			return Project.rootWithChildren(project, Arrays.asList(children));
+			ObjectReader childrenReader = objectMapper.readerForArrayOf(Project.Builder.class);
+
+			Project.Builder[] childrenBuilder = childrenReader.readValue(node.get(FIELD_CHILDREN));
+			for (Project.Builder childBuilder : childrenBuilder) {
+				builder.mergeChild(childBuilder);
+			}
+
+			return builder;
 		}
 	}
 }

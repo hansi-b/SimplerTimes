@@ -13,7 +13,7 @@ public class ProjectYamlConverter {
 	}
 
 	public Project fromYaml(String yamlString) throws IOException {
-		return mapper.fromString(yamlString, Project.class);
+		return mapper.fromString(yamlString, Project.Builder.class).build();
 	}
 
 	public String toYaml(Project tree) throws IOException {

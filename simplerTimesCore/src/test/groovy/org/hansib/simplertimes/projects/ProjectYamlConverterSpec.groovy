@@ -19,15 +19,20 @@ public class ProjectYamlConverterSpec extends Specification {
 
 		then:
 		yaml == '''---
+id: 0
 name: "root"
 children:
-- name: "book"
+- id: 1
+  name: "book"
   children:
-  - name: "chapter 1"
+  - id: 2
+    name: "chapter 1"
     children: []
-  - name: "chapter 2"
+  - id: 3
+    name: "chapter 2"
     children: []
-- name: "code"
+- id: 4
+  name: "code"
   children: []
 '''
 	}
@@ -36,15 +41,20 @@ children:
 
 		given:
 		def yaml = '''---
+id: 0
 name: "root"
 children:
-- name: "book"
+- id: 1
+  name: "book"
   children:
-  - name: "chapter 1"
+  - id: 2
+    name: "chapter 1"
     children: []
-  - name: "chapter 2"
+  - id: 3
+    name: "chapter 2"
     children: []
-- name: "code"
+- id: 4
+  name: "code"
   children: []
 '''
 		when:
@@ -60,19 +70,26 @@ children:
 
 		given:
 		def yaml = '''---
+id: 0
 name: "root"
 children:
-- name: "book"
-  children: []
-- name: "ergo"
+- id: 1
+  name: "book"
   children: []
 '''
 		when:
 		Project root = new ProjectYamlConverter().fromYaml(yaml)
 
 		then:
+		root.children.size() == 1
+		root.children[0].name() == 'book'
+
+		when:
+		root.add('ergo')
+
+		then:
 		root.children.size() == 2
-		root.children[0].name() == "book"
-		root.children[1].name() == "ergo"
+		root.children[1].id() == 2
+		root.children[1].name() == 'ergo'
 	}
 }
