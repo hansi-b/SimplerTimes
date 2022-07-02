@@ -129,6 +129,19 @@ public class Project {
 		return id;
 	}
 
+	/**
+	 * Returns the project with the argument id from this project tree, including
+	 * this project itself. Only looks "downwards" into children (not upwards at
+	 * parents).
+	 * 
+	 * @param id the project id to search for
+	 * @return the project beneath this project (including this) with the argument
+	 *         id; null if there is no such project
+	 */
+	public Project findById(long id) {
+		return dfStream().filter(p -> p.id == id).findFirst().orElse(null);
+	}
+
 	public String name() {
 		return name;
 	}
