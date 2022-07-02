@@ -1,34 +1,39 @@
 package org.hansib.simplertimes.spans;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class SpansCollection {
+public class SpansCollection implements Iterable<Span> {
 
 	public final List<Span> spans;
 
-	public SpansCollection() {
-		spans = new ArrayList<>();
-	}
-
-	@JsonCreator
-	public SpansCollection(@JsonProperty("spans") List<Span> spans) {
+	private SpansCollection(List<Span> spans) {
 		this.spans = spans;
 	}
 
+	public SpansCollection() {
+		this(new ArrayList<>());
+	}
+
 	static SpansCollection with(Span... spans) {
-		SpansCollection sc = new SpansCollection();
-		for (Span s : spans)
-			sc.add(s);
-		return sc;
+		return new SpansCollection(new ArrayList<>(Arrays.asList(spans)));
 	}
 
 	public void add(Span span) {
 		spans.add(span);
+	}
+
+	public List<Span> view() {
+		return Collections.unmodifiableList(spans);
+	}
+
+	@Override
+	public Iterator<Span> iterator() {
+		return spans.iterator();
 	}
 
 	@Override

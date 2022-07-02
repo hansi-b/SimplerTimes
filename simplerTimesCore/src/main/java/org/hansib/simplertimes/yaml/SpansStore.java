@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.AppData;
+import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.SpansCollection;
 
 public class SpansStore {
@@ -19,11 +20,11 @@ public class SpansStore {
 		this.spansPath = new AppData().dataPath("spans.yml");
 	}
 
-	public SpansCollection load() {
+	public SpansCollection load(Project root) {
 		if (!spansPath.toFile().isFile())
 			return new SpansCollection();
 		try {
-			return SpansYamlConverter.fromYaml(Files.readString(spansPath));
+			return SpansYamlConverter.fromYaml(root, Files.readString(spansPath));
 		} catch (IOException e) {
 			log.error(String.format("Encountered exception while trying to read spans from '%s'", spansPath), e);
 			return new SpansCollection();
