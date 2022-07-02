@@ -176,7 +176,7 @@ public class Project {
 		return Stream.concat(Stream.of(this), c);
 	}
 
-	Stream<Project> filter(Set<String> words) {
+	public Stream<Project> filter(Set<String> words) {
 		if (words.isEmpty())
 			return dfStream();
 		Set<String> wordsStillMissing = name == null ? words
