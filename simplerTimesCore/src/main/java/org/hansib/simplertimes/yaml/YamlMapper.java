@@ -8,12 +8,12 @@ import java.util.List;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.projects.Project.Builder;
 import org.hansib.simplertimes.spans.Span;
-import org.hansib.simplertimes.spans.SpanStub;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -67,6 +67,10 @@ public class YamlMapper {
 
 	public <T> T fromString(final String yaml, final Class<T> clazz) throws JsonProcessingException {
 		return objectMapper.readValue(yaml, clazz);
+	}
+
+	public <T> T fromString(final String yaml, final TypeReference<T> type) throws JsonProcessingException {
+		return objectMapper.readValue(yaml, type);
 	}
 
 	public <T> String asString(final T model) throws JsonProcessingException {
