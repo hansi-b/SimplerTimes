@@ -84,6 +84,22 @@ public class ProjectSpec extends Specification {
 		]
 	}
 
+	def "can find by id"() {
+
+		when:
+		def r = Project.root()
+		def m = addProject(r, 'hello')
+		def a = addProject(m, 'a')
+		addProject(m, 'b')
+		def x = addProject(a, 'x')
+		def w = addProject(r, 'world')
+
+		then:
+		x == r.findById(x.id())
+		w == w.findById(w.id())
+		null == w.findById(x.id())
+	}
+
 	def "can filter multiple words"() {
 
 		given:
