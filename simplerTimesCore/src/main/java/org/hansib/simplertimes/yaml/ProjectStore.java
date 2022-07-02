@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.AppData;
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.projects.ProjectYamlConverter;
 
 public class ProjectStore {
 

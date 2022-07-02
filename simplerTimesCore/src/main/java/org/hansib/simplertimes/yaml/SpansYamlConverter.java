@@ -1,8 +1,8 @@
-package org.hansib.simplertimes.spans;
+package org.hansib.simplertimes.yaml;
 
 import java.io.IOException;
 
-import org.hansib.simplertimes.yaml.YamlMapper;
+import org.hansib.simplertimes.spans.SpansCollection;
 
 class SpansYamlConverter {
 

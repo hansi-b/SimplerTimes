@@ -1,8 +1,8 @@
-package org.hansib.simplertimes.projects;
+package org.hansib.simplertimes.yaml;
 
 import java.io.IOException;
 
-import org.hansib.simplertimes.yaml.YamlMapper;
+import org.hansib.simplertimes.projects.Project;
 
 public class ProjectYamlConverter {
 

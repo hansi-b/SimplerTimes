@@ -86,7 +86,7 @@ public class TimesMainController {
 	void handleInterval(Interval t) {
 		log.info("Got interval: {} {}", projectField.getEditor().getText(), t);
 		try {
-			spans.add(new Span(projectField.getEditor().getText(), t.start(), t.end()));
+			spans.add(new Span(projectField.getValue(), t.start(), t.end()));
 		} catch (IllegalArgumentException ex) {
 			log.info("Ignoring invalid span: {}", ex.getMessage());
 		}

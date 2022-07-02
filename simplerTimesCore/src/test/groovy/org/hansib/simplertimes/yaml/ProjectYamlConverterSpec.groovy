@@ -1,4 +1,7 @@
-package org.hansib.simplertimes.projects;
+package org.hansib.simplertimes.yaml;
+
+import org.hansib.simplertimes.projects.Project
+import org.hansib.simplertimes.yaml.ProjectYamlConverter
 
 import spock.lang.Specification
 

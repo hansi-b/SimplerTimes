@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.spans.SpansStore;
 import org.hansib.simplertimes.yaml.ProjectStore;
+import org.hansib.simplertimes.yaml.SpansStore;
 import org.hansib.simplertimesfx.utils.ResourceLoader;
 
 import javafx.application.Application;
@@ -39,8 +39,8 @@ public class SimplerTimesFx extends Application {
 		final Parent root = fxmlLoader.load();
 		timesMainController = fxmlLoader.getController();
 
-		timesMainController.setSpans(spansStore.load());
 		timesMainController.setProjects(treeStore.load());
+		timesMainController.setSpans(spansStore.load());
 
 		primaryStage.setTitle("SimplerTimes");
 		primaryStage.setScene(new Scene(root));
