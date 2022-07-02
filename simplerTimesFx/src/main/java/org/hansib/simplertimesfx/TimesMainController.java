@@ -58,7 +58,8 @@ public class TimesMainController {
 
 			@Override
 			public Project fromString(String projName) {
-				return projName == null || projName.isBlank() || projects == null ? null : projects.add(projName);
+				return projName == null || projName.isBlank() || projects == null ? null
+						: projectField.getSelectionModel().getSelectedItem();
 			}
 		});
 	}
