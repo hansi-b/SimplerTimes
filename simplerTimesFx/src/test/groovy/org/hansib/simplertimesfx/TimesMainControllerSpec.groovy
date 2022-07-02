@@ -39,7 +39,7 @@ public class TimesMainControllerSpec extends ApplicationSpec {
 
 		given:
 		def ldt = LocalDateTime.now()
-		controller.projectField.getEditor().setText('wired')
+		controller.projectField.setValue(rootProject.add("wired"))
 
 		when:
 		controller.handleInterval(new Interval(ldt.minusSeconds(2), ldt))
@@ -52,7 +52,7 @@ public class TimesMainControllerSpec extends ApplicationSpec {
 
 		given:
 		def ldt = LocalDateTime.now()
-		controller.projectField.getEditor().setText('wired')
+		controller.projectField.setValue(rootProject.add("wired"))
 
 		when:
 		controller.handleInterval(new Interval(ldt.minusNanos(1000), ldt))
