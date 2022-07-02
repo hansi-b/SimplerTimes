@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.projects.Project.Builder;
+import org.hansib.simplertimes.spans.Span;
+import org.hansib.simplertimes.spans.SpanStub;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -27,6 +29,10 @@ public class YamlMapper {
 	private static final String FIELD_ID = "id";
 	private static final String FIELD_NAME = "name";
 	private static final String FIELD_CHILDREN = "children";
+
+	private static final String FIELD_PROJECT_ID = "projectId";
+	private static final String FIELD_START = "start";
+	private static final String FIELD_END = "end";
 
 	private static final DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
@@ -51,6 +57,8 @@ public class YamlMapper {
 		module.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer());
 		module.addDeserializer(OffsetDateTime.class, new OffsetDateTimeDeserializer());
 
+		module.addSerializer(new SpanSerializer());
+		module.addDeserializer(SpanStub.class, new SpanStubDeserializer());
 		module.addSerializer(new ProjectSerializer());
 		module.addDeserializer(Project.Builder.class, new ProjectDeserializer());
 
@@ -77,6 +85,39 @@ public class YamlMapper {
 		@Override
 		public OffsetDateTime deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
 			return OffsetDateTime.parse(p.getValueAsString(), dtFormatter);
+		}
+	}
+
+	private static class SpanSerializer extends JsonSerializer<Span> {
+		@Override
+		public Class<Span> handledType() {
+			return Span.class;
+		}
+
+		@Override
+		public void serialize(final Span value, final JsonGenerator gen, final SerializerProvider serializers)
+				throws IOException {
+			gen.writeStartObject();
+			gen.writeNumberField(FIELD_PROJECT_ID, value.project().id());
+			gen.writeObjectField(FIELD_START, value.start());
+			gen.writeObjectField(FIELD_END, value.end());
+			gen.writeEndObject();
+		}
+	}
+
+	private static class SpanStubDeserializer extends JsonDeserializer<SpanStub> {
+
+		private static final ObjectMapper objectMapper = createObjectMapper();
+
+		@Override
+		public SpanStub deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
+			JsonNode node = p.readValueAsTree();
+
+			Long id = objectMapper.treeToValue(node.get(FIELD_PROJECT_ID), Long.class);
+			OffsetDateTime start = objectMapper.treeToValue(node.get(FIELD_START), OffsetDateTime.class);
+			OffsetDateTime end = objectMapper.treeToValue(node.get(FIELD_END), OffsetDateTime.class);
+
+			return new SpanStub(id, start, end);
 		}
 	}
 
