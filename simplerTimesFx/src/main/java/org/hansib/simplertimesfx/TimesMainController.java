@@ -7,8 +7,6 @@ import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Interval;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -42,12 +40,9 @@ public class TimesMainController {
 				buttonsStripController.startButton.fire();
 			}
 		});
-		projectField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if (Boolean.TRUE.equals(newValue)) {
-					projectField.setItems(getFilteredProjects());
-				}
+		projectField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if (Boolean.TRUE.equals(newValue)) {
+				projectField.setItems(getFilteredProjects());
 			}
 		});
 		projectField.setConverter(new StringConverter<Project>() {
@@ -68,20 +63,20 @@ public class TimesMainController {
 		return FXCollections.observableArrayList(projects.dfStream().filter(p -> p.name() != null).toList());
 	}
 
-	void setSpans(SpansCollection spans) {
-		this.spans = spans;
-	}
-
-	public void setProjects(Project projects) {
+	void setProjects(Project projects) {
 		this.projects = projects;
-	}
-
-	SpansCollection getSpans() {
-		return spans;
 	}
 
 	Project getProjects() {
 		return projects;
+	}
+
+	void setSpans(SpansCollection spans) {
+		this.spans = spans;
+	}
+
+	SpansCollection getSpans() {
+		return spans;
 	}
 
 	void handleInterval(Interval t) {
