@@ -47,6 +47,17 @@ public class ProjectSpec extends Specification {
 		n.children() == [o]
 	}
 
+	def "getFullName"() {
+
+		when:
+		def n = Project.root()
+		def m = addProject(n, 'hello')
+		def o = addProject(m, 'world')
+
+		then:
+		o.nameWords() == ['hello', 'world']
+	}
+
 	def "unknown child throws exception"() {
 
 		given:
