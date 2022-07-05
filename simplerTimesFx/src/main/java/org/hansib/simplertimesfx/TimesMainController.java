@@ -48,7 +48,7 @@ public class TimesMainController {
 		projectField.setConverter(new StringConverter<Project>() {
 			@Override
 			public String toString(Project proj) {
-				return proj == null ? "" : proj.fullProjectName();
+				return proj == null ? "" : fullName(proj);
 			}
 
 			@Override
@@ -57,6 +57,14 @@ public class TimesMainController {
 						: projectField.getSelectionModel().getSelectedItem();
 			}
 		});
+	}
+
+	private static String fullName(Project p) {
+
+		/*
+		 * other options: · • › » ▹ ▷ | – #
+		 */
+		return String.join(" · ", p.nameWords());
 	}
 
 	private ObservableList<Project> getFilteredProjects() {
@@ -80,7 +88,7 @@ public class TimesMainController {
 	}
 
 	void handleInterval(Interval t) {
-		log.info("Got interval: {} {}", projectField.getEditor().getText(), t);
+		log.info("Got interval: {} {}", projectField.getValue(), t);
 		try {
 			spans.add(new Span(projectField.getValue(), t.start(), t.end()));
 		} catch (IllegalArgumentException ex) {

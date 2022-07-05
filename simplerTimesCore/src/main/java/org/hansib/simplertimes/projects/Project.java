@@ -150,13 +150,17 @@ public class Project {
 		name = newName;
 	}
 
-	public String fullProjectName() {
+	/**
+	 * @return the ordered list of non-null names, beginning with the root down to
+	 *         this project
+	 */
+	public LinkedList<String> nameWords() {
 		LinkedList<String> hierarchy = new LinkedList<>();
 		for (Project current = this; current.parent != null; current = current.parent) {
 			if (current.name != null)
 				hierarchy.addFirst(current.name);
 		}
-		return String.join(" ▸ ", hierarchy);
+		return hierarchy;
 	}
 
 	public void setProject(String newName) {
