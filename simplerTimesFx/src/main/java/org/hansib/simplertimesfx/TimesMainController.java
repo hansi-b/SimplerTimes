@@ -10,12 +10,14 @@ import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Interval;
+import org.hansib.simplertimesfx.tree.TreeViewWindow;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -31,13 +33,18 @@ public class TimesMainController {
 	@FXML
 	ButtonsStripController buttonsStripController;
 
+	@FXML
+	Button editTreeButton;
+
 	private SpansCollection spans;
 	private Project projectTree;
 
 	@FXML
 	void initialize() {
 		buttonsStripController.setIntervalReceiver(this::handleInterval);
-		buttonsStripController.setProjectsSupplier(() -> projectTree);
+
+		editTreeButton.setGraphic(Icons.editTree());
+		editTreeButton.setOnAction(event -> new TreeViewWindow(getProjects()).openTreeViewWindow(editTreeButton));
 
 		ObservableList<Project> projectList = FXCollections.observableArrayList();
 
