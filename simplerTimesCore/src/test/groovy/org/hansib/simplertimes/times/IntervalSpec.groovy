@@ -1,8 +1,6 @@
 package org.hansib.simplertimes.times;
 
-import java.time.LocalDateTime
-
-import org.hansib.simplertimes.times.Interval
+import java.time.ZonedDateTime
 
 import spock.lang.Specification
 
@@ -10,7 +8,7 @@ public class IntervalSpec extends Specification {
 
 	def "illegal arg for end before start"() {
 		given:
-		def start = LocalDateTime.now()
+		def start = ZonedDateTime.now()
 
 		when:
 		new Interval(start, start.minusSeconds(10))
@@ -21,7 +19,7 @@ public class IntervalSpec extends Specification {
 
 	def "ensure equals"() {
 		given:
-		def s1 = LocalDateTime.now()
+		def s1 = ZonedDateTime.now()
 		def s2 = s1.plusMinutes(2)
 
 		expect:

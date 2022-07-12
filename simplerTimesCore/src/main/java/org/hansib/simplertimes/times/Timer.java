@@ -1,14 +1,14 @@
 package org.hansib.simplertimes.times;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public class Timer {
 
-	private final LocalDateTime startedAt;
+	private final ZonedDateTime startedAt;
 
-	private Timer() {
-		startedAt = LocalDateTime.now();
+	Timer() {
+		startedAt = ZonedDateTime.now();
 	}
 
 	public static Timer start() {
@@ -16,10 +16,10 @@ public class Timer {
 	}
 
 	public Duration duration() {
-		return Duration.between(startedAt, LocalDateTime.now());
+		return Duration.between(startedAt, ZonedDateTime.now());
 	}
 
 	public Interval interval() {
-		return new Interval(startedAt, LocalDateTime.now());
+		return new Interval(startedAt, ZonedDateTime.now());
 	}
 }

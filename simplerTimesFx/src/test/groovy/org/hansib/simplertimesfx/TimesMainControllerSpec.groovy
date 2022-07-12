@@ -1,6 +1,6 @@
 package org.hansib.simplertimesfx
 
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 import org.hansib.simplertimes.projects.Project
 import org.hansib.simplertimes.spans.SpansCollection
@@ -38,7 +38,7 @@ public class TimesMainControllerSpec extends ApplicationSpec {
 	def 'valid span is added'() {
 
 		given:
-		def ldt = LocalDateTime.now()
+		def ldt = ZonedDateTime.now()
 		controller.projectField.setValue(rootProject.add("wired"))
 
 		when:
@@ -51,7 +51,7 @@ public class TimesMainControllerSpec extends ApplicationSpec {
 	def 'invalid span is not added'() {
 
 		given:
-		def ldt = LocalDateTime.now()
+		def ldt = ZonedDateTime.now()
 		controller.projectField.setValue(rootProject.add("wired"))
 
 		when:
