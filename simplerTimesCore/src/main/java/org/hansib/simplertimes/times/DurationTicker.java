@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 import org.hansib.sundries.Errors;
 
-public class TimerDisplay {
+public class DurationTicker {
 	private static class DaemonFactory implements ThreadFactory {
 		@Override
 		public Thread newThread(Runnable r) {
@@ -28,8 +28,8 @@ public class TimerDisplay {
 
 	private final Consumer<Duration> durationReceiver;
 
-	public TimerDisplay(Consumer<Duration> durationReceiver) {
-		this.durationReceiver = durationReceiver;
+	public DurationTicker(Consumer<Duration> tickReceiver) {
+		this.durationReceiver = tickReceiver;
 		this.timerRef = new AtomicReference<>();
 	}
 

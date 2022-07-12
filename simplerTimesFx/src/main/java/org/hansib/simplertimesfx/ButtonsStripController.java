@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.times.Interval;
-import org.hansib.simplertimes.times.TimerDisplay;
+import org.hansib.simplertimes.times.DurationTicker;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
 
 import javafx.application.Platform;
@@ -28,7 +28,7 @@ public class ButtonsStripController {
 	@FXML
 	Button editTreeButton;
 
-	private TimerDisplay timerDisplay;
+	private DurationTicker timerDisplay;
 
 	private Consumer<Interval> intervalReceiver;
 
@@ -36,7 +36,7 @@ public class ButtonsStripController {
 
 	@FXML
 	void initialize() {
-		timerDisplay = new TimerDisplay(this::updateTime);
+		timerDisplay = new DurationTicker(this::updateTime);
 
 		startButton.setGraphic(Icons.start());
 		stopButton.setGraphic(Icons.stop());
