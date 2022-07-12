@@ -1,8 +1,7 @@
 package org.hansib.simplertimes.spans;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -22,12 +21,11 @@ public record Span(Project project, OffsetDateTime start, OffsetDateTime end) {
 			throw Errors.illegalArg("End (%s) must be after start (%s)", end, start);
 	}
 
-	public Span(Project project, LocalDateTime start, LocalDateTime end) {
+	public Span(Project project, ZonedDateTime start, ZonedDateTime end) {
 		this(project, round(start), round(end));
 	}
 
-	private static OffsetDateTime round(LocalDateTime ldt) {
-		return ldt.plusNanos(roundingNanos).truncatedTo(ChronoUnit.SECONDS).atZone(ZoneId.systemDefault())
-				.toOffsetDateTime();
+	private static OffsetDateTime round(ZonedDateTime ldt) {
+		return ldt.plusNanos(roundingNanos).truncatedTo(ChronoUnit.SECONDS).toOffsetDateTime();
 	}
 }

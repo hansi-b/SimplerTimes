@@ -1,11 +1,11 @@
 package org.hansib.simplertimes.times;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 import org.hansib.sundries.Errors;
 
-public record Interval(LocalDateTime start, LocalDateTime end) {
+public record Interval(ZonedDateTime start, ZonedDateTime end) {
 
 	public Interval {
 		Objects.requireNonNull(start);
