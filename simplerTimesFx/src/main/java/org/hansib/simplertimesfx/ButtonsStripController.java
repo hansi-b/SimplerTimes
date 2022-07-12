@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.DurationTicker;
+import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
 
 import javafx.application.Platform;
@@ -49,6 +49,7 @@ public class ButtonsStripController {
 
 		startButton.setOnAction(a -> startTiming());
 		stopButton.setOnAction(a -> stopTiming());
+		updateTime(Duration.ZERO);
 	}
 
 	private void updateTime(Duration duration) {
