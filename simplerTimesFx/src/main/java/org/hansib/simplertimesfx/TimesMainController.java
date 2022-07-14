@@ -17,10 +17,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 public class TimesMainController {
@@ -35,6 +39,8 @@ public class TimesMainController {
 
 	@FXML
 	Button editTreeButton;
+	@FXML
+	Button showSpansButton;
 
 	private SpansCollection spans;
 	private Project projectTree;
@@ -45,6 +51,17 @@ public class TimesMainController {
 
 		editTreeButton.setGraphic(Icons.editTree());
 		editTreeButton.setOnAction(event -> new TreeViewWindow(getProjects()).openTreeViewWindow(editTreeButton));
+
+		showSpansButton.setGraphic(Icons.showSpans());
+		showSpansButton.setOnAction(event -> {
+
+			HBox group = new HBox();
+			Stage stage = new Stage();
+			stage.setScene(new Scene(group));
+
+			group.getChildren().add(new TableView<>());
+			stage.show();
+		});
 
 		ObservableList<Project> projectList = FXCollections.observableArrayList();
 
