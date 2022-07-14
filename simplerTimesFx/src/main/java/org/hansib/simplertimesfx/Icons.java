@@ -17,4 +17,8 @@ class Icons {
 	static final Node editTree() {
 		return new FontIcon("codicon-list-tree");
 	}
+
+	static final Node showSpans() {
+		return new FontIcon("codicon-calendar");
+	}
 }
