@@ -1,2 +1,11 @@
 rootProject.name = 'SimplerTimes'
 include 'simplerTimesCore', 'simplerTimesFx'
+
+if (file('../Sundries').exists()) includeBuild '../Sundries'
+
+if (file('../SundriesFx').exists())
+	includeBuild('../SundriesFx') {
+		dependencySubstitution {
+			substitute module('org.hansib:sundries-fx') using project(':sundriesFx')
+		}
+	}
