@@ -144,13 +144,13 @@ public class TimesMainController {
 	}
 
 	void handleInterval(Interval t) {
-		Project val = projectField.getValue();
+		Project project = projectField.getValue();
 		Project selectedItem = projectField.getSelectionModel().getSelectedItem();
 
-		log.info("Got interval: {} {} {}", selectedItem, val, t);
+		log.info("Got interval: {} {} {}", selectedItem, project, t);
 
 		try {
-			spans.add(new Span(val, t.start(), t.end()));
+			spans.add(new Span(project, t.start(), t.end()));
 		} catch (IllegalArgumentException ex) {
 			log.info("Ignoring invalid span: {}", ex.getMessage());
 		}
