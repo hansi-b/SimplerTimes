@@ -63,8 +63,12 @@ public class TimesMainController {
 			stage.show();
 		});
 
-		ObservableList<Project> projectList = FXCollections.observableArrayList();
+		initialiseProjectField();
+	}
 
+	private void initialiseProjectField() {
+
+		ObservableList<Project> projectList = FXCollections.observableArrayList();
 		FilteredList<Project> projectSelection = new FilteredList<>(projectList, p -> true);
 
 		projectField.setItems(projectSelection);
