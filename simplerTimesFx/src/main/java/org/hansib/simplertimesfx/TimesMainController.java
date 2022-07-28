@@ -1,8 +1,7 @@
 package org.hansib.simplertimesfx;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,17 +11,11 @@ import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
 
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -63,57 +56,30 @@ public class TimesMainController {
 			stage.show();
 		});
 
-		initialiseProjectField();
+		FilteringComboBox.initialise(//
+				projectField, //
+				this::getFilteredProjectsList, //
+				words -> p -> matches(p, words), //
+				new StringConverter<Project>() {
+					@Override
+					public String toString(Project proj) {
+						return proj == null ? "" : fullName(proj);
+					}
+
+					@Override
+					public Project fromString(String projName) {
+						return projName == null || projName.isBlank() || projectTree == null ? null
+								: projectField.getSelectionModel().getSelectedItem();
+					}
+				}, //
+				() -> {
+					buttonsStripController.startButton.requestFocus();
+					buttonsStripController.startButton.fire();
+				});
 	}
 
-	private void initialiseProjectField() {
-
-		ObservableList<Project> projectList = FXCollections.observableArrayList();
-		FilteredList<Project> projectSelection = new FilteredList<>(projectList, p -> true);
-
-		projectField.setItems(projectSelection);
-		projectField.setEditable(true);
-
-		projectField.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-			if (e.getCode() == KeyCode.ENTER) {
-				buttonsStripController.startButton.requestFocus();
-				buttonsStripController.startButton.fire();
-			}
-		});
-		projectField.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-			Project selected = projectField.getSelectionModel().getSelectedItem();
-			log.info("selected = {}", selected);
-			Platform.runLater(() -> {
-				Set<String> split = Arrays.stream(newValue.split("\\s+")).filter(s -> !s.isBlank())
-						.map(String::toLowerCase).collect(Collectors.toSet());
-				// If the no item in the list is selected or the selected item
-				// isn't equal to the current input, we refilter the list.
-				// if (selected == null || !selected.equals(cb.getEditor().getText())) {
-				if (selected == null) {
-					projectField.hide();
-					projectSelection.setPredicate(p -> matches(p, split));
-					log.info("after pred: {}", projectSelection);
-					projectField.show();
-				}
-			});
-		});
-		projectField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-			if (Boolean.TRUE.equals(newValue)) {
-				projectList.setAll(projectTree.dfStream().filter(p -> p.name() != null).toList());
-			}
-		});
-		projectField.setConverter(new StringConverter<Project>() {
-			@Override
-			public String toString(Project proj) {
-				return proj == null ? "" : fullName(proj);
-			}
-
-			@Override
-			public Project fromString(String projName) {
-				return projName == null || projName.isBlank() || projectTree == null ? null
-						: projectField.getSelectionModel().getSelectedItem();
-			}
-		});
+	private List<Project> getFilteredProjectsList() {
+		return projectTree.dfStream().filter(p -> p.name() != null).toList();
 	}
 
 	private static String fullName(Project p) {
