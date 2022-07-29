@@ -10,6 +10,7 @@ import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
+import org.hansib.sundries.fx.FilteringComboBox;
 
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
