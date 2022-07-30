@@ -21,7 +21,7 @@ public class TreeViewWindow {
 	private final TreeItem<Project> rootItem;
 
 	public TreeViewWindow(Project root) {
-		rootItem = copyToTreeItem(root);
+		rootItem = linkToTreeItem(root);
 	}
 
 	public void openTreeViewWindow(Node parent) {
@@ -73,10 +73,10 @@ public class TreeViewWindow {
 		return addMenuItem;
 	}
 
-	private static TreeItem<Project> copyToTreeItem(Project treeNode) {
+	private static TreeItem<Project> linkToTreeItem(Project treeNode) {
 		TreeItem<Project> treeItem = new TreeItem<>(treeNode);
 		treeNode.children().forEach(c -> {
-			TreeItem<Project> i = copyToTreeItem(c);
+			TreeItem<Project> i = linkToTreeItem(c);
 			treeItem.getChildren().add(i);
 		});
 		return treeItem;
