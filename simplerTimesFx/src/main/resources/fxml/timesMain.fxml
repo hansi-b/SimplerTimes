@@ -10,7 +10,7 @@
 	<children>
 		<VBox>
 			<children>
-				<ComboBox fx:id="projectField" />
+				<ComboBox fx:id="projectSelection" />
 				<fx:include fx:id="buttonsStrip"
 					source="buttonsStrip.fxml" />
 			</children>
