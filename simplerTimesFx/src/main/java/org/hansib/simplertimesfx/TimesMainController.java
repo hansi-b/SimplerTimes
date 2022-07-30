@@ -1,5 +1,6 @@
 package org.hansib.simplertimesfx;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +27,7 @@ public class TimesMainController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
-	ComboBox<Project> projectField;
+	ComboBox<Project> projectSelection;
 
 	@FXML
 	ButtonsStripController buttonsStripController;
@@ -57,29 +58,32 @@ public class TimesMainController {
 			stage.show();
 		});
 
-		FilteringComboBox.initialise(//
-				projectField, //
-				this::getFilteredProjectsList, //
-				words -> p -> matches(p, words), //
-				new StringConverter<Project>() {
-					@Override
-					public String toString(Project proj) {
-						return proj == null ? "" : fullName(proj);
-					}
+		new FilteringComboBox<>(projectSelection)//
+				.withItemsUpdateOnFocus(this::getFilteredProjectsList)//
+				.initialise(//
+						words -> p -> matches(p, words), //
+						new StringConverter<Project>() {
+							@Override
+							public String toString(Project proj) {
+								return proj == null ? "" : fullName(proj);
+							}
 
-					@Override
-					public Project fromString(String projName) {
-						return projName == null || projName.isBlank() || projectTree == null ? null
-								: projectField.getSelectionModel().getSelectedItem();
-					}
-				}, //
-				() -> {
-					buttonsStripController.startButton.requestFocus();
-					buttonsStripController.startButton.fire();
-				});
+							@Override
+							public Project fromString(String projName) {
+								return projName == null || projName.isBlank() || projectTree == null ? null
+										: projectSelection.getSelectionModel().getSelectedItem();
+							}
+						}, //
+						() -> {
+							buttonsStripController.startButton.requestFocus();
+							buttonsStripController.startButton.fire();
+						})
+				.build();
 	}
 
 	private List<Project> getFilteredProjectsList() {
+		if (projectTree == null)
+			return Collections.emptyList();
 		return projectTree.dfStream().filter(p -> p.name() != null).toList();
 	}
 
@@ -115,8 +119,8 @@ public class TimesMainController {
 	}
 
 	void handleInterval(Interval t) {
-		Project project = projectField.getValue();
-		Project selectedItem = projectField.getSelectionModel().getSelectedItem();
+		Project project = projectSelection.getValue();
+		Project selectedItem = projectSelection.getSelectionModel().getSelectedItem();
 
 		log.info("Got interval: {} {} {}", selectedItem, project, t);
 
