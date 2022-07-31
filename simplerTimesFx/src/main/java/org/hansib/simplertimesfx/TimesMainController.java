@@ -1,7 +1,5 @@
 package org.hansib.simplertimesfx;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,8 +9,10 @@ import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
+import org.hansib.sundries.fx.Converters;
 import org.hansib.sundries.fx.FilteringComboBox;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,7 +20,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 public class TimesMainController {
 
@@ -28,6 +27,7 @@ public class TimesMainController {
 
 	@FXML
 	ComboBox<Project> projectSelection;
+	private ObservableList<Project> projectSelectionItems;
 
 	@FXML
 	ButtonsStripController buttonsStripController;
@@ -42,10 +42,14 @@ public class TimesMainController {
 
 	@FXML
 	void initialize() {
+
+		projectSelectionItems = projectSelection.getItems();
+
 		buttonsStripController.setIntervalReceiver(this::handleInterval);
 
 		editTreeButton.setGraphic(Icons.editTree());
-		editTreeButton.setOnAction(event -> new TreeViewWindow(getProjects()).openTreeViewWindow(editTreeButton));
+		editTreeButton.setOnAction(event -> new TreeViewWindow(getProjects())
+				.withCloseHandler(this::updateProjectSelectionItems).openTreeViewWindow(editTreeButton));
 
 		showSpansButton.setGraphic(Icons.showSpans());
 		showSpansButton.setOnAction(event -> {
@@ -59,32 +63,21 @@ public class TimesMainController {
 		});
 
 		new FilteringComboBox<>(projectSelection)//
-				.withItemsUpdateOnFocus(this::getFilteredProjectsList)//
-				.initialise(//
-						words -> p -> matches(p, words), //
-						new StringConverter<Project>() {
-							@Override
-							public String toString(Project proj) {
-								return proj == null ? "" : fullName(proj);
-							}
-
-							@Override
-							public Project fromString(String projName) {
-								return projName == null || projName.isBlank() || projectTree == null ? null
-										: projectSelection.getSelectionModel().getSelectedItem();
-							}
-						}, //
-						() -> {
-							buttonsStripController.startButton.requestFocus();
-							buttonsStripController.startButton.fire();
-						})
+				.withConverter(Converters.stringConverter(//
+						proj -> proj == null ? "" : fullName(proj), //
+						projName -> projName == null || projName.isBlank() || projectTree == null ? null
+								: projectSelection.getSelectionModel().getSelectedItem()))
+				.withActionOnEnter(() -> {
+					buttonsStripController.startButton.requestFocus();
+					buttonsStripController.startButton.fire();
+				}).initialise(words -> p -> matches(p, words))//
 				.build();
 	}
 
-	private List<Project> getFilteredProjectsList() {
+	private void updateProjectSelectionItems() {
 		if (projectTree == null)
-			return Collections.emptyList();
-		return projectTree.dfStream().filter(p -> p.name() != null).toList();
+			return;
+		projectSelectionItems.setAll(projectTree.dfStream().filter(p -> p.name() != null).toList());
 	}
 
 	private static String fullName(Project p) {
@@ -104,6 +97,7 @@ public class TimesMainController {
 
 	void setProjects(Project projects) {
 		this.projectTree = projects;
+		updateProjectSelectionItems();
 	}
 
 	Project getProjects() {

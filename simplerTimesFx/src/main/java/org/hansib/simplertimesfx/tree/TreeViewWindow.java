@@ -15,8 +15,11 @@ import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 public class TreeViewWindow {
+
+	private Runnable closeHandler;
 
 	private final TreeItem<Project> rootItem;
 
@@ -49,7 +52,14 @@ public class TreeViewWindow {
 		window.setX(boundsInScene.getMinX());
 		window.setY(boundsInScene.getMinY());
 
+		if (closeHandler != null)
+			window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> closeHandler.run());
 		window.show();
+	}
+
+	public TreeViewWindow withCloseHandler(Runnable closeHandler) {
+		this.closeHandler = closeHandler;
+		return this;
 	}
 
 	private void showMenu(ContextMenuEvent e, Window owner, TreeView<Project> tree,
