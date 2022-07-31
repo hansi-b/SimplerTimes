@@ -62,15 +62,16 @@ public class TimesMainController {
 			stage.show();
 		});
 
-		new FilteringComboBox<>(projectSelection)//
-				.withConverter(Converters.stringConverter(//
+		new FilteringComboBox<>(projectSelection) //
+				.withWordsFilterBuilder(words -> p -> matches(p, words)) //
+				.withConverter(Converters.stringConverter( //
 						proj -> proj == null ? "" : fullName(proj), //
 						projName -> projName == null || projName.isBlank() || projectTree == null ? null
 								: projectSelection.getSelectionModel().getSelectedItem()))
 				.withActionOnEnter(() -> {
 					buttonsStripController.startButton.requestFocus();
 					buttonsStripController.startButton.fire();
-				}).initialise(words -> p -> matches(p, words))//
+				}) //
 				.build();
 	}
 
