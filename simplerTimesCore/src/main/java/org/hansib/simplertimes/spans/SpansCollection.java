@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class SpansCollection implements Iterable<Span> {
 
@@ -29,6 +30,10 @@ public class SpansCollection implements Iterable<Span> {
 
 	public List<Span> view() {
 		return Collections.unmodifiableList(spans);
+	}
+
+	public Stream<Span> stream() {
+		return spans.stream();
 	}
 
 	@Override
