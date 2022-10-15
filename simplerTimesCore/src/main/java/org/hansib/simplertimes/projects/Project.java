@@ -45,10 +45,12 @@ public class Project {
 		}
 
 		/**
-		 * FIXME: despite both parent and child being the same type, this only works
-		 * bottom-up - there is no use in adding anything to the childBuilder later on
-		 * TODO: it would not be difficult to update the childBuilder with the merge to
-		 * make this symmetric - is that useful?
+		 * Merge the projects in the argument builder as children into this builder.
+		 * 
+		 * NB: Merging is not symmetrical, but has to happen bottom up. To ensure this,
+		 * the argument childBuilder is locked after merging.
+		 * 
+		 * FIXME: Find a better way to do this.
 		 */
 		public Builder mergeChild(Builder childBuilder) {
 
@@ -154,7 +156,7 @@ public class Project {
 	 * @return the ordered list of non-null names, beginning with the root down to
 	 *         this project
 	 */
-	public LinkedList<String> nameWords() {
+	public List<String> nameWords() {
 		LinkedList<String> hierarchy = new LinkedList<>();
 		for (Project current = this; current.parent != null; current = current.parent) {
 			if (current.name != null)
@@ -175,6 +177,9 @@ public class Project {
 		return Collections.unmodifiableList(children);
 	}
 
+	/**
+	 * @return a depth-first stream of this project and its descendants.
+	 */
 	public Stream<Project> dfStream() {
 		Stream<Project> c = children.stream().flatMap(Project::dfStream);
 		return Stream.concat(Stream.of(this), c);
