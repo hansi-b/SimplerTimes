@@ -1,4 +1,4 @@
-package org.hansib.simplertimes.projects;
+package org.hansib.simplertimes.projects
 
 import spock.lang.Specification
 
@@ -72,15 +72,18 @@ public class ProjectSpec extends Specification {
 		thrown IllegalArgumentException
 	}
 
-	def "can stream"() {
+	def "can stream depth-first"() {
 
 		given:
 		def r = Project.root()
+		// depth 1
 		def m = addProject(r, 'hello')
-		addProject(m, 'a')
-		addProject(m, 'b')
+		def n = addProject(r, 'world')
+		// depth 2
+		addProject(m, 'x')
+		addProject(m, 'y')
 
-		addProject(r, 'world')
+		addProject(n, 'a')
 
 		when:
 		def s = r.dfStream().map(c -> c.name()).toList()
@@ -89,9 +92,10 @@ public class ProjectSpec extends Specification {
 		s == [
 			null,
 			'hello',
-			'a',
-			'b',
-			'world'
+			'x',
+			'y',
+			'world',
+			'a'
 		]
 	}
 
