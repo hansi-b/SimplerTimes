@@ -84,7 +84,7 @@ public class Project {
 		}
 	}
 
-	private final AtomicLong nextId;
+	private final AtomicLong idGenerator;
 
 	private final long id;
 
@@ -94,16 +94,16 @@ public class Project {
 
 	private final List<Project> children;
 
-	private Project(AtomicLong nextId, long id, String name, Project parent, List<Project> children) {
-		this.nextId = nextId;
+	private Project(AtomicLong idGenerator, long id, String name, Project parent, List<Project> children) {
+		this.idGenerator = idGenerator;
 		this.id = id;
 		this.name = name;
 		this.parent = parent;
 		this.children = children;
 	}
 
-	private Project(AtomicLong nextId, String name, Project parent, List<Project> children) {
-		this(nextId, nextId.getAndIncrement(), name, parent, children);
+	private Project(AtomicLong idGenerator, String name, Project parent, List<Project> children) {
+		this(idGenerator, idGenerator.getAndIncrement(), name, parent, children);
 	}
 
 	public static Project root() {
@@ -111,7 +111,7 @@ public class Project {
 	}
 
 	public Project add(String name) {
-		Project child = new Project(nextId, name, this, new ArrayList<>());
+		Project child = new Project(idGenerator, name, this, new ArrayList<>());
 		children.add(child);
 		return child;
 	}
