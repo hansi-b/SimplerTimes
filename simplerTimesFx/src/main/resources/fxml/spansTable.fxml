@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+
+<TableView xmlns:fx="http://javafx.com/fxml"
+	xmlns="http://javafx.com/javafx" fx:id="spansTable"
+	fx:controller="org.hansib.simplertimesfx.SpansTableController"
+	stylesheets="fxml/app.css" HBox.hgrow="ALWAYS">
+	<columns>
+		<TableColumn fx:id="startCol" text="Start" />
+		<TableColumn fx:id="endCol" text="End" />
+		<TableColumn fx:id="projectCol" text="Project" />
+		<TableColumn fx:id="durationCol" text="Duration" />
+	</columns>
+</TableView>
