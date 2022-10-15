@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.projects.Project.Builder;
+import org.hansib.simplertimes.projects.Project.BottomUpBuilder;
 import org.hansib.simplertimes.spans.Span;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -60,7 +60,7 @@ public class YamlMapper {
 		module.addSerializer(new SpanSerializer());
 		module.addDeserializer(SpanStub.class, new SpanStubDeserializer());
 		module.addSerializer(new ProjectSerializer());
-		module.addDeserializer(Project.Builder.class, new ProjectDeserializer());
+		module.addDeserializer(Project.BottomUpBuilder.class, new ProjectDeserializer());
 
 		return YAMLMapper.builder().addModule(module).build();
 	}
@@ -149,23 +149,23 @@ public class YamlMapper {
 		}
 	}
 
-	private static class ProjectDeserializer extends JsonDeserializer<Project.Builder> {
+	private static class ProjectDeserializer extends JsonDeserializer<Project.BottomUpBuilder> {
 
 		private static final ObjectMapper objectMapper = createObjectMapper();
 
 		@Override
-		public Project.Builder deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
+		public Project.BottomUpBuilder deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
 			JsonNode node = p.readValueAsTree();
 
 			Long id = objectMapper.treeToValue(node.get(FIELD_ID), Long.class);
 			String name = objectMapper.treeToValue(node.get(FIELD_NAME), String.class);
 
-			Builder builder = new Project.Builder(id, name);
+			BottomUpBuilder builder = new Project.BottomUpBuilder(id, name);
 
-			ObjectReader childrenReader = objectMapper.readerForArrayOf(Project.Builder.class);
+			ObjectReader childrenReader = objectMapper.readerForArrayOf(Project.BottomUpBuilder.class);
 
-			Project.Builder[] childrenBuilder = childrenReader.readValue(node.get(FIELD_CHILDREN));
-			for (Project.Builder childBuilder : childrenBuilder) {
+			Project.BottomUpBuilder[] childrenBuilder = childrenReader.readValue(node.get(FIELD_CHILDREN));
+			for (Project.BottomUpBuilder childBuilder : childrenBuilder) {
 				builder.mergeChild(childBuilder);
 			}
 

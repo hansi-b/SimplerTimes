@@ -21,9 +21,8 @@ public class Project {
 	 * A bottom-up builder for a project tree: You have to add children by 'merging'
 	 * builders for those children, and this operation is not symmetric: Only the
 	 * parent builder can be used on afterwards.
-	 * 
 	 */
-	public static class Builder {
+	public static class BottomUpBuilder {
 		private static record ProjectStub(String name, LinkedHashSet<Long> children) {
 			private ProjectStub(String name) {
 				this(name, new LinkedHashSet<>());
@@ -35,7 +34,7 @@ public class Project {
 
 		private boolean locked;
 
-		public Builder(long rootId, String rootName) {
+		public BottomUpBuilder(long rootId, String rootName) {
 			this.rootId = rootId;
 			this.projectById = new HashMap<>();
 
@@ -49,10 +48,8 @@ public class Project {
 		 * 
 		 * NB: Merging is not symmetrical, but has to happen bottom up. To ensure this,
 		 * the argument childBuilder is locked after merging.
-		 * 
-		 * FIXME: Find a better way to do this.
 		 */
-		public Builder mergeChild(Builder childBuilder) {
+		public BottomUpBuilder mergeChild(BottomUpBuilder childBuilder) {
 
 			if (locked)
 				throw Errors.illegalState("Cannot merge child to locked parent builder");
