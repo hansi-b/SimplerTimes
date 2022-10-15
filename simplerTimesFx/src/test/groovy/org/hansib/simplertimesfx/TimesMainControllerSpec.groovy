@@ -5,11 +5,9 @@ import java.time.ZonedDateTime
 import org.hansib.simplertimes.projects.Project
 import org.hansib.simplertimes.spans.SpansCollection
 import org.hansib.simplertimes.times.Interval
-import org.hansib.simplertimesfx.utils.ResourceLoader
+import org.hansib.sundries.fx.FxmlControllerLoader
 import org.testfx.framework.spock.ApplicationSpec
 
-import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.stage.Stage
 
@@ -23,15 +21,12 @@ public class TimesMainControllerSpec extends ApplicationSpec {
 	@Override
 	public void start(Stage stage) throws Exception {
 
-		final FXMLLoader fxmlLoader = ResourceLoader.get().getFxmlLoader("timesMain.fxml")
-		Parent root = fxmlLoader.load()
-		controller = (TimesMainController) fxmlLoader.getController()
+		controller = new FxmlControllerLoader().loadAndGetController("timesMain.fxml",
+				root -> stage.setScene(new Scene(root)))
 
 		controller.setProjects(rootProject)
 		controller.setSpans(spans)
 
-		Scene scene = new Scene(root)
-		stage.setScene(scene)
 		stage.show()
 	}
 

@@ -11,13 +11,13 @@ import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
 import org.hansib.sundries.fx.Converters;
 import org.hansib.sundries.fx.FilteringComboBox;
+import org.hansib.sundries.fx.FxmlControllerLoader;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -26,22 +26,30 @@ public class TimesMainController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
-	ComboBox<Project> projectSelection;
+	private ComboBox<Project> projectSelection;
 	private ObservableList<Project> projectSelectionItems;
 
 	@FXML
-	ButtonsStripController buttonsStripController;
+	private ButtonsStripController buttonsStripController;
 
 	@FXML
-	Button editTreeButton;
+	private Button editTreeButton;
+
 	@FXML
-	Button showSpansButton;
+	private Button showSpansButton;
+
+	@FXML
+	private SpansTableController spansTableController;
 
 	private SpansCollection spans;
 	private Project projectTree;
 
+	private Converters converters = new Converters();
+
 	@FXML
 	void initialize() {
+
+		spansTableController = new FxmlControllerLoader().loadAndGetController("spansTable.fxml");
 
 		projectSelectionItems = projectSelection.getItems();
 
@@ -58,12 +66,13 @@ public class TimesMainController {
 			Stage stage = new Stage();
 			stage.setScene(new Scene(group));
 
-			group.getChildren().add(new TableView<>());
+			group.getChildren().add(spansTableController.spansTable);
+			spansTableController.setSpans(spans);
 			stage.show();
 		});
 
 		projectSelection.setConverter( //
-				Converters.stringConverter( //
+				converters.stringConverter( //
 						proj -> proj == null ? "" : fullName(proj), //
 						projName -> projName == null || projName.isBlank() || projectTree == null ? null
 								: projectSelection.getSelectionModel().getSelectedItem()));

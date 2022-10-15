@@ -7,11 +7,10 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.yaml.ProjectStore;
 import org.hansib.simplertimes.yaml.SpansStore;
-import org.hansib.simplertimesfx.utils.ResourceLoader;
+import org.hansib.sundries.fx.FxmlControllerLoader;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -23,6 +22,8 @@ import javafx.stage.WindowEvent;
 public class SimplerTimesFx extends Application {
 
 	private static final Logger log = LogManager.getLogger();
+
+	private final FxmlControllerLoader fxControllerLoader = new FxmlControllerLoader();
 
 	private SpansStore spansStore;
 	private ProjectStore treeStore;
@@ -36,16 +37,14 @@ public class SimplerTimesFx extends Application {
 		spansStore = new SpansStore();
 		treeStore = new ProjectStore();
 
-		final FXMLLoader fxmlLoader = ResourceLoader.get().getFxmlLoader("timesMain.fxml");
-		final Parent root = fxmlLoader.load();
-		timesMainController = fxmlLoader.getController();
+		timesMainController = fxControllerLoader.loadAndGetController("timesMain.fxml",
+				(Parent root) -> primaryStage.setScene(new Scene(root)));
 
 		Project projectRoot = treeStore.load();
 		timesMainController.setProjects(projectRoot);
 		timesMainController.setSpans(spansStore.load(projectRoot));
 
 		primaryStage.setTitle("SimplerTimes");
-		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
