@@ -6,7 +6,6 @@ import java.nio.file.Path;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.AppData;
 import org.hansib.simplertimes.projects.Project;
 
 public class ProjectStore {
@@ -15,8 +14,8 @@ public class ProjectStore {
 
 	private final Path projectsPath;
 
-	public ProjectStore() {
-		this.projectsPath = new AppData().dataPath("projects.yml");
+	public ProjectStore(Path projectsPath) {
+		this.projectsPath = projectsPath;
 	}
 
 	public Project load() {
