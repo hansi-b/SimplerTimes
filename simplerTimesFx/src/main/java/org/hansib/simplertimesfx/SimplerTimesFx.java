@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.AppData;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.yaml.ProjectStore;
 import org.hansib.simplertimes.yaml.SpansStore;
@@ -35,7 +36,7 @@ public class SimplerTimesFx extends Application {
 
 		log.info("Starting ...");
 		spansStore = new SpansStore();
-		treeStore = new ProjectStore();
+		treeStore = new ProjectStore(new AppData().dataPath("projects.yml"));
 
 		timesMainController = fxControllerLoader.loadAndGetController("timesMain.fxml",
 				(Parent root) -> primaryStage.setScene(new Scene(root)));
