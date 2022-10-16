@@ -18,12 +18,6 @@ name: null
 children:
 - id: 1
   name: "First one"
-  children:
-  - id: 4
-    name: "Chapter 4"
-    children: []
-- id: 77
-  name: "77th project"
   children: []
 '''
 
@@ -33,20 +27,12 @@ children:
 		then:
 		root.id == 0
 		root.name == null
+		root.children.size() == 1
 
-		def (id1, id77) = root.children
+		def id1 = root.children[0]
 		id1.id == 1
 		id1.name == 'First one'
-		id1.children.size() == 1
-
-		def id4 = id1.children[0]
-		id4.id == 4
-		id4.name == 'Chapter 4'
-		id4.children == []
-
-		id77.id == 77
-		id77.name == '77th project'
-		id77.children == []
+		id1.children == []
 	}
 
 	def 'non-existing file returns empty tree'() {
