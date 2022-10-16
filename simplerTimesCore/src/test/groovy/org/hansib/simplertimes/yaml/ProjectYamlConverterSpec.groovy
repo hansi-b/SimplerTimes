@@ -1,7 +1,6 @@
 package org.hansib.simplertimes.yaml;
 
 import org.hansib.simplertimes.projects.Project
-import org.hansib.simplertimes.yaml.ProjectYamlConverter
 
 import spock.lang.Specification
 
@@ -48,7 +47,7 @@ id: 0
 name: "root"
 children:
 - id: 1
-  name: "book"
+  name: "Book"
   children:
   - id: 2
     name: "chapter 1"
@@ -57,7 +56,7 @@ children:
     name: "chapter 2"
     children: []
 - id: 4
-  name: "code"
+  name: "Code"
   children: []
 '''
 		when:
@@ -65,8 +64,25 @@ children:
 
 		then:
 		root.name() == 'root'
-		def c = root.children()
-		c.size() == 2
+		root.children().size() == 2
+
+		def (id1, id4) = root.children()
+		id1.id() == 1
+		id1.name() == 'Book'
+		id1.children().size() == 2
+
+		id4.id() == 4
+		id4.name() == 'Code'
+		id4.children() == []
+
+		def (id2, id3) = id1.children()
+		id2.id() == 2
+		id2.name() == 'chapter 1'
+		id2.children() == []
+
+		id3.id() == 3
+		id3.name() == 'chapter 2'
+		id3.children() == []
 	}
 
 	def 'can modify after converting from yaml'() {
