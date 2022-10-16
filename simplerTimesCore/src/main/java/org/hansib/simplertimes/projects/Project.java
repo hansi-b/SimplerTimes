@@ -160,10 +160,6 @@ public class Project {
 		return hierarchy;
 	}
 
-	public void setProject(String newName) {
-		this.name = newName;
-	}
-
 	public Project parent() {
 		return parent;
 	}
