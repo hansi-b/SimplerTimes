@@ -56,11 +56,9 @@ public class Project {
 			if (childBuilder.locked)
 				throw Errors.illegalState("Cannot merge child from locked child builder");
 
-			childBuilder.projectById.forEach((id, stub) -> {
-				projectById.merge(id, stub, (oldVal, newVal) -> {
-					throw Errors.illegalArg("Cannot add duplicate #%d (old: '%s', new: '%s')", id, oldVal, newVal);
-				});
-			});
+			childBuilder.projectById.forEach((childId, stub) -> projectById.merge(childId, stub, (oldVal, newVal) -> {
+				throw Errors.illegalArg("Cannot add duplicate #%d (old: '%s', new: '%s')", childId, oldVal, newVal);
+			}));
 			projectById.get(rootId).children.add(childBuilder.rootId);
 			childBuilder.locked = true;
 
