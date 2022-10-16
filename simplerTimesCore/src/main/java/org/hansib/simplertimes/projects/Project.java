@@ -3,7 +3,6 @@ package org.hansib.simplertimes.projects;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,65 +17,54 @@ import org.hansib.sundries.Strings;
 public class Project {
 
 	/**
-	 * A bottom-up builder for a project tree: You have to add children by 'merging'
-	 * builders for those children, and this operation is not symmetric: Only the
-	 * parent builder can be used on afterwards.
+	 * A builder for a project tree. Basically a mutable mirror of Project to allow
+	 * for predefined ids. Building checks id consistency.
 	 */
 	public static class Builder {
 
-		private static record ProjectStub(String name, LinkedHashSet<Long> children) {
-			private ProjectStub(String name) {
-				this(name, new LinkedHashSet<>());
-			}
+		private final long id;
+		private final String name;
+		private final List<Builder> children;
+
+		public Builder(long id, String name) {
+			this.id = id;
+			this.name = name;
+			this.children = new ArrayList<>();
 		}
 
-		private final long rootId;
-		private final Map<Long, ProjectStub> projectById;
-
-		private boolean locked;
-
-		public Builder(long rootId, String rootName) {
-			this.rootId = rootId;
-			this.projectById = new HashMap<>();
-
-			this.locked = false;
-
-			projectById.put(rootId, new ProjectStub(rootName));
+		public void addChild(Builder builder) {
+			children.add(builder);
 		}
 
 		/**
-		 * Merge the projects in the argument builder as children into this builder.
-		 * 
-		 * NB: Merging is not symmetrical, but has to happen bottom up. To ensure this,
-		 * the argument childBuilder is locked after merging.
+		 * @return a project tree containing the node of this builder and all its
+		 *         children
 		 */
-		public Builder mergeChild(Builder childBuilder) {
-
-			if (locked)
-				throw Errors.illegalState("Cannot merge child to locked parent builder");
-			if (childBuilder.locked)
-				throw Errors.illegalState("Cannot merge child from locked child builder");
-
-			childBuilder.projectById.forEach((childId, stub) -> projectById.merge(childId, stub, (oldVal, newVal) -> {
-				throw Errors.illegalArg("Cannot add duplicate #%d (old: '%s', new: '%s')", childId, oldVal, newVal);
-			}));
-			projectById.get(rootId).children.add(childBuilder.rootId);
-			childBuilder.locked = true;
-
-			return this;
-		}
-
 		public Project build() {
-			return build(new AtomicLong(Collections.max(projectById.keySet()) + 1L), rootId, null);
+
+			AtomicLong idGenerator = new AtomicLong();
+			Project root = new Project(idGenerator, id, name, null, new ArrayList<>());
+
+			Map<Long, Project> knownProjectsById = new HashMap<>();
+			knownProjectsById.put(id, root);
+
+			children.forEach(cBuilder -> cBuilder.buildRecursively(idGenerator, root, knownProjectsById));
+
+			idGenerator.set(1 + Collections.max(knownProjectsById.keySet()));
+			return root;
 		}
 
-		private Project build(AtomicLong nextId, long id, Project parent) {
-			ProjectStub stub = projectById.get(id);
-			ArrayList<Project> children = new ArrayList<>();
+		private Project buildRecursively(AtomicLong idGenerator, Project parent, Map<Long, Project> knownProjectsById) {
 
-			Project project = new Project(nextId, id, stub.name, parent, children);
-			children.addAll(stub.children.stream().map(childId -> build(nextId, childId, project)).toList());
-			return project;
+			if (knownProjectsById.containsKey(id))
+				throw Errors.illegalArg("Duplicate id %d (name '%s'): %s", name, id, knownProjectsById.get(id));
+
+			Project current = new Project(idGenerator, id, name, parent, new ArrayList<>());
+			parent.children.add(current);
+			knownProjectsById.put(id, current);
+
+			children.forEach(cBuilder -> cBuilder.buildRecursively(idGenerator, current, knownProjectsById));
+			return current;
 		}
 	}
 

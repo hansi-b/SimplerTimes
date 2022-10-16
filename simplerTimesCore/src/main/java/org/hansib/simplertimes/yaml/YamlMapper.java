@@ -3,6 +3,7 @@ package org.hansib.simplertimes.yaml;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hansib.simplertimes.projects.Project;
@@ -164,10 +165,8 @@ public class YamlMapper {
 
 			ObjectReader childrenReader = objectMapper.readerForArrayOf(Project.Builder.class);
 
-			Project.Builder[] childrenBuilder = childrenReader.readValue(node.get(FIELD_CHILDREN));
-			for (Project.Builder childBuilder : childrenBuilder) {
-				builder.mergeChild(childBuilder);
-			}
+			Project.Builder[] children = childrenReader.readValue(node.get(FIELD_CHILDREN));
+			Arrays.stream(children).forEach(builder::addChild);
 
 			return builder;
 		}
