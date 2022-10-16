@@ -163,7 +163,54 @@ public class ProjectSpec extends Specification {
 		s == ['hello', 'a', 'z', 'b']
 	}
 
-	def addProject(node, name) {
+	def 'can build simple tree'() {
+
+		given:
+		def root = new Project.Builder(45, 'wired')
+		def depth1 = new Project.Builder(7, 'c2')
+		def depth2 = new Project.Builder(78, 'xyz')
+
+		root.addChild(depth1)
+		depth1.addChild(depth2)
+
+		when:
+		Project r = root.build()
+
+		then:
+		r.id == 45
+		r.name == 'wired'
+		r.children.size() == 1
+
+		def d1 = r.children[0]
+		d1.id == 7
+		d1.name == 'c2'
+		d1.children.size() == 1
+
+		def d2 = d1.children[0]
+		d2.id == 78
+		d2.name == 'xyz'
+		d2.children.isEmpty()
+	}
+
+	def 'duplicate ids in builder throws error'() {
+
+		given:
+		def root = new Project.Builder(7, 'parent')
+		def depth1 = new Project.Builder(8, 'child')
+		def depth2 = new Project.Builder(7, 'child2')
+
+		root.addChild(depth1)
+		depth1.addChild(depth2)
+
+		when:
+		root.build()
+
+		then:
+		def ex = thrown IllegalArgumentException
+		ex.message == "Duplicate id 7: New name 'child2', old 'parent'"
+	}
+
+	private def addProject(node, name) {
 		return node.add(name)
 	}
 }

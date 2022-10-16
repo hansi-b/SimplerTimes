@@ -57,7 +57,8 @@ public class Project {
 		private Project buildRecursively(AtomicLong idGenerator, Project parent, Map<Long, Project> knownProjectsById) {
 
 			if (knownProjectsById.containsKey(id))
-				throw Errors.illegalArg("Duplicate id %d (name '%s'): %s", name, id, knownProjectsById.get(id));
+				throw Errors.illegalArg("Duplicate id %d: New name '%s', old '%s'", id, name,
+						knownProjectsById.get(id).name);
 
 			Project current = new Project(idGenerator, id, name, parent, new ArrayList<>());
 			parent.children.add(current);
