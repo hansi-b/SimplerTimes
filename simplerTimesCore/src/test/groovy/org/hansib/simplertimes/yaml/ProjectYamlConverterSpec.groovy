@@ -10,7 +10,7 @@ public class ProjectYamlConverterSpec extends Specification {
 
 		given:
 		def tree = Project.root()
-		tree.setProject("root")
+		tree.setName("root")
 		def book = tree.add("book")
 		book.add("chapter 1")
 		book.add("chapter 2")
