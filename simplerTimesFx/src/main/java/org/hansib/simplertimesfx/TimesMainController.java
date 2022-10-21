@@ -79,10 +79,7 @@ public class TimesMainController {
 
 		new FilteringComboBox<>(projectSelection) //
 				.withLcWordsFilterBuilder(words -> p -> matches(p, words)) //
-				.withActionOnEnter(() -> {
-					buttonsStripController.startButton.requestFocus();
-					buttonsStripController.startButton.fire();
-				}) //
+				.withActionOnEnter(() -> buttonsStripController.startInterval()) //
 				.build();
 	}
 
