@@ -8,7 +8,6 @@ import org.hansib.simplertimes.times.Interval
 import org.hansib.sundries.fx.FxmlControllerLoader
 import org.testfx.framework.spock.ApplicationSpec
 
-import javafx.scene.Scene
 import javafx.stage.Stage
 
 public class TimesMainControllerSpec extends ApplicationSpec {
@@ -21,8 +20,7 @@ public class TimesMainControllerSpec extends ApplicationSpec {
 	@Override
 	public void start(Stage stage) throws Exception {
 
-		controller = new FxmlControllerLoader().loadAndGetController("timesMain.fxml",
-				root -> stage.setScene(new Scene(root)))
+		controller = new FxmlControllerLoader().loadToStage("timesMain.fxml", stage)
 
 		controller.setProjects(rootProject)
 		controller.setSpans(spans)
