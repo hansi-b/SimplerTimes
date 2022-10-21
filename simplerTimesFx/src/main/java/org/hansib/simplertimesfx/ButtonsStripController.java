@@ -20,7 +20,7 @@ public class ButtonsStripController {
 	Button stopButton;
 
 	@FXML
-	Label elapsedTime;
+	private Label elapsedTime;
 
 	private DurationTicker timerDisplay;
 
