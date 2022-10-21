@@ -14,10 +14,10 @@ import javafx.scene.control.Label;
 public class ButtonsStripController {
 
 	@FXML
-	Button startButton;
+	private Button startButton;
 
 	@FXML
-	Button stopButton;
+	private Button stopButton;
 
 	@FXML
 	private Label elapsedTime;
@@ -33,16 +33,23 @@ public class ButtonsStripController {
 		startButton.setGraphic(Icons.start());
 		stopButton.setGraphic(Icons.stop());
 
+		startButton.setDisable(false);
 		stopButton.setDisable(true);
 
 		startButton.setOnAction(a -> startTiming());
 		stopButton.setOnAction(a -> stopTiming());
+
 		updateTime(Duration.ZERO);
 	}
 
 	private void updateTime(Duration duration) {
 		Platform.runLater(() -> elapsedTime.setText(
 				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart())));
+	}
+
+	void startInterval() {
+		startButton.requestFocus();
+		startButton.fire();
 	}
 
 	void setIntervalReceiver(Consumer<Interval> intervalReceiver) {
