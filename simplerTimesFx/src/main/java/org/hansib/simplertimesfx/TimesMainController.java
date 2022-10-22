@@ -15,10 +15,8 @@ import org.hansib.sundries.fx.FxmlControllerLoader;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class TimesMainController {
@@ -38,8 +36,8 @@ public class TimesMainController {
 	@FXML
 	private Button showSpansButton;
 
-	@FXML
 	private SpansTableController spansTableController;
+	private Stage spansStage;
 
 	private SpansCollection spans;
 	private Project projectTree;
@@ -49,7 +47,7 @@ public class TimesMainController {
 	@FXML
 	void initialize() {
 
-		spansTableController = new FxmlControllerLoader().loadAndGetController("spansTable.fxml");
+		spansTableController = loadSpansTableController();
 
 		projectSelectionItems = projectSelection.getItems();
 
@@ -60,16 +58,7 @@ public class TimesMainController {
 				.withCloseHandler(this::updateProjectSelectionItems).openTreeViewWindow(editTreeButton));
 
 		showSpansButton.setGraphic(Icons.showSpans());
-		showSpansButton.setOnAction(event -> {
-
-			HBox group = new HBox();
-			Stage stage = new Stage();
-			stage.setScene(new Scene(group));
-
-			group.getChildren().add(spansTableController.spansTable);
-			spansTableController.setSpans(spans);
-			stage.show();
-		});
+		showSpansButton.setOnAction(event -> showSpansTable());
 
 		projectSelection.setConverter( //
 				converters.stringConverter( //
@@ -81,6 +70,16 @@ public class TimesMainController {
 				.withLcWordsFilterBuilder(words -> p -> matches(p, words)) //
 				.withActionOnEnter(() -> buttonsStripController.startInterval()) //
 				.build();
+	}
+
+	private SpansTableController loadSpansTableController() {
+		spansStage = new Stage();
+		return new FxmlControllerLoader().loadToStage("spansTable.fxml", spansStage);
+	}
+
+	private void showSpansTable() {
+		spansTableController.setSpans(spans);
+		spansStage.show();
 	}
 
 	private void updateProjectSelectionItems() {
