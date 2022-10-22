@@ -2,11 +2,12 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <TableView xmlns:fx="http://javafx.com/fxml"
 	xmlns="http://javafx.com/javafx" fx:id="spansTable"
 	fx:controller="org.hansib.simplertimesfx.SpansTableController"
-	stylesheets="fxml/app.css" HBox.hgrow="ALWAYS">
+	HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
 	<columns>
 		<TableColumn fx:id="startCol" text="Start" />
 		<TableColumn fx:id="endCol" text="End" />
