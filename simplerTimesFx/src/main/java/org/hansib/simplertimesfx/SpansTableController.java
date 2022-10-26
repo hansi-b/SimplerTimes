@@ -1,10 +1,12 @@
 package org.hansib.simplertimesfx;
 
 import static org.hansib.sundries.fx.table.TableViewTools.initDragCellCol;
+import static org.hansib.sundries.fx.table.TableViewTools.setPrefWidth;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +14,7 @@ import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -23,6 +26,18 @@ import javafx.scene.control.TableView;
 public class SpansTableController {
 
 	private static final Logger log = LogManager.getLogger();
+
+	private static class ProjectComparator implements Comparator<Project> {
+		@Override
+		public int compare(Project p1, Project p2) {
+			if (p1.name() == null)
+				return -1;
+			if (p2.name() == null)
+				return 1;
+			return p1.name().compareTo(p2.name());
+		}
+
+	}
 
 	private static record SpanRow(//
 			ObjectProperty<Project> project, //
@@ -59,11 +74,25 @@ public class SpansTableController {
 	@FXML
 	void initialize() {
 		log.info("Initialising spans table");
+
 		spansTable.setItems(rows);
 		initDragCellCol(startCol, SpanRow::start, t -> t.format(dateTimeFormatter));
 		initDragCellCol(endCol, SpanRow::end, t -> t.format(dateTimeFormatter));
+
 		initDragCellCol(projectCol, SpanRow::project, Project::name);
+		projectCol.setComparator(new ProjectComparator());
+
 		initDragCellCol(durationCol, SpanRow::duration, SpansTableController::formatduration);
+
+		setPrefWidth(spansTable, startCol, .275);
+		setPrefWidth(spansTable, endCol, .275);
+		setPrefWidth(spansTable, projectCol, .3);
+
+		final DoubleBinding colsWidth = projectCol.widthProperty()//
+				.add(startCol.widthProperty()).add(endCol.widthProperty())//
+				.multiply(1.01);
+
+		durationCol.prefWidthProperty().bind(spansTable.widthProperty().subtract(colsWidth));
 	}
 
 	static String formatduration(Duration diff) {
