@@ -84,9 +84,9 @@ public class SpansTableController {
 
 		initDragCellCol(durationCol, SpanRow::duration, SpansTableController::formatduration);
 
-		setPrefWidth(spansTable, startCol, .275);
-		setPrefWidth(spansTable, endCol, .275);
-		setPrefWidth(spansTable, projectCol, .3);
+		setPrefWidth(spansTable, startCol, .25);
+		setPrefWidth(spansTable, endCol, .25);
+		setPrefWidth(spansTable, projectCol, .35);
 
 		final DoubleBinding colsWidth = projectCol.widthProperty()//
 				.add(startCol.widthProperty()).add(endCol.widthProperty())//
