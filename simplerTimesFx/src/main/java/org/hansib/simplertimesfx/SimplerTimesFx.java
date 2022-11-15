@@ -8,7 +8,10 @@ import org.hansib.simplertimes.AppData;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.yaml.ProjectStore;
 import org.hansib.simplertimes.yaml.SpansStore;
+import org.hansib.sundries.ResourceLoader;
 import org.hansib.sundries.fx.FxmlControllerLoader;
+
+import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -55,6 +58,9 @@ public class SimplerTimesFx extends Application {
 				Platform.exit();
 			}
 		});
+
+		FXTrayIcon trayIcon = new FXTrayIcon(primaryStage, new ResourceLoader().getResourceUrl("logo.png"));
+		trayIcon.show();
 	}
 
 	@Override
