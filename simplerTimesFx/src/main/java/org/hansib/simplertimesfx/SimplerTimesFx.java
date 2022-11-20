@@ -1,7 +1,6 @@
 package org.hansib.simplertimesfx;
 
 import java.io.IOException;
-import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +8,7 @@ import org.hansib.simplertimes.AppData;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.yaml.ProjectStore;
 import org.hansib.simplertimes.yaml.SpansStore;
-import org.hansib.sundries.fx.FxmlControllerLoader;
+import org.hansib.sundries.fx.FxResourceLoader;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
@@ -17,6 +16,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -27,8 +27,8 @@ import javafx.stage.WindowEvent;
  * from https://github.com/dustinkredmond/FXTrayIcon/issues/67#issue-1445289256
  */
 class ScaledFXTrayIcon extends FXTrayIcon {
-	public ScaledFXTrayIcon(Stage parentStage, URL iconImagePath, int width, int height) {
-		super(parentStage, iconImagePath, width, height);
+	public ScaledFXTrayIcon(Stage parentStage, Image iconImage, int width, int height) {
+		super(parentStage, iconImage, width, height);
 		super.trayIcon.setImageAutoSize(true);
 	}
 }
@@ -37,7 +37,7 @@ public class SimplerTimesFx extends Application {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private final FxmlControllerLoader fxControllerLoader = new FxmlControllerLoader();
+	private final FxResourceLoader fxLoader = new FxResourceLoader();
 
 	private SpansStore spansStore;
 	private ProjectStore treeStore;
@@ -51,7 +51,13 @@ public class SimplerTimesFx extends Application {
 		spansStore = new SpansStore();
 		treeStore = new ProjectStore(new AppData().dataPath("projects.yml"));
 
-		timesMainController = fxControllerLoader.loadAndGetController("timesMain.fxml",
+		Image logo = fxLoader.loadImage("logo.png");
+		if (logo == null)
+			log.warn("Could not load application icon");
+		else
+			primaryStage.getIcons().add(logo);
+
+		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
 				(Parent root) -> primaryStage.setScene(new Scene(root)));
 
 		Project projectRoot = treeStore.load();
@@ -68,15 +74,20 @@ public class SimplerTimesFx extends Application {
 				Platform.exit();
 			}
 		});
-
-		if (FXTrayIcon.isSupported()) {
+		if (canShowTrayIcon(logo)) {
 			log.info("Initialising FXTrayIcon ...");
-			FXTrayIcon trayIcon = new ScaledFXTrayIcon(primaryStage,
-					getClass().getClassLoader().getResource("logo.png"), 128, 128);
+			FXTrayIcon trayIcon = new ScaledFXTrayIcon(primaryStage, logo, 128, 128);
 			trayIcon.addTitleItem(true);
 			trayIcon.addExitItem("Exit");
 			trayIcon.show();
 		}
+	}
+
+	/**
+	 * @return true iff we are on Windows and have a non-null logo
+	 */
+	private static boolean canShowTrayIcon(Image appLogo) {
+		return System.getProperty("os.name").toLowerCase().contains("win") && appLogo != null;
 	}
 
 	@Override

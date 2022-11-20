@@ -11,7 +11,7 @@ import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
 import org.hansib.sundries.fx.Converters;
 import org.hansib.sundries.fx.FilteringComboBox;
-import org.hansib.sundries.fx.FxmlControllerLoader;
+import org.hansib.sundries.fx.FxResourceLoader;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -74,7 +74,7 @@ public class TimesMainController {
 
 	private SpansTableController loadSpansTableController() {
 		spansStage = new Stage();
-		return new FxmlControllerLoader().loadToStage("spansTable.fxml", spansStage);
+		return new FxResourceLoader().loadFxmlToStage("spansTable.fxml", spansStage);
 	}
 
 	private void showSpansTable() {

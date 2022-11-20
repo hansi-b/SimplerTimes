@@ -5,7 +5,7 @@ import java.time.ZonedDateTime
 import org.hansib.simplertimes.projects.Project
 import org.hansib.simplertimes.spans.SpansCollection
 import org.hansib.simplertimes.times.Interval
-import org.hansib.sundries.fx.FxmlControllerLoader
+import org.hansib.sundries.fx.FxResourceLoader
 import org.testfx.framework.spock.ApplicationSpec
 
 import javafx.stage.Stage
@@ -20,7 +20,7 @@ public class TimesMainControllerSpec extends ApplicationSpec {
 	@Override
 	public void start(Stage stage) throws Exception {
 
-		controller = new FxmlControllerLoader().loadToStage("timesMain.fxml", stage)
+		controller = new FxResourceLoader().loadFxmlToStage("timesMain.fxml", stage)
 
 		controller.setProjects(rootProject)
 		controller.setSpans(spans)
