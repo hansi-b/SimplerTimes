@@ -75,6 +75,11 @@ public class SpansTableController {
 	void initialize() {
 		log.info("Initialising spans table");
 
+		projectCol.setText("Project");
+		startCol.setText("Start");
+		endCol.setText("End");
+		durationCol.setText("Duration");
+
 		spansTable.setItems(rows);
 		initDragCellCol(startCol, SpanRow::start, t -> t.format(dateTimeFormatter));
 		initDragCellCol(endCol, SpanRow::end, t -> t.format(dateTimeFormatter));
