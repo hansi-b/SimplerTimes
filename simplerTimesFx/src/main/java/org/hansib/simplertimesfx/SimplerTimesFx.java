@@ -10,8 +10,6 @@ import org.hansib.simplertimes.yaml.ProjectStore;
 import org.hansib.simplertimes.yaml.SpansStore;
 import org.hansib.sundries.fx.FxResourceLoader;
 
-import com.dustinredmond.fxtrayicon.FXTrayIcon;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
@@ -22,16 +20,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
-
-/**
- * from https://github.com/dustinkredmond/FXTrayIcon/issues/67#issue-1445289256
- */
-class ScaledFXTrayIcon extends FXTrayIcon {
-	public ScaledFXTrayIcon(Stage parentStage, Image iconImage, int width, int height) {
-		super(parentStage, iconImage, width, height);
-		super.trayIcon.setImageAutoSize(true);
-	}
-}
 
 public class SimplerTimesFx extends Application {
 
@@ -48,6 +36,7 @@ public class SimplerTimesFx extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		log.info("Starting ...");
+
 		spansStore = new SpansStore();
 		treeStore = new ProjectStore(new AppData().dataPath("projects.yml"));
 
@@ -75,11 +64,7 @@ public class SimplerTimesFx extends Application {
 			}
 		});
 		if (canShowTrayIcon(logo)) {
-			log.info("Initialising FXTrayIcon ...");
-			FXTrayIcon trayIcon = new ScaledFXTrayIcon(primaryStage, logo, 128, 128);
-			trayIcon.addTitleItem(true);
-			trayIcon.addExitItem("Exit");
-			trayIcon.show();
+			new SimplerTimesTrayIcon(primaryStage, logo).show();
 		}
 	}
 
