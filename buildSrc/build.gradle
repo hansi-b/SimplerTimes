@@ -7,8 +7,6 @@ repositories {
 	gradlePluginPortal()
 }
 
-wrapper.gradleVersion = '7.5.1'
-
 dependencies {
 	implementation 'com.palantir.gradle.gitversion:gradle-git-version:0.15.0'
 	implementation 'com.github.ben-manes:gradle-versions-plugin:0.42.0'
