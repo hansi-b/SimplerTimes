@@ -1,5 +1,7 @@
 package org.hansib.simplertimesfx;
 
+import static org.hansib.simplertimesfx.L10nKeys.AppNameWindowTitle;
+
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +39,8 @@ public class SimplerTimesFx extends Application {
 
 		log.info("Starting ...");
 
+		L10nSetup.activateEnglish();
+
 		spansStore = new SpansStore();
 		treeStore = new ProjectStore(new AppData().dataPath("projects.yml"));
 
@@ -53,7 +57,7 @@ public class SimplerTimesFx extends Application {
 		timesMainController.setProjects(projectRoot);
 		timesMainController.setSpans(spansStore.load(projectRoot));
 
-		primaryStage.setTitle("SimplerTimes");
+		primaryStage.setTitle(AppNameWindowTitle.fmt());
 		primaryStage.show();
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
