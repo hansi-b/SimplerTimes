@@ -1,7 +1,5 @@
 package org.hansib.simplertimesfx;
 
-import static org.hansib.simplertimesfx.L10nKeys.MenuItemExit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +33,7 @@ class SimplerTimesTrayIcon {
 		log.info("Showing FXTrayIcon ...");
 		FXTrayIcon trayIcon = new ScaledFXTrayIcon(primaryStage, logo, 128, 128);
 		trayIcon.addTitleItem(true);
-		trayIcon.addExitItem(MenuItemExit.fmt());
+		trayIcon.addExitItem(MenuItems.Exit.fmt());
 		trayIcon.show();
 	}
 }
