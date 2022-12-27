@@ -37,7 +37,6 @@ dependencies {
 }
 
 application {
-	mainModule = 'org.hansib.simplertimesfx'
 	mainClass = 'org.hansib.simplertimesfx.AppStarter'
 }
 
