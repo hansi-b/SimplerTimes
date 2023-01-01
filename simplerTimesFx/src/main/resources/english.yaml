@@ -1,3 +1,5 @@
 L10nKeys:
    AppNameWindowTitle: SimplerTimes
-   MenuItemExit: Exit
+
+MenuItems:
+   Exit: Exit
