@@ -1,4 +1,4 @@
-package org.hansib.simplertimesfx;
+package org.hansib.simplertimesfx.l10n;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -10,7 +10,7 @@ import org.hansib.sundries.l10n.Domain;
 import org.hansib.sundries.l10n.L10n;
 import org.hansib.sundries.l10n.yaml.errors.L10nFormatError;
 
-class L10nSetup {
+public class L10nSetup {
 	private static final Logger log = LogManager.getLogger();
 
 	private static final String englishYaml = "english.yaml";
@@ -19,7 +19,7 @@ class L10nSetup {
 		// nothing to do
 	}
 
-	static L10n activateEnglish() {
+	public static L10n activateEnglish() {
 		L10n english = loadEnglish(e -> log.warn(e::description));
 		english.activate();
 		return english;

@@ -2,6 +2,7 @@ package org.hansib.simplertimesfx;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimesfx.l10n.MenuItems;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 

@@ -1,6 +1,6 @@
 package org.hansib.simplertimesfx;
 
-import static org.hansib.simplertimesfx.L10nKeys.AppNameWindowTitle;
+import static org.hansib.simplertimesfx.l10n.L10nKeys.AppNameWindowTitle;
 
 import java.io.IOException;
 
@@ -10,6 +10,7 @@ import org.hansib.simplertimes.AppData;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.yaml.ProjectStore;
 import org.hansib.simplertimes.yaml.SpansStore;
+import org.hansib.simplertimesfx.l10n.L10nSetup;
 import org.hansib.sundries.fx.FxResourceLoader;
 
 import javafx.application.Application;
