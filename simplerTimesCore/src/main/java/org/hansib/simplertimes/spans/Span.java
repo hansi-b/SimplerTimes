@@ -10,7 +10,7 @@ import org.hansib.sundries.Errors;
 
 public record Span(Project project, OffsetDateTime start, OffsetDateTime end) {
 
-	private static final int roundingNanos = 1000000000 / 2;
+	private static final int roundingNanos = 1_000_000_000 / 2;
 
 	public Span {
 		Objects.requireNonNull(project);
