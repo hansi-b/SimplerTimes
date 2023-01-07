@@ -2,4 +2,7 @@ L10nKeys:
    AppNameWindowTitle: SimplerTimes
 
 MenuItems:
+   NewProject: New Project
+   NewSubproject: New Subproject
+   RemoveSubproject: Remove Subproject
    Exit: Exit

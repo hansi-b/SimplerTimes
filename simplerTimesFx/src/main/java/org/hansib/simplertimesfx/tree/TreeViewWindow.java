@@ -3,6 +3,7 @@ package org.hansib.simplertimesfx.tree;
 import java.util.function.Supplier;
 
 import org.hansib.simplertimes.projects.Project;
+import org.hansib.simplertimesfx.l10n.MenuItems;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -34,13 +35,13 @@ public class TreeViewWindow {
 		TreeView<Project> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		tree.setShowRoot(false);
-		tree.setCellFactory(p -> new TextFieldTreeCellImpl(tree, () -> "New Subproject"));
+		tree.setCellFactory(p -> new TextFieldTreeCellImpl(tree, MenuItems.NewProject::fmt));
 
 		StackPane treeLayout = new StackPane();
 		treeLayout.getChildren().add(tree);
 
 		treeLayout.setOnContextMenuRequested(
-				e -> showMenu(e, treeLayout.getScene().getWindow(), tree, () -> "New Project"));
+				e -> showMenu(e, treeLayout.getScene().getWindow(), tree, MenuItems.NewProject::fmt));
 
 		Scene secondScene = new Scene(treeLayout, 230, 100);
 

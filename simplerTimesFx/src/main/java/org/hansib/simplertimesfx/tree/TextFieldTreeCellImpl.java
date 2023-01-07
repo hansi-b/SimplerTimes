@@ -3,6 +3,7 @@ package org.hansib.simplertimesfx.tree;
 import java.util.function.Supplier;
 
 import org.hansib.simplertimes.projects.Project;
+import org.hansib.simplertimesfx.l10n.MenuItems;
 
 import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
@@ -25,7 +26,7 @@ class TextFieldTreeCellImpl extends TreeCell<Project> {
 	}
 
 	private MenuItem getAddMenuItem(TreeView<Project> treeview, Supplier<String> elementSupplier) {
-		MenuItem addMenuItem = new MenuItem("Add Subproject");
+		MenuItem addMenuItem = new MenuItem(MenuItems.NewSubproject.fmt());
 		addMenuItem.setOnAction(t -> {
 			TreeItem<Project> i = getTreeItem();
 			TreeItem<Project> current = i != null ? i : treeview.getRoot();
@@ -39,7 +40,7 @@ class TextFieldTreeCellImpl extends TreeCell<Project> {
 	}
 
 	private MenuItem getRemoveMenuItem() {
-		MenuItem removeMenuItem = new MenuItem("Remove Subproject");
+		MenuItem removeMenuItem = new MenuItem(MenuItems.RemoveSubproject.fmt());
 		removeMenuItem.setOnAction(t -> {
 			TreeItem<Project> current = getTreeItem();
 			Project nodeChild = current.getValue();
