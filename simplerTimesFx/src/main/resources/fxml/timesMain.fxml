@@ -11,12 +11,14 @@
 	<children>
 		<VBox>
 			<children>
-				<ComboBox fx:id="projectSelection" />
+				<HBox>
+					<ComboBox fx:id="projectSelection" />
+					<Button fx:id="editTreeButton" />
+					<Button fx:id="showSpansButton" />
+				</HBox>
 				<fx:include fx:id="buttonsStrip"
 					source="buttonsStrip.fxml" />
 			</children>
 		</VBox>
-		<Button fx:id="editTreeButton" />
-		<Button fx:id="showSpansButton" />
 	</children>
 </HBox>

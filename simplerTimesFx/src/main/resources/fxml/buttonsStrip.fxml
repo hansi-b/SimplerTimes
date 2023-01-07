@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.Priority?>
@@ -8,11 +9,16 @@
 
 <HBox xmlns="http://javafx.com/javafx/17"
 	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="org.hansib.simplertimesfx.ButtonsStripController" alignment="CENTER">
+	fx:controller="org.hansib.simplertimesfx.ButtonsStripController"
+	alignment="CENTER">
 	<children>
 		<Button fx:id="startButton" />
 		<Button fx:id="stopButton" />
 		<Region HBox.hgrow="ALWAYS" />
-		<Label fx:id="elapsedTime" />
+		<Label fx:id="elapsedTime">
+		<padding>
+			<Insets right="5" />
+		</padding>
+		</Label>
 	</children>
 </HBox>
