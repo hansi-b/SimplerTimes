@@ -65,9 +65,10 @@ public class SimplerTimesFx extends Application {
 			if (ev.getCode() == KeyCode.Q && ev.isControlDown()) {
 				Window window = primaryStage.getScene().getWindow();
 				window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
-				Platform.exit();
 			}
 		});
+		primaryStage.setOnCloseRequest(event -> Platform.exit());
+
 		if (canShowTrayIcon(logo)) {
 			new SimplerTimesTrayIcon(primaryStage, logo).show();
 		}
@@ -82,6 +83,7 @@ public class SimplerTimesFx extends Application {
 
 	@Override
 	public void stop() {
+		log.info("Stopping ...");
 		try {
 			spansStore.save(timesMainController.getSpans());
 			treeStore.save(timesMainController.getProjects());
