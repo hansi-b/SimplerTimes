@@ -49,16 +49,16 @@ public class TimesMainController {
 
 		spansTableController = loadSpansTableController();
 
-		projectSelectionItems = projectSelection.getItems();
-
-		buttonsStripController.setIntervalReceiver(this::handleInterval);
+		showSpansButton.setGraphic(Icons.showSpans());
+		showSpansButton.setOnAction(event -> showSpansTable());
 
 		editTreeButton.setGraphic(Icons.editTree());
 		editTreeButton.setOnAction(event -> new TreeViewWindow(getProjects())
 				.withCloseHandler(this::updateProjectSelectionItems).openTreeViewWindow(editTreeButton));
 
-		showSpansButton.setGraphic(Icons.showSpans());
-		showSpansButton.setOnAction(event -> showSpansTable());
+		buttonsStripController.setIntervalReceiver(this::handleInterval);
+
+		projectSelectionItems = projectSelection.getItems();
 
 		projectSelection.setConverter( //
 				converters.stringConverter( //
