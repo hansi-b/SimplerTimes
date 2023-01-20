@@ -1,5 +1,6 @@
 package org.hansib.simplertimesfx;
 
+import java.time.Duration;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -7,16 +8,19 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
+import org.hansib.simplertimes.times.DurationTicker;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
 import org.hansib.sundries.fx.Converters;
 import org.hansib.sundries.fx.FilteringComboBox;
 import org.hansib.sundries.fx.FxResourceLoader;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 public class TimesMainController {
@@ -28,7 +32,15 @@ public class TimesMainController {
 	private ObservableList<Project> projectSelectionItems;
 
 	@FXML
-	private ButtonsStripController buttonsStripController;
+	private Button startButton;
+
+	@FXML
+	private Button stopButton;
+
+	@FXML
+	private Label elapsedTime;
+
+	private DurationTicker timerDisplay;
 
 	@FXML
 	private Button editTreeButton;
@@ -46,6 +58,7 @@ public class TimesMainController {
 
 	@FXML
 	void initialize() {
+		initializeTiming();
 
 		spansTableController = loadSpansTableController();
 
@@ -55,8 +68,6 @@ public class TimesMainController {
 		editTreeButton.setGraphic(Icons.editTree());
 		editTreeButton.setOnAction(event -> new TreeViewWindow(getProjects())
 				.withCloseHandler(this::updateProjectSelectionItems).openTreeViewWindow(editTreeButton));
-
-		buttonsStripController.setIntervalReceiver(this::handleInterval);
 
 		projectSelectionItems = projectSelection.getItems();
 
@@ -68,8 +79,59 @@ public class TimesMainController {
 
 		new FilteringComboBox<>(projectSelection) //
 				.withLcWordsFilterBuilder(words -> p -> matches(p, words)) //
-				.withActionOnEnter(() -> buttonsStripController.startInterval()) //
+				.withActionOnEnter(this::startInterval) //
 				.build();
+	}
+
+	void initializeTiming() {
+		timerDisplay = new DurationTicker(this::updateTime);
+
+		startButton.setGraphic(Icons.start());
+		stopButton.setGraphic(Icons.stop());
+
+		startButton.setDisable(false);
+		stopButton.setDisable(true);
+
+		startButton.setOnAction(a -> startTiming());
+		stopButton.setOnAction(a -> stopTiming());
+
+		updateTime(Duration.ZERO);
+	}
+
+	void startInterval() {
+		startButton.requestFocus();
+		startButton.fire();
+	}
+
+	private void startTiming() {
+		startButton.setDisable(true);
+		stopButton.setDisable(false);
+		timerDisplay.start();
+	}
+
+	private void stopTiming() {
+		stopButton.setDisable(true);
+		startButton.setDisable(false);
+
+		handleInterval(timerDisplay.stopAndGet());
+	}
+
+	private void updateTime(Duration duration) {
+		Platform.runLater(() -> elapsedTime.setText(
+				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart())));
+	}
+
+	private void handleInterval(Interval t) {
+		Project project = projectSelection.getValue();
+		Project selectedItem = projectSelection.getSelectionModel().getSelectedItem();
+
+		log.info("Got interval: {} {} {}", selectedItem, project, t);
+
+		try {
+			spans.add(new Span(project, t.start(), t.end()));
+		} catch (IllegalArgumentException ex) {
+			log.info("Ignoring invalid span: {}", ex.getMessage());
+		}
 	}
 
 	private SpansTableController loadSpansTableController() {
@@ -118,18 +180,5 @@ public class TimesMainController {
 
 	SpansCollection getSpans() {
 		return spans;
-	}
-
-	void handleInterval(Interval t) {
-		Project project = projectSelection.getValue();
-		Project selectedItem = projectSelection.getSelectionModel().getSelectedItem();
-
-		log.info("Got interval: {} {} {}", selectedItem, project, t);
-
-		try {
-			spans.add(new Span(project, t.start(), t.end()));
-		} catch (IllegalArgumentException ex) {
-			log.info("Ignoring invalid span: {}", ex.getMessage());
-		}
 	}
 }
