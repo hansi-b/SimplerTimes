@@ -85,8 +85,12 @@ public class SimplerTimesFx extends Application {
 	public void stop() {
 		log.info("Stopping ...");
 		try {
-			spansStore.save(timesMainController.getSpans());
 			treeStore.save(timesMainController.getProjects());
+		} catch (IOException e) {
+			log.error("Could not save projects", e);
+		}
+		try {
+			spansStore.save(timesMainController.getSpans());
 		} catch (IOException e) {
 			log.error("Could not save spans", e);
 		}
