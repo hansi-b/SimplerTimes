@@ -54,8 +54,6 @@ public class TimesMainController {
 	private SpansCollection spans;
 	private Project projectTree;
 
-	private Converters converters = new Converters();
-
 	@FXML
 	void initialize() {
 		initializeTiming();
@@ -72,7 +70,7 @@ public class TimesMainController {
 		projectSelectionItems = projectSelection.getItems();
 
 		projectSelection.setConverter( //
-				converters.stringConverter( //
+				new Converters().stringConverter( //
 						proj -> proj == null ? "" : fullName(proj), //
 						projName -> projName == null || projName.isBlank() || projectTree == null ? null
 								: projectSelection.getSelectionModel().getSelectedItem()));
