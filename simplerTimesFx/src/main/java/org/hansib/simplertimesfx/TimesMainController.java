@@ -13,7 +13,6 @@ import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimesfx.tree.TreeViewWindow;
 import org.hansib.sundries.fx.Converters;
 import org.hansib.sundries.fx.FilteringComboBox;
-import org.hansib.sundries.fx.FxResourceLoader;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -21,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 
 public class TimesMainController {
 
@@ -48,9 +46,6 @@ public class TimesMainController {
 	@FXML
 	private Button showSpansButton;
 
-	private SpansTableController spansTableController;
-	private Stage spansStage;
-
 	private SpansCollection spans;
 	private Project projectTree;
 
@@ -58,10 +53,7 @@ public class TimesMainController {
 	void initialize() {
 		initializeTiming();
 
-		spansTableController = loadSpansTableController();
-
-		showSpansButton.setGraphic(Icons.showSpans());
-		showSpansButton.setOnAction(event -> showSpansTable());
+		new SpansTableDisplay(showSpansButton, this::getSpans);
 
 		editTreeButton.setGraphic(Icons.editTree());
 		editTreeButton.setOnAction(event -> new TreeViewWindow(getProjects())
@@ -130,16 +122,6 @@ public class TimesMainController {
 		} catch (IllegalArgumentException ex) {
 			log.info("Ignoring invalid span: {}", ex.getMessage());
 		}
-	}
-
-	private SpansTableController loadSpansTableController() {
-		spansStage = new Stage();
-		return new FxResourceLoader().loadFxmlToStage("spansTable.fxml", spansStage);
-	}
-
-	private void showSpansTable() {
-		spansTableController.setSpans(spans);
-		spansStage.show();
 	}
 
 	private void updateProjectSelectionItems() {
