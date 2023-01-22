@@ -28,6 +28,15 @@ public class TreeViewWindow {
 		rootItem = linkToTreeItem(root);
 	}
 
+	private static TreeItem<Project> linkToTreeItem(Project treeNode) {
+		TreeItem<Project> treeItem = new TreeItem<>(treeNode);
+		treeNode.children().forEach(c -> {
+			TreeItem<Project> i = linkToTreeItem(c);
+			treeItem.getChildren().add(i);
+		});
+		return treeItem;
+	}
+
 	public void openTreeViewWindow(Node parent) {
 
 		rootItem.setExpanded(true);
@@ -82,14 +91,5 @@ public class TreeViewWindow {
 			treeview.edit(newItem);
 		});
 		return addMenuItem;
-	}
-
-	private static TreeItem<Project> linkToTreeItem(Project treeNode) {
-		TreeItem<Project> treeItem = new TreeItem<>(treeNode);
-		treeNode.children().forEach(c -> {
-			TreeItem<Project> i = linkToTreeItem(c);
-			treeItem.getChildren().add(i);
-		});
-		return treeItem;
 	}
 }
