@@ -10,7 +10,6 @@ import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.DurationTicker;
 import org.hansib.simplertimes.times.Interval;
-import org.hansib.simplertimesfx.tree.TreeViewWindow;
 import org.hansib.sundries.fx.Converters;
 import org.hansib.sundries.fx.FilteringComboBox;
 
@@ -54,11 +53,18 @@ public class TimesMainController {
 		initializeTiming();
 
 		new SpansTableDisplay(showSpansButton, this::getSpans);
+		new TreeDisplay(editTreeButton, this::getProjects, this::updateProjectSelectionItems);
 
-		editTreeButton.setGraphic(Icons.editTree());
-		editTreeButton.setOnAction(event -> new TreeViewWindow(getProjects())
-				.withCloseHandler(this::updateProjectSelectionItems).openTreeViewWindow(editTreeButton));
+		initProjectSelection();
+	}
 
+	private void updateProjectSelectionItems() {
+		if (projectTree == null)
+			return;
+		projectSelectionItems.setAll(projectTree.dfStream().filter(p -> p.name() != null).toList());
+	}
+
+	private void initProjectSelection() {
 		projectSelectionItems = projectSelection.getItems();
 
 		projectSelection.setConverter( //
@@ -122,12 +128,6 @@ public class TimesMainController {
 		} catch (IllegalArgumentException ex) {
 			log.info("Ignoring invalid span: {}", ex.getMessage());
 		}
-	}
-
-	private void updateProjectSelectionItems() {
-		if (projectTree == null)
-			return;
-		projectSelectionItems.setAll(projectTree.dfStream().filter(p -> p.name() != null).toList());
 	}
 
 	private static String fullName(Project p) {
