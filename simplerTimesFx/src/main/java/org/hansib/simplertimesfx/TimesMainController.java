@@ -10,6 +10,7 @@ import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.DurationTicker;
 import org.hansib.simplertimes.times.Interval;
+import org.hansib.sundries.fx.ButtonDecorator;
 import org.hansib.sundries.fx.Converters;
 import org.hansib.sundries.fx.FilteringComboBox;
 
@@ -82,14 +83,8 @@ public class TimesMainController {
 	void initializeTiming() {
 		timerDisplay = new DurationTicker(this::updateTime);
 
-		startButton.setGraphic(Icons.start());
-		stopButton.setGraphic(Icons.stop());
-
-		startButton.setDisable(false);
-		stopButton.setDisable(true);
-
-		startButton.setOnAction(a -> startTiming());
-		stopButton.setOnAction(a -> stopTiming());
+		new ButtonDecorator(startButton).graphic(Icons.start()).onAction(a -> startTiming()).enabled();
+		new ButtonDecorator(stopButton).graphic(Icons.stop()).onAction(a -> stopTiming()).disabled();
 
 		updateTime(Duration.ZERO);
 	}
