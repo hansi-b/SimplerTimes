@@ -71,7 +71,7 @@ public class TimesMainController {
 		projectSelection.setConverter( //
 				new Converters().stringConverter( //
 						proj -> proj == null ? "" : fullName(proj), //
-						projName -> projName == null || projName.isBlank() || projectTree == null ? null
+						projName -> projName == null || projName.isBlank() ? null
 								: projectSelection.getSelectionModel().getSelectedItem()));
 
 		new FilteringComboBox<>(projectSelection) //
@@ -89,6 +89,11 @@ public class TimesMainController {
 		updateTime(Duration.ZERO);
 	}
 
+	private void updateTime(Duration duration) {
+		Platform.runLater(() -> elapsedTime.setText(
+				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart())));
+	}
+
 	void startInterval() {
 		startButton.requestFocus();
 		startButton.fire();
@@ -102,26 +107,22 @@ public class TimesMainController {
 
 	private void stopTiming() {
 		stopButton.setDisable(true);
-		startButton.setDisable(false);
 
-		handleInterval(timerDisplay.stopAndGet());
-	}
-
-	private void updateTime(Duration duration) {
-		Platform.runLater(() -> elapsedTime.setText(
-				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart())));
-	}
-
-	private void handleInterval(Interval t) {
+		Interval t = timerDisplay.stopAndGet();
 		Project project = projectSelection.getValue();
-		Project selectedItem = projectSelection.getSelectionModel().getSelectedItem();
 
-		log.info("Got interval: {} {} {}", selectedItem, project, t);
+		Span span = new Span(project, t.start(), t.end());
+		log.info("Got {}", span);
 
+		addSpan(span);
+		startButton.setDisable(false);
+	}
+
+	private void addSpan(Span span) {
 		try {
-			spans.add(new Span(project, t.start(), t.end()));
+			spans.add(span);
 		} catch (IllegalArgumentException ex) {
-			log.info("Ignoring invalid span: {}", ex.getMessage());
+			log.warn("Ignoring invalid span: {}", ex.getMessage());
 		}
 	}
 
