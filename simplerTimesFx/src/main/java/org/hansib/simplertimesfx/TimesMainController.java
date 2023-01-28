@@ -1,21 +1,14 @@
 package org.hansib.simplertimesfx;
 
 import java.time.Duration;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
-import org.hansib.simplertimes.times.DurationTicker;
-import org.hansib.simplertimes.times.Interval;
-import org.hansib.sundries.fx.ButtonDecorator;
-import org.hansib.sundries.fx.Converters;
-import org.hansib.sundries.fx.FilteringComboBox;
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -27,7 +20,6 @@ public class TimesMainController {
 
 	@FXML
 	private ComboBox<Project> projectSelection;
-	private ObservableList<Project> projectSelectionItems;
 
 	@FXML
 	private Button startButton;
@@ -38,84 +30,36 @@ public class TimesMainController {
 	@FXML
 	private Label elapsedTime;
 
-	private DurationTicker timerDisplay;
-
 	@FXML
 	private Button editTreeButton;
 
 	@FXML
 	private Button showSpansButton;
 
+	private SpanRecorder spanRecorder;
+
 	private SpansCollection spans;
 	private Project projectTree;
 
 	@FXML
 	void initialize() {
-		initializeTiming();
+		setElapsedTime(Duration.ZERO);
+
+		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, this::addSpan);
 
 		new SpansTableDisplay(showSpansButton, this::getSpans);
 		new TreeDisplay(editTreeButton, this::getProjects, this::updateProjectSelectionItems);
-
-		initProjectSelection();
 	}
 
 	private void updateProjectSelectionItems() {
 		if (projectTree == null)
 			return;
-		projectSelectionItems.setAll(projectTree.dfStream().filter(p -> p.name() != null).toList());
+		spanRecorder.updateProjects(projectTree.dfStream().filter(p -> p.name() != null).toList());
 	}
 
-	private void initProjectSelection() {
-		projectSelectionItems = projectSelection.getItems();
-
-		projectSelection.setConverter( //
-				new Converters().stringConverter( //
-						proj -> proj == null ? "" : fullName(proj), //
-						projName -> projName == null || projName.isBlank() ? null
-								: projectSelection.getSelectionModel().getSelectedItem()));
-
-		new FilteringComboBox<>(projectSelection) //
-				.withLcWordsFilterBuilder(words -> p -> matches(p, words)) //
-				.withActionOnEnter(this::startInterval) //
-				.build();
-	}
-
-	void initializeTiming() {
-		timerDisplay = new DurationTicker(this::updateTime);
-
-		new ButtonDecorator(startButton).graphic(Icons.start()).onAction(a -> startTiming()).enabled();
-		new ButtonDecorator(stopButton).graphic(Icons.stop()).onAction(a -> stopTiming()).disabled();
-
-		updateTime(Duration.ZERO);
-	}
-
-	private void updateTime(Duration duration) {
+	private void setElapsedTime(Duration duration) {
 		Platform.runLater(() -> elapsedTime.setText(
 				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart())));
-	}
-
-	void startInterval() {
-		startButton.requestFocus();
-		startButton.fire();
-	}
-
-	private void startTiming() {
-		startButton.setDisable(true);
-		stopButton.setDisable(false);
-		timerDisplay.start();
-	}
-
-	private void stopTiming() {
-		stopButton.setDisable(true);
-
-		Interval t = timerDisplay.stopAndGet();
-		Project project = projectSelection.getValue();
-
-		Span span = new Span(project, t.start(), t.end());
-		log.info("Got {}", span);
-
-		addSpan(span);
-		startButton.setDisable(false);
 	}
 
 	private void addSpan(Span span) {
@@ -124,21 +68,6 @@ public class TimesMainController {
 		} catch (IllegalArgumentException ex) {
 			log.warn("Ignoring invalid span: {}", ex.getMessage());
 		}
-	}
-
-	private static String fullName(Project p) {
-
-		/*
-		 * other options: · • › » ▹ ▷ | – #
-		 */
-		return String.join(" › ", p.nameWords());
-	}
-
-	private boolean matches(Project p, Set<String> targetLcWords) {
-		if (targetLcWords.isEmpty())
-			return true;
-		return targetLcWords.stream()
-				.allMatch(tw -> p.nameWords().stream().map(String::toLowerCase).anyMatch(pw -> pw.contains(tw)));
 	}
 
 	void setProjects(Project projects) {
