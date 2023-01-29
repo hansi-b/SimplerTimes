@@ -43,7 +43,7 @@ class SpanRecorder {
 		this.spanReceiver = spanReceiver;
 		this.durationTicker = new DurationTicker(tickReceiver);
 
-		new ButtonDecorator(startButton).graphic(Icons.start()).onAction(a -> startTiming()).enabled();
+		new ButtonDecorator(startButton).graphic(Icons.start()).onAction(a -> startTiming()).disabled();
 		new ButtonDecorator(stopButton).graphic(Icons.stop()).onAction(a -> stopTiming()).disabled();
 
 		projectSelection.setConverter( //
