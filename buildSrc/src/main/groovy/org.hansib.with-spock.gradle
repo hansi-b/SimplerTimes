@@ -1,5 +1,6 @@
 plugins {
 	id 'groovy'
+	id 'org.hansib.with-log4j'
 }
 
 repositories {
@@ -18,4 +19,9 @@ testing {
 			useJUnitJupiter('5.9.1')
 		}
 	}
+}
+
+test {
+	testLogging.showStandardStreams = true
+	jvmArgs '-Dlog4j.configurationFile=log4j2_test.yaml' 
 }
