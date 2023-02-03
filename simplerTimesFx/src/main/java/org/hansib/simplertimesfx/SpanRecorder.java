@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -97,7 +98,7 @@ class SpanRecorder {
 	private static boolean matches(Project p, Set<String> targetLcWords) {
 		if (targetLcWords.isEmpty())
 			return true;
-		return targetLcWords.stream()
-				.allMatch(tw -> p.nameWords().stream().map(String::toLowerCase).anyMatch(pw -> pw.contains(tw)));
+		Set<String> lcWords = p.nameWords().stream().map(String::toLowerCase).collect(Collectors.toSet());
+		return targetLcWords.stream().allMatch(tw -> lcWords.stream().anyMatch(pw -> pw.contains(tw)));
 	}
 }
