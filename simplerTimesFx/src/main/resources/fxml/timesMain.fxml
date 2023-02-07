@@ -9,6 +9,8 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.Priority?>
 
+<?import org.controlsfx.control.SearchableComboBox?>
+
 <HBox xmlns="http://javafx.com/javafx/17"
 	xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="org.hansib.simplertimesfx.TimesMainController"
@@ -17,14 +19,14 @@
 		<VBox>
 			<children>
 				<HBox>
-					<ComboBox fx:id="projectSelection" />
-					<Button fx:id="editTreeButton" />
-					<Button fx:id="showSpansButton" />
+					<SearchableComboBox fx:id="projectSelection" />
+					<Button fx:id="startButton" />
+					<Button fx:id="stopButton" />
 				</HBox>
 				<HBox alignment="CENTER">
 					<children>
-						<Button fx:id="startButton" />
-						<Button fx:id="stopButton" />
+						<Button fx:id="editTreeButton" />
+						<Button fx:id="showSpansButton" />
 						<Region HBox.hgrow="ALWAYS" />
 						<Label fx:id="elapsedTime">
 							<padding>

@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
@@ -11,7 +12,6 @@ import org.hansib.simplertimes.spans.SpansCollection;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 
 public class TimesMainController {
@@ -19,7 +19,7 @@ public class TimesMainController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
-	private ComboBox<Project> projectSelection;
+	private SearchableComboBox<Project> projectSelection;
 
 	@FXML
 	private Button startButton;
