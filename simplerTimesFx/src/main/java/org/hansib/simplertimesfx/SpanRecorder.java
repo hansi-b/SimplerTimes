@@ -14,9 +14,12 @@ import org.hansib.simplertimes.times.Interval;
 import org.hansib.sundries.fx.ButtonDecorator;
 import org.hansib.sundries.fx.Converters;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 class SpanRecorder {
 
@@ -55,8 +58,10 @@ class SpanRecorder {
 						projName -> projName == null || projName.isBlank() ? null
 								: projectSelection.getSelectionModel().getSelectedItem()));
 
-		projectSelection.setOnAction(e -> {
-			log.info(">> onaction: {} \t {}", e, projectSelection.getValue());
+		projectSelection.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				Platform.runLater(startButton::requestFocus);
+			}
 		});
 	}
 
@@ -81,6 +86,7 @@ class SpanRecorder {
 
 		spanReceiver.accept(span);
 		startButton.setDisable(false);
+		projectSelection.requestFocus();
 	}
 
 	private static String fullName(Project p) {

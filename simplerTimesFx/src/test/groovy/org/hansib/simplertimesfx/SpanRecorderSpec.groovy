@@ -1,6 +1,7 @@
 package org.hansib.simplertimesfx
 
 import java.time.Duration
+import java.time.OffsetDateTime
 import java.util.function.Consumer
 
 import org.controlsfx.control.SearchableComboBox
@@ -50,18 +51,63 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 		projectSelection.getSelectionModel().getSelectedIndex() == -1
 		startButton.isDisabled()
 		stopButton.isDisabled()
+		ticks.isEmpty()
+		spans.isEmpty()
 	}
 
 	def 'can select project'() {
 
 		when:
-		clickOn(projectSelection)
-		write('a')
-		type(KeyCode.ENTER)
+		selectProjectA()
 
 		then:
 		projectSelection.getSelectionModel().getSelectedIndex() == 0
-		!startButton.isDisabled()
-		stopButton.isDisabled()
+		startButton.isFocused()
+		startButton.isDisabled() == false
+		stopButton.isDisabled() == true
+	}
+
+	def 'having selected project, enter starts recording'() {
+
+		when:
+		selectProjectA()
+		type(KeyCode.ENTER)
+
+		then:
+		startButton.isDisabled() == true
+		stopButton.isFocused()
+		stopButton.isDisabled() == false
+
+		!ticks.isEmpty()
+		spans.isEmpty()
+	}
+
+	def 'having started recording, enter registers span'() {
+
+		when:
+		selectProjectA()
+		def startTime = OffsetDateTime.now().minusSeconds(1)
+		// start
+		type(KeyCode.ENTER)
+		// ... recording ...
+		Thread.sleep(1000)
+		// stop
+		type(KeyCode.ENTER)
+		def endTime = OffsetDateTime.now().plusSeconds(1)
+
+		then:
+		spans.size() == 1
+		spans[0].start >= startTime
+		spans[0].end <= endTime
+
+		startButton.isDisabled() == false
+		stopButton.isDisabled() == true
+		projectSelection.isFocused()
+	}
+
+	def selectProjectA() {
+		clickOn(projectSelection)
+		write('a')
+		type(KeyCode.ENTER)
 	}
 }
