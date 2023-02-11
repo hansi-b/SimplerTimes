@@ -15,6 +15,9 @@ import org.hansib.sundries.fx.ButtonDecorator;
 import org.hansib.sundries.fx.Converters;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
@@ -27,19 +30,16 @@ class SpanRecorder {
 	private final SearchableComboBox<Project> projectSelection;
 	private final ObservableList<Project> originalList;
 
-	private final Button startButton;
-	private final Button stopButton;
-
 	private final DurationTicker durationTicker;
 	private final Consumer<Span> spanReceiver;
 
+	private final BooleanProperty isRecording = new SimpleBooleanProperty(false);
+
 	SpanRecorder(SearchableComboBox<Project> projectSelection, Button startButton, Button stopButton,
 			Consumer<Duration> tickReceiver, Consumer<Span> spanReceiver) {
+
 		this.projectSelection = projectSelection;
 		this.originalList = projectSelection.getItems();
-
-		this.startButton = startButton;
-		this.stopButton = stopButton;
 
 		this.spanReceiver = spanReceiver;
 		this.durationTicker = new DurationTicker(tickReceiver);
@@ -47,8 +47,10 @@ class SpanRecorder {
 		new ButtonDecorator(startButton).graphic(Icons.start()).onAction(a -> startRecording()).disabled();
 		new ButtonDecorator(stopButton).graphic(Icons.stop()).onAction(a -> stopRecording()).disabled();
 
-		projectSelection.getSelectionModel().selectedItemProperty()
-				.addListener((observable, oldValue, newValue) -> startButton.disableProperty().set(newValue == null));
+		startButton.disableProperty()
+				.bind(projectSelection.getSelectionModel().selectedItemProperty().isNull().or(isRecording));
+		stopButton.disableProperty().bind(isRecording.not());
+		projectSelection.disableProperty().bind(isRecording);
 
 		projectSelection.setConverter( //
 				new Converters().stringConverter( //
@@ -63,20 +65,21 @@ class SpanRecorder {
 		});
 	}
 
+	ReadOnlyBooleanProperty isRecordingProperty() {
+		return isRecording;
+	}
+
 	void updateProjects(Collection<Project> newProjects) {
 		originalList.setAll(newProjects);
 	}
 
 	private void startRecording() {
-		startButton.setDisable(true);
-		projectSelection.setDisable(true);
-
-		stopButton.setDisable(false);
+		isRecording.set(true);
 		durationTicker.start();
 	}
 
 	private void stopRecording() {
-		stopButton.setDisable(true);
+		isRecording.set(false);
 
 		Interval t = durationTicker.stopAndGet();
 		Project project = projectSelection.getValue();
@@ -85,8 +88,6 @@ class SpanRecorder {
 		log.info("Got {}", span);
 
 		spanReceiver.accept(span);
-		startButton.setDisable(false);
-		projectSelection.setDisable(false);
 		projectSelection.requestFocus();
 	}
 
