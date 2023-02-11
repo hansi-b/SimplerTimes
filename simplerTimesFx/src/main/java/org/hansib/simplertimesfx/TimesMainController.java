@@ -49,6 +49,7 @@ public class TimesMainController {
 
 		new SpansTableDisplay(showSpansButton, this::getSpans);
 		new TreeDisplay(editTreeButton, this::getProjects, this::updateProjectSelectionItems);
+		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
 	}
 
 	private void updateProjectSelectionItems() {
