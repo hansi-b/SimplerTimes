@@ -15,7 +15,6 @@ import org.hansib.sundries.fx.ButtonDecorator;
 import org.hansib.sundries.fx.Converters;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
@@ -45,12 +44,11 @@ class SpanRecorder {
 		this.spanReceiver = spanReceiver;
 		this.durationTicker = new DurationTicker(tickReceiver);
 
-		new ButtonDecorator(startButton).graphic(Icons.start()).onAction(a -> startTiming()).disabled();
-		new ButtonDecorator(stopButton).graphic(Icons.stop()).onAction(a -> stopTiming()).disabled();
+		new ButtonDecorator(startButton).graphic(Icons.start()).onAction(a -> startRecording()).disabled();
+		new ButtonDecorator(stopButton).graphic(Icons.stop()).onAction(a -> stopRecording()).disabled();
 
 		projectSelection.getSelectionModel().selectedItemProperty()
-				.addListener((ChangeListener<? super Project>) (observable, oldValue, newValue) -> startButton
-						.disableProperty().set(newValue == null));
+				.addListener((observable, oldValue, newValue) -> startButton.disableProperty().set(newValue == null));
 
 		projectSelection.setConverter( //
 				new Converters().stringConverter( //
@@ -69,7 +67,7 @@ class SpanRecorder {
 		originalList.setAll(newProjects);
 	}
 
-	private void startTiming() {
+	private void startRecording() {
 		startButton.setDisable(true);
 		projectSelection.setDisable(true);
 
@@ -77,7 +75,7 @@ class SpanRecorder {
 		durationTicker.start();
 	}
 
-	private void stopTiming() {
+	private void stopRecording() {
 		stopButton.setDisable(true);
 
 		Interval t = durationTicker.stopAndGet();
