@@ -2,6 +2,7 @@ package org.hansib.simplertimes.times;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -29,10 +30,12 @@ public class DurationTicker {
 	private ZonedDateTime startedAt;
 
 	public DurationTicker(Consumer<Duration> tickReceiver) {
-		this.durationReceiver = tickReceiver;
+		this.durationReceiver = Objects.requireNonNull(tickReceiver);
 	}
 
-	public void start() {
+	public synchronized void start() {
+		if (startedAt != null)
+			throw Errors.illegalState("Ticker was already started");
 		startedAt = ZonedDateTime.now();
 		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateTime, 0, 40, TimeUnit.MILLISECONDS);
 	}
@@ -41,10 +44,13 @@ public class DurationTicker {
 		durationReceiver.accept(Duration.between(startedAt, ZonedDateTime.now()));
 	}
 
-	public Interval stopAndGet() {
+	public synchronized Interval stopAndGet() {
 		if (scheduleAtFixedRate == null || startedAt == null)
 			throw Errors.illegalState("Ticker was not started");
 		scheduleAtFixedRate.cancel(true);
-		return new Interval(startedAt, ZonedDateTime.now());
+		Interval result = new Interval(startedAt, ZonedDateTime.now());
+		startedAt = null;
+		scheduleAtFixedRate = null;
+		return result;
 	}
 }

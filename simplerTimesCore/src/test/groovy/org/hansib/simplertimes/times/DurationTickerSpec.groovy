@@ -23,4 +23,18 @@ public class DurationTickerSpec extends Specification {
 		i.end() > i.start()
 		duration <= Duration.between(i.start(), i.end())
 	}
+
+	def "starting a started ticker throws exception"() {
+
+		given:
+		def timer = new DurationTicker(d->{})
+
+		when:
+		timer.start()
+		System.sleep(5)
+		timer.start()
+
+		then:
+		IllegalStateException ex = thrown()
+	}
 }
