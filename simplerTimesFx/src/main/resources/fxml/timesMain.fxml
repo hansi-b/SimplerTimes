@@ -14,7 +14,7 @@
 <HBox xmlns="http://javafx.com/javafx/17"
 	xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="org.hansib.simplertimesfx.TimesMainController"
-	prefHeight="50.0" prefWidth="240.0">
+	prefHeight="50.0" prefWidth="240.0" stylesheets="fxml/app.css">
 	<children>
 		<VBox>
 			<children>

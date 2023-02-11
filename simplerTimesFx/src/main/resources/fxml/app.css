@@ -1,24 +1,7 @@
 .root {
-	-fx-font-size: 10pt;
-	-fx-base: rgb(38, 38, 115);
+	-fx-font-size: 10.0pt;
 }
 
-.text-field {
-	-fx-focus-color: transparent;
-	-fx-faint-focus-color: transparent;
-	-fx-body-color: white;
-	-fx-background-color: -fx-faint-focus-color, -fx-focus-color,
-		-fx-inner-border, -fx-body-color;
-	-fx-background-insets: 0, 1, 2;
-	-fx-background-radius: 5, 4, 3;
-}
-
-/* adapted from https://www.jensd.de/wordpress/?p=1245 */
-.button {
-	-fx-focus-color: transparent;
-	-fx-faint-focus-color: transparent;
-	-fx-background-color: -fx-faint-focus-color, -fx-focus-color,
-		-fx-inner-border, -fx-body-color;
-	-fx-background-insets: 0, 1, 2;
-	-fx-background-radius: 5, 4, 3;
+.combo-box:disabled, .combo-box:disabled > * {
+	-fx-opacity: 0.7 ;
 }
