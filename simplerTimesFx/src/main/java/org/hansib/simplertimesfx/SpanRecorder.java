@@ -71,6 +71,8 @@ class SpanRecorder {
 
 	private void startTiming() {
 		startButton.setDisable(true);
+		projectSelection.setDisable(true);
+
 		stopButton.setDisable(false);
 		durationTicker.start();
 	}
@@ -86,6 +88,7 @@ class SpanRecorder {
 
 		spanReceiver.accept(span);
 		startButton.setDisable(false);
+		projectSelection.setDisable(false);
 		projectSelection.requestFocus();
 	}
 

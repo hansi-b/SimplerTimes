@@ -62,9 +62,10 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 
 		then:
 		projectSelection.getSelectionModel().getSelectedIndex() == 0
+		isEnabled projectSelection
+		isEnabled startButton
 		startButton.isFocused()
-		startButton.isDisabled() == false
-		stopButton.isDisabled() == true
+		isDisabled stopButton
 	}
 
 	def 'having selected project, enter starts recording'() {
@@ -74,9 +75,10 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 		type(KeyCode.ENTER)
 
 		then:
-		startButton.isDisabled() == true
+		isDisabled projectSelection
+		isDisabled startButton
+		isEnabled stopButton
 		stopButton.isFocused()
-		stopButton.isDisabled() == false
 
 		!ticks.isEmpty()
 		spans.isEmpty()
@@ -100,8 +102,9 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 		spans[0].start >= startTime
 		spans[0].end <= endTime
 
-		startButton.isDisabled() == false
-		stopButton.isDisabled() == true
+		isEnabled projectSelection
+		isEnabled startButton
+		isDisabled stopButton
 		projectSelection.isFocused()
 	}
 
@@ -109,5 +112,13 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 		clickOn(projectSelection)
 		write('a')
 		type(KeyCode.ENTER)
+	}
+
+	def isDisabled(node) {
+		node.isDisabled()
+	}
+
+	def isEnabled(node) {
+		!node.isDisabled()
 	}
 }
