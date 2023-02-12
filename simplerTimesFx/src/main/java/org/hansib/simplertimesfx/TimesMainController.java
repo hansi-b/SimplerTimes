@@ -59,8 +59,9 @@ public class TimesMainController {
 	}
 
 	private void setElapsedTime(Duration duration) {
-		Platform.runLater(() -> elapsedTime.setText(
-				String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart())));
+		int roundedSecs = duration.toSecondsPart() + (500 + duration.toMillisPart()) / 1000;
+		Platform.runLater(() -> elapsedTime
+				.setText(String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), roundedSecs)));
 	}
 
 	private void addSpan(Span span) {
