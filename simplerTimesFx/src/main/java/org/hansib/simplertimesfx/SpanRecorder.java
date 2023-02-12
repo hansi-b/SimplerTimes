@@ -41,8 +41,8 @@ class SpanRecorder {
 		this.projectSelection = projectSelection;
 		this.originalList = projectSelection.getItems();
 
-		this.spanReceiver = spanReceiver;
 		this.durationTicker = new DurationTicker(tickReceiver);
+		this.spanReceiver = spanReceiver;
 
 		new ButtonDecorator(startButton).graphic(Icons.start()).onAction(a -> startRecording()).disabled();
 		new ButtonDecorator(stopButton).graphic(Icons.stop()).onAction(a -> stopRecording()).disabled();
@@ -57,7 +57,8 @@ class SpanRecorder {
 						proj -> proj == null ? "" : fullName(proj), //
 						projName -> projName == null || projName.isBlank() ? null
 								: projectSelection.getSelectionModel().getSelectedItem()));
-
+		projectSelection.showingProperty()
+				.addListener((observable, oldValue, newValue) -> tickReceiver.accept(Duration.ZERO));
 		projectSelection.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				Platform.runLater(startButton::requestFocus);
