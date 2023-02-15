@@ -6,6 +6,8 @@ plugins {
 
 	id 'org.openjfx.javafxplugin' version '0.0.13'
 	id 'org.beryx.runtime' version '1.13.0'
+
+	id 'com.github.hierynomus.license' version '0.16.1'
 }
 
 javafx {
@@ -43,6 +45,13 @@ application {
 	mainClass = 'org.hansib.simplertimesfx.AppStarter'
 }
 
+
+license {
+	header project.file('LICENSE.HEADER')
+	ext.year = Calendar.getInstance().get(Calendar.YEAR)
+
+	include '**/*.java'
+}
 
 def versionedProjectName = "$project.name-${project.version}"
 
