@@ -1,0 +1,36 @@
+plugins {
+	id 'application'
+	id 'org.hansib.java-common'
+
+	id 'org.beryx.runtime'
+	id 'com.github.hierynomus.license'
+}
+
+def versionedProjectName = "${rootProject.name}-${project.version}"
+
+task jpackageImageWithExtras(type: Zip) {
+	dependsOn jpackageImage
+
+	def imgDir = file("build/jpackage/$versionedProjectName")
+
+	doFirst {
+		copy {
+			from projectDir
+			include 'LICENSE'
+			into imgDir
+		}
+	}
+
+	from projectDir
+	include 'src/main/java/**/*'
+	destinationDirectory = imgDir
+	archiveFileName = "${versionedProjectName}-src.zip"
+}
+
+runtime {
+	jpackage {
+		imageName = "${versionedProjectName}"
+	}
+}
+
+jpackage.dependsOn jpackageImageWithExtras

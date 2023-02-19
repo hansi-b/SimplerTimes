@@ -1,13 +1,9 @@
 plugins {
-	id 'application'
 	id 'distribution'
 
-	id 'org.hansib.java-common'
+	id 'org.hansib.application'
 
 	id 'org.openjfx.javafxplugin' version '0.0.13'
-	id 'org.beryx.runtime' version '1.13.0'
-
-	id 'com.github.hierynomus.license' version '0.16.1'
 }
 
 javafx {
@@ -21,12 +17,11 @@ javafx {
 }
 
 dependencies {
-
-	implementation project(':simplerTimesCore')
-
 	implementation 'org.hansib:sundries:0.4.1'
 	implementation 'org.hansib:sundries-fx:0.2.2'
-
+	
+	implementation 'net.harawata:appdirs:1.2.1'
+	
 	implementation 'org.controlsfx:controlsfx:11.1.2'
 
 	implementation 'com.dustinredmond.fxtrayicon:FXTrayIcon:4.0.1'
@@ -44,16 +39,6 @@ dependencies {
 application {
 	mainClass = 'org.hansib.simplertimesfx.AppStarter'
 }
-
-
-license {
-	header project.file('LICENSE.HEADER')
-	ext.year = Calendar.getInstance().get(Calendar.YEAR)
-
-	include '**/*.java'
-}
-
-def versionedProjectName = "$project.name-${project.version}"
 
 def currentOs = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem.name.toLowerCase()
 def isWin = currentOs.contains('win')
@@ -81,8 +66,6 @@ runtime {
 	}
 
 	jpackage {
-
-		imageName = "${versionedProjectName}"
 
 		appVersion = "${project.version}".split('-')[0]
 		installerType = isWin ? "msi" : "deb"

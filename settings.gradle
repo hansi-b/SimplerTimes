@@ -1,5 +1,5 @@
 rootProject.name = 'SimplerTimes'
-include 'simplerTimesCore', 'simplerTimesFx'
+include 'simplerTimesFx'
 
 if (file('../Sundries').exists()) includeBuild '../Sundries'
 
