@@ -16,14 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hansib.simplertimesfx;
+package org.hansib.simplertimes.fx.l10n;
 
-/*
- * Needed as a workaround for https://github.com/javafxports/openjdk-jfx/issues/236
- */
-public class AppStarter {
+import org.hansib.sundries.l10n.FormatKey;
 
-	public static void main(String[] args) {
-		SimplerTimesFx.main(args);
-	}
+public enum L10nKeys implements FormatKey {
+	AppNameWindowTitle
 }

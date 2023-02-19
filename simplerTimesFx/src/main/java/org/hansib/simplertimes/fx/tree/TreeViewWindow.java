@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hansib.simplertimesfx.tree;
+package org.hansib.simplertimes.fx.tree;
 
 import java.util.function.Supplier;
 
+import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimesfx.l10n.MenuItems;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;

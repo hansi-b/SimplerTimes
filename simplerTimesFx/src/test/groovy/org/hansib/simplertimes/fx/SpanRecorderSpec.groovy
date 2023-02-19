@@ -1,4 +1,4 @@
-package org.hansib.simplertimesfx
+package org.hansib.simplertimes.fx
 
 import java.time.Duration
 import java.time.OffsetDateTime

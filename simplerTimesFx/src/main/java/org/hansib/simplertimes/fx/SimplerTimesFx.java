@@ -16,19 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hansib.simplertimesfx;
+package org.hansib.simplertimes.fx;
 
-import static org.hansib.simplertimesfx.l10n.L10nKeys.AppNameWindowTitle;
+import static org.hansib.simplertimes.fx.l10n.L10nKeys.AppNameWindowTitle;
 
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.AppData;
+import org.hansib.simplertimes.fx.l10n.L10nSetup;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.yaml.ProjectStore;
 import org.hansib.simplertimes.yaml.SpansStore;
-import org.hansib.simplertimesfx.l10n.L10nSetup;
 import org.hansib.sundries.fx.FxResourceLoader;
 
 import javafx.application.Application;

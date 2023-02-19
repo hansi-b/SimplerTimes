@@ -1,4 +1,4 @@
-package org.hansib.simplertimesfx
+package org.hansib.simplertimes.fx
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger

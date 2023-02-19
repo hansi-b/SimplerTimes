@@ -1,4 +1,4 @@
-package org.hansib.simplertimesfx
+package org.hansib.simplertimes.fx
 
 import org.hansib.simplertimes.projects.Project
 import org.hansib.simplertimes.spans.SpansCollection

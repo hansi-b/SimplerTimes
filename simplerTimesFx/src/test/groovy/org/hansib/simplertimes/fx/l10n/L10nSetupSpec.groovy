@@ -1,8 +1,8 @@
-package org.hansib.simplertimesfx.l10n;
+package org.hansib.simplertimes.fx.l10n;
 
 import java.util.function.Consumer
 
-import org.hansib.simplertimesfx.l10n.L10nSetup
+import org.hansib.simplertimes.fx.l10n.L10nSetup
 import org.hansib.sundries.l10n.L10nChecker
 import org.hansib.sundries.l10n.L10nChecker.MissingKeysHandleMode
 import org.hansib.sundries.l10n.MissingKeys

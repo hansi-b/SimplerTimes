@@ -16,21 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hansib.simplertimesfx;
+package org.hansib.simplertimes.fx;
 
-import java.util.function.Supplier;
+/*
+ * Needed as a workaround for https://github.com/javafxports/openjdk-jfx/issues/236
+ */
+public class AppStarter {
 
-import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimesfx.tree.TreeViewWindow;
-
-import javafx.scene.control.Button;
-
-class TreeDisplay {
-
-	TreeDisplay(Button editTreeButton, Supplier<Project> rootSupplier, Runnable closeHandler) {
-
-		editTreeButton.setGraphic(Icons.editTree());
-		editTreeButton.setOnAction(event -> new TreeViewWindow(rootSupplier.get()).withCloseHandler(closeHandler)
-				.openTreeViewWindow(editTreeButton));
+	public static void main(String[] args) {
+		SimplerTimesFx.main(args);
 	}
 }

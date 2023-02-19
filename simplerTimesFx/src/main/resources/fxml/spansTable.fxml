@@ -6,7 +6,7 @@
 
 <TableView xmlns:fx="http://javafx.com/fxml"
 	xmlns="http://javafx.com/javafx" fx:id="spansTable"
-	fx:controller="org.hansib.simplertimesfx.SpansTableController"
+	fx:controller="org.hansib.simplertimes.fx.SpansTableController"
 	prefWidth="600" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
 	<columns>
 		<TableColumn fx:id="startCol" />

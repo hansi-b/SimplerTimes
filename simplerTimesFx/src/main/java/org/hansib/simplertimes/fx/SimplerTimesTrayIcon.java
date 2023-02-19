@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hansib.simplertimesfx;
+package org.hansib.simplertimes.fx;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimesfx.l10n.MenuItems;
+import org.hansib.simplertimes.fx.l10n.MenuItems;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
