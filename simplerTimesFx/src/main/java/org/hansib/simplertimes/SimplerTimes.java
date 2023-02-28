@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimes;
+
+import org.hansib.simplertimes.fx.SimplerTimesFx;
 
 /*
  * Needed as a workaround for https://github.com/javafxports/openjdk-jfx/issues/236
  */
-public class AppStarter {
+public class SimplerTimes {
 
 	public static void main(String[] args) {
 		SimplerTimesFx.main(args);

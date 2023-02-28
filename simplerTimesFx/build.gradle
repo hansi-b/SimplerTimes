@@ -19,9 +19,9 @@ javafx {
 dependencies {
 	implementation 'org.hansib:sundries:0.4.1'
 	implementation 'org.hansib:sundries-fx:0.2.2'
-	
+
 	implementation 'net.harawata:appdirs:1.2.1'
-	
+
 	implementation 'org.controlsfx:controlsfx:11.1.2'
 
 	implementation 'com.dustinredmond.fxtrayicon:FXTrayIcon:4.0.1'
@@ -37,7 +37,7 @@ dependencies {
 }
 
 application {
-	mainClass = 'org.hansib.simplertimes.fx.AppStarter'
+	mainClass = 'org.hansib.simplertimes.SimplerTimes'
 }
 
 def currentOs = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem.name.toLowerCase()
