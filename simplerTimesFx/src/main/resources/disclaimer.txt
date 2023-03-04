@@ -1,0 +1,7 @@
+https://github.com/hansi-b/SimplerTimesFx
+
+Diese Software wird unter der Lizenz GPL3 (https://www.gnu.org/licenses/gpl-3.0.en.html) zur Verfügung gestellt.
+
+Der Quellcode ist ist der Software beigefügt, und im Rahmen der GPL3 darf das Programm benutzt, verändert und weitergegeben werden.
+
+Die Software wurde nach bestem Wissen und Gewissen erstellt. Die Benutzung erfolgt auf eigenes Risiko und ohne Anspruch auf Gewährleistung.

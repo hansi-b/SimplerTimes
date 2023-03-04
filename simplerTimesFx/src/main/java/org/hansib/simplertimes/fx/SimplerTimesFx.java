@@ -25,6 +25,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.AppData;
+import org.hansib.simplertimes.AppPrefs;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.yaml.ProjectStore;
@@ -48,6 +49,8 @@ public class SimplerTimesFx extends Application {
 
 	private final FxResourceLoader fxLoader = new FxResourceLoader();
 
+	private Stage primaryStage;
+
 	private SpansStore spansStore;
 	private ProjectStore treeStore;
 
@@ -57,8 +60,12 @@ public class SimplerTimesFx extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		log.info("Starting ...");
+		this.primaryStage = primaryStage;
 
 		L10nSetup.activateEnglish();
+
+		AppPrefs prefs = AppPrefs.create();
+		DisclaimerChecker.checkDisclaimer(prefs.disclaimerAccepted(), this::fireCloseRequest);
 
 		spansStore = new SpansStore();
 		treeStore = new ProjectStore(new AppData().dataPath("projects.yml"));
@@ -80,16 +87,19 @@ public class SimplerTimesFx extends Application {
 		primaryStage.show();
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
-			if (ev.getCode() == KeyCode.Q && ev.isControlDown()) {
-				Window window = primaryStage.getScene().getWindow();
-				window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
-			}
+			if (ev.getCode() == KeyCode.Q && ev.isControlDown())
+				fireCloseRequest();
 		});
 		primaryStage.setOnCloseRequest(event -> Platform.exit());
 
 		if (canShowTrayIcon(logo)) {
 			new SimplerTimesTrayIcon(primaryStage, logo).show();
 		}
+	}
+
+	private void fireCloseRequest() {
+		Window window = primaryStage.getScene().getWindow();
+		window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
 
 	/**
