@@ -20,7 +20,7 @@ repositories {
 
 
 group 'org.hansib'
-version gitVersion()
+version gitVersion().replace(".dirty", ".modified")
 
 task writeVersion() {
 	doFirst {
