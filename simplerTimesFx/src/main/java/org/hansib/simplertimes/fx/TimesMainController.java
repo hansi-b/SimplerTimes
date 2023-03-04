@@ -1,5 +1,5 @@
 /**
- * Abakus - https://github.com/hansi-b/SimplerTimesFx
+ * SimplerTimes - https://github.com/hansi-b/SimplerTimesFx
  *
  * Copyright (C) 2022-2023 Hans Bering
  *
@@ -31,10 +31,14 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 
 public class TimesMainController {
 
 	private static final Logger log = LogManager.getLogger();
+
+	@FXML
+	private Pane topLevelPane;
 
 	@FXML
 	private SearchableComboBox<Project> projectSelection;
@@ -61,6 +65,7 @@ public class TimesMainController {
 
 	@FXML
 	void initialize() {
+
 		setElapsedTime(Duration.ZERO);
 
 		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, this::addSpan);

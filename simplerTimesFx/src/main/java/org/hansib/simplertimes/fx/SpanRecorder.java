@@ -1,5 +1,5 @@
 /**
- * Abakus - https://github.com/hansi-b/SimplerTimesFx
+ * SimplerTimes - https://github.com/hansi-b/SimplerTimesFx
  *
  * Copyright (C) 2022-2023 Hans Bering
  *

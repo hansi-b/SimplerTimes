@@ -13,7 +13,7 @@
 
 <HBox xmlns="http://javafx.com/javafx/17"
 	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="org.hansib.simplertimes.fx.TimesMainController"
+	fx:controller="org.hansib.simplertimes.fx.TimesMainController" fx:id="topLevelPane"
 	prefHeight="50.0" prefWidth="240.0" stylesheets="fxml/app.css">
 	<children>
 		<VBox>

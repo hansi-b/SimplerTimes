@@ -8,6 +8,13 @@ plugins {
 
 def versionedProjectName = "${rootProject.name}-${project.version}"
 
+license {
+	header project.file('LICENSE.HEADER')
+	ext.year = Calendar.getInstance().get(Calendar.YEAR)
+
+	include '**/*.java'
+}
+
 task jpackageImageWithExtras(type: Zip) {
 	dependsOn jpackageImage
 
