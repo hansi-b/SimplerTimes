@@ -62,21 +62,22 @@ class DisclaimerChecker {
 		if (disclaimer == null)
 			return false;
 
-		final String frage = "Akzeptieren Sie diese Nutzungsvereinbarung?\n(\"Nein\" schließt das Programm.)";
-		final Alert disclaimerConf = new Alert(AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
-		Button noButton = (Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.NO);
-		noButton.setText("Nein");
-		noButton.setDefaultButton(true);
-		Button yesButton = (Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.YES);
-		yesButton.setText("Ja");
-		yesButton.setDefaultButton(false);
+		final String frage = "Do you accept this agreement?\n(\"Cancel\" quits the program.)";
+		final Alert disclaimerConf = new Alert(AlertType.CONFIRMATION, "", ButtonType.OK, ButtonType.CANCEL);
+		Button rejectButton = (Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.CANCEL);
+		rejectButton.setText("Cancel");
+		rejectButton.setDefaultButton(true);
+		Button accecptButton = (Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.OK);
+		accecptButton.setText("OK");
+		accecptButton.setDefaultButton(false);
 
-		disclaimerConf.setHeaderText("SimplerTimes - Nutzungsvereinbarung");
-		disclaimerConf.setTitle("SimplerTimes - Nutzungsvereinbarung");
+		disclaimerConf.setHeaderText("SimplerTimes - Disclaimer");
+		disclaimerConf.setTitle("SimplerTimes - Disclaimer");
 
 		TextArea textArea = new TextArea(String.format("%s%n%s", disclaimer, frage));
 		textArea.setEditable(false);
 		textArea.setWrapText(true);
+		textArea.setPrefHeight(300);
 
 		VBox.setVgrow(textArea, Priority.ALWAYS);
 
@@ -87,7 +88,7 @@ class DisclaimerChecker {
 		disclaimerConf.setResizable(true);
 
 		final Optional<ButtonType> answer = disclaimerConf.showAndWait();
-		return answer.isPresent() && answer.get().equals(ButtonType.YES);
+		return answer.isPresent() && answer.get().equals(ButtonType.OK);
 	}
 
 	private String loadDisclaimer() {
@@ -97,8 +98,8 @@ class DisclaimerChecker {
 		} catch (final RuntimeException | IOException e) {
 			log.error("Could not load disclaimer", e);
 			final Alert alert = new Alert(AlertType.ERROR,
-					String.format("Die Nutzungsvereinbarung konnte nicht geladen werden: %s", e.getMessage()));
-			alert.setTitle("Interner Fehler beim Laden der Nutzungsvereinbarung");
+					String.format("The disclaimer could not be loaded: %s", e.getMessage()));
+			alert.setTitle("Internal error while loading the disclaimer");
 			alert.showAndWait();
 			return null;
 		}
