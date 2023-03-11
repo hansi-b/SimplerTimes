@@ -29,6 +29,7 @@ import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.times.DurationTicker;
 import org.hansib.simplertimes.times.Interval;
+import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonDecorator;
 import org.hansib.sundries.fx.Converters;
 
@@ -42,6 +43,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 class SpanRecorder {
+
+	private static final Duration minimumSpanDuration = Duration.ofSeconds(1);
 
 	private static final Logger log = LogManager.getLogger();
 
@@ -103,10 +106,15 @@ class SpanRecorder {
 		Interval t = durationTicker.stopAndGet();
 		Project project = projectSelection.getValue();
 
-		Span span = new Span(project, t.start(), t.end());
-		log.info("Got {}", span);
+		if (Duration.between(t.start(), t.end()).compareTo(minimumSpanDuration) > 0) {
+			Span span = new Span(project, t.start(), t.end());
+			log.info("Registering interval {}", span);
+			spanReceiver.accept(span);
+		} else {
+			log.info("Ignoring interval {} - {} (is smaller than {})", t.start(), t.end(),
+					Utils.toHmsString(minimumSpanDuration));
+		}
 
-		spanReceiver.accept(span);
 		projectSelection.requestFocus();
 	}
 

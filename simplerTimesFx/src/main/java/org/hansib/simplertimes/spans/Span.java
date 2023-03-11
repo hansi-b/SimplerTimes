@@ -28,8 +28,6 @@ import org.hansib.sundries.Errors;
 
 public record Span(Project project, OffsetDateTime start, OffsetDateTime end) {
 
-	private static final int roundingNanos = 1_000_000_000 / 2;
-
 	public Span {
 		Objects.requireNonNull(project);
 		Objects.requireNonNull(start);
@@ -40,10 +38,10 @@ public record Span(Project project, OffsetDateTime start, OffsetDateTime end) {
 	}
 
 	public Span(Project project, ZonedDateTime start, ZonedDateTime end) {
-		this(project, round(start), round(end));
+		this(project, truncate(start), truncate(end));
 	}
 
-	private static OffsetDateTime round(ZonedDateTime ldt) {
-		return ldt.plusNanos(roundingNanos).truncatedTo(ChronoUnit.SECONDS).toOffsetDateTime();
+	private static OffsetDateTime truncate(ZonedDateTime ldt) {
+		return ldt.truncatedTo(ChronoUnit.SECONDS).toOffsetDateTime();
 	}
 }

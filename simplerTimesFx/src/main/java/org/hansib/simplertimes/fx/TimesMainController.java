@@ -20,12 +20,11 @@ package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
+import org.hansib.simplertimes.times.Utils;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -34,8 +33,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 public class TimesMainController {
-
-	private static final Logger log = LogManager.getLogger();
 
 	@FXML
 	private Pane topLevelPane;
@@ -82,17 +79,11 @@ public class TimesMainController {
 	}
 
 	private void setElapsedTime(Duration duration) {
-		int roundedSecs = duration.toSecondsPart() + (500 + duration.toMillisPart()) / 1000;
-		Platform.runLater(() -> elapsedTime
-				.setText(String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), roundedSecs)));
+		Platform.runLater(() -> elapsedTime.setText(Utils.toHmsString(duration)));
 	}
 
 	private void addSpan(Span span) {
-		try {
-			spans.add(span);
-		} catch (IllegalArgumentException ex) {
-			log.warn("Ignoring invalid span: {}", ex.getMessage());
-		}
+		spans.add(span);
 	}
 
 	void setProjects(Project projects) {

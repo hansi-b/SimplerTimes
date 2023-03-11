@@ -11,14 +11,14 @@ public class SpanSpec extends Specification {
 
 	Project p = Mock()
 
-	def 'constructor rounds arguments'() {
+	def 'constructor truncates to seconds'() {
 		when:
 		def s = new Span(p, ZonedDateTime.of(1,2,3,4,5,6,499999777, ZoneId.systemDefault()), ZonedDateTime.of(1,2,3,4,5,7,500000008, ZoneId.systemDefault()))
 		then:
 		s.start().getNano() == 0
 		s.start().getSecond() == 6
 		s.end().getNano() == 0
-		s.end().getSecond() == 8
+		s.end().getSecond() == 7
 	}
 
 	def 'exception on rounded constructor arguments'() {
