@@ -87,7 +87,7 @@ public class SpansTableController {
 	private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
 	@FXML
-	TableView<SpanRow> spansTable;
+	private TableView<SpanRow> spansTable;
 
 	@FXML
 	void initialize() {

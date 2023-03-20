@@ -27,25 +27,25 @@ import org.hansib.sundries.fx.FxResourceLoader;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-class SpansTableDisplay {
+class SpansDisplay {
 
 	private final Supplier<SpansCollection> spansSupplier;
 	private Stage spansStage;
-	private SpansTableController spansTableController;
+	private SpansInfoController spansInfoController;
 
-	SpansTableDisplay(Button showSpansButton, Supplier<SpansCollection> spansSupplier) {
+	SpansDisplay(Button showSpansButton, Supplier<SpansCollection> spansSupplier) {
 
 		this.spansSupplier = spansSupplier;
 
-		new ButtonDecorator(showSpansButton).graphic(Icons.showSpans()).onAction(event -> showSpansTable());
+		new ButtonDecorator(showSpansButton).graphic(Icons.showSpans()).onAction(event -> showSpansInfo());
 	}
 
-	private void showSpansTable() {
+	private void showSpansInfo() {
 		if (spansStage == null) {
 			spansStage = new Stage();
-			spansTableController = new FxResourceLoader().loadFxmlToStage("spansTable.fxml", spansStage);
+			spansInfoController = new FxResourceLoader().loadFxmlToStage("spansInfo.fxml", spansStage);
 		}
-		spansTableController.setSpans(spansSupplier.get());
+		spansInfoController.setSpans(spansSupplier.get());
 		spansStage.show();
 	}
 }
