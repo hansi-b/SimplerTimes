@@ -70,7 +70,7 @@ public class TreeViewWindow {
 		treeLayout.setOnContextMenuRequested(
 				e -> showMenu(e, treeLayout.getScene().getWindow(), tree, MenuItems.NewProject::fmt));
 
-		Scene secondScene = new Scene(treeLayout, 230, 100);
+		Scene secondScene = new Scene(treeLayout, 250, 250);
 
 		Stage window = new Stage();
 		// window.initStyle(StageStyle.UNDECORATED);
