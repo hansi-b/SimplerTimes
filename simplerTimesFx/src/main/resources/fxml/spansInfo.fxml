@@ -15,6 +15,6 @@
 		<fx:include source="spansTable.fxml" fx:id="spansTable" />
 	</Tab>
 	<Tab text="Spans Statistics" closable="false">
-		<Label text="Statistics" />
+		<fx:include source="spansStats.fxml" fx:id="spansStats" />
 	</Tab>
 </TabPane>

@@ -39,11 +39,15 @@ public class SpansInfoController {
 	private Tab spansStatsTab;
 
 	@FXML
+	private SpansStatsController spansStatsController;
+
+	@FXML
 	void initialize() {
 		log.info("Initialising spans info");
 	}
 
 	public void setSpans(SpansCollection spansCollection) {
 		spansTableController.setSpans(spansCollection);
+		spansStatsController.setSpans(spansCollection);
 	}
 }
