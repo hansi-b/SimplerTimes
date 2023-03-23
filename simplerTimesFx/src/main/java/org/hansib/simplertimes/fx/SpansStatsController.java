@@ -21,13 +21,10 @@ package org.hansib.simplertimes.fx;
 import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 
 import javafx.beans.property.ObjectProperty;
@@ -74,21 +71,5 @@ public class SpansStatsController {
 		ObservableList<Stats> items = FXCollections.observableArrayList();
 		items.addAll(allProjects.stream().map(Stats::new).toList());
 		spansStats.setItems(items);
-	}
-
-	static class StatsCalculator {
-		private final SpansCollection spansCollection;
-
-		StatsCalculator(SpansCollection spansCollection) {
-			this.spansCollection = spansCollection;
-		}
-
-		Set<Project> allProjects() {
-			return spansCollection.stream().map(Span::project).collect(Collectors.toSet());
-		}
-
-		SortedSet<OffsetDateTime> allDates() {
-			return spansCollection.stream().map(Span::start).collect(Collectors.toCollection(TreeSet::new));
-		}
 	}
 }
