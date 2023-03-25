@@ -73,6 +73,8 @@ public class TreeViewWindow {
 		Scene secondScene = new Scene(treeLayout, 250, 250);
 
 		Stage window = new Stage();
+		window.setTitle("Projects");
+
 		// window.initStyle(StageStyle.UNDECORATED);
 		window.setScene(secondScene);
 

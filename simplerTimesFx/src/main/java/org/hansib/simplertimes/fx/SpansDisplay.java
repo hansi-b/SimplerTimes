@@ -46,6 +46,8 @@ class SpansDisplay {
 			spansInfoController = new FxResourceLoader().loadFxmlToStage("spansInfo.fxml", spansStage);
 		}
 		spansInfoController.setSpans(spansSupplier.get());
+		spansStage.setTitle("Spans");
+
 		spansStage.show();
 	}
 }
