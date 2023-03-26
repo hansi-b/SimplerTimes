@@ -27,10 +27,13 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.AppData;
 import org.hansib.simplertimes.AppPrefs;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
+import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.yaml.ProjectStore;
 import org.hansib.simplertimes.yaml.SpansStore;
 import org.hansib.sundries.fx.FxResourceLoader;
+
+import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -93,7 +96,9 @@ public class SimplerTimesFx extends Application {
 		primaryStage.setOnCloseRequest(event -> Platform.exit());
 
 		if (canShowTrayIcon(logo)) {
-			new SimplerTimesTrayIcon(primaryStage, logo).show();
+			log.info("Showing FXTrayIcon ...");
+			new FXTrayIcon.Builder(primaryStage, logo).addTitleItem(true).addExitMenuItem(MenuItems.Exit.fmt()).show()
+					.build();
 		}
 	}
 
