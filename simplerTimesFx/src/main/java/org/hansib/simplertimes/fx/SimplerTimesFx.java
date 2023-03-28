@@ -87,19 +87,20 @@ public class SimplerTimesFx extends Application {
 		timesMainController.setSpans(spansStore.load(projectRoot));
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
-		primaryStage.show();
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
 			if (ev.getCode() == KeyCode.Q && ev.isControlDown())
 				fireCloseRequest();
 		});
-		primaryStage.setOnCloseRequest(event -> Platform.exit());
 
 		if (canShowTrayIcon(logo)) {
 			log.info("Showing FXTrayIcon ...");
 			new FXTrayIcon.Builder(primaryStage, logo).addTitleItem(true).addExitMenuItem(MenuItems.Exit.fmt()).show()
 					.build();
+		} else {
+			primaryStage.setOnCloseRequest(event -> Platform.exit());
 		}
+		primaryStage.show();
 	}
 
 	private void fireCloseRequest() {
