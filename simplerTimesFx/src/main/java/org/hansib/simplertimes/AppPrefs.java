@@ -20,6 +20,7 @@ package org.hansib.simplertimes;
 
 import java.util.Optional;
 
+import org.hansib.simplertimes.fx.SimplerTimesFx;
 import org.hansib.sundries.prefs.OptEnum;
 import org.hansib.sundries.prefs.Prefs;
 import org.hansib.sundries.prefs.ReqBoolean;
@@ -49,7 +50,7 @@ public class AppPrefs {
 
 	public static AppPrefs create() {
 		Prefs<PrefKeys> prefs = buildPrefs(
-				fixedPrefsStore != null ? fixedPrefsStore : UserNodePrefsStore.forApp(SimplerTimes.class));
+				fixedPrefsStore != null ? fixedPrefsStore : UserNodePrefsStore.forApp(SimplerTimesFx.class));
 		return new AppPrefs(prefs);
 	}
 
