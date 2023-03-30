@@ -72,8 +72,7 @@ public class SpansStatsController {
 
 		StatsCalculator calc = new StatsCalculator(spansCollection);
 
-		SortedSet<LocalDate> allDates = calc.allDates();
-		Set<Project> allProjects = calc.allProjects();
+		SortedSet<LocalDate> allDates = Utils.daysOfCurrentWeek();
 
 		TableColumn<Stats, String> projectColumn = new TableColumn<>("Project");
 		projectColumn.setCellValueFactory(data -> data.getValue().project);
@@ -85,9 +84,9 @@ public class SpansStatsController {
 			spansStats.getColumns().add(odtColumn);
 		}
 
+		Set<Project> allProjects = calc.allProjects();
 		ObservableList<Stats> items = FXCollections.observableArrayList();
 		items.addAll(allProjects.stream().map(p -> Stats.of(p, calc.get(p, allDates))).toList());
 		spansStats.setItems(items);
-
 	}
 }
