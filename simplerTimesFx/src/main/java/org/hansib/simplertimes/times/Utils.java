@@ -18,7 +18,13 @@
  */
 package org.hansib.simplertimes.times;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -26,4 +32,23 @@ public class Utils {
 		return String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart());
 	}
 
+	/**
+	 * @return a set of seven dates, starting from the last/current Monday to the
+	 *         current/next Sunday
+	 */
+	public static SortedSet<LocalDate> daysOfCurrentWeek() {
+		return daysOfWeek(LocalDate.now());
+	}
+
+	/**
+	 * Construct a set of the seven days of the current week.
+	 * 
+	 * @return a set of seven dates, starting from the previous (or current) Monday
+	 *         to the next Sunday
+	 */
+	public static SortedSet<LocalDate> daysOfWeek(final LocalDate day) {
+		LocalDate current = day.getDayOfWeek() == DayOfWeek.MONDAY ? day
+				: day.with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
+		return current.datesUntil(current.plusDays(7)).collect(Collectors.toCollection(TreeSet::new));
+	}
 }
