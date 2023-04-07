@@ -24,7 +24,6 @@ import java.nio.file.Path;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.AppData;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.SpansCollection;
 
@@ -34,8 +33,8 @@ public class SpansStore {
 
 	private final Path spansPath;
 
-	public SpansStore() {
-		this.spansPath = new AppData().dataPath("spans.yml");
+	public SpansStore(Path spansPath) {
+		this.spansPath = spansPath;
 	}
 
 	public SpansCollection load(Project root) {

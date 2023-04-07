@@ -18,20 +18,48 @@
  */
 package org.hansib.simplertimes;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.hansib.sundries.Errors;
 
 import net.harawata.appdirs.AppDirsFactory;
 
 public class AppData {
-	private final Path userDataDir;
+	private final Path dataDir;
 
-	public AppData() {
-		userDataDir = Path.of(AppDirsFactory.getInstance().getUserDataDir("SimplerTimes", "", "HansiB"));
-		if (!userDataDir.toFile().exists())
-			userDataDir.toFile().mkdirs();
+	private AppData(Path dataDir) {
+		assertDataDir(dataDir);
+		this.dataDir = dataDir;
 	}
 
-	public Path dataPath(String filename) {
-		return userDataDir.resolve(filename);
+	private static void assertDataDir(Path dataDir) {
+		if (Files.exists(dataDir)) {
+			if (!Files.isDirectory(dataDir))
+				throw Errors.illegalArg("Data directory argument '%s' exists, but is not a directory", dataDir);
+		} else {
+			dataDir.toFile().mkdirs();
+		}
+	}
+
+	public static AppData atDefault() {
+		return at(Path.of(AppDirsFactory.getInstance().getUserDataDir("SimplerTimes", "", "HansiB")));
+	}
+
+	public static AppData at(Path dataDir) {
+		return new AppData(dataDir);
+
+	}
+
+	public Path projectsPath() {
+		return dataPath("projects.yml");
+	}
+
+	public Path spansPath() {
+		return dataPath("spans.yml");
+	}
+
+	private Path dataPath(String filename) {
+		return dataDir.resolve(filename);
 	}
 }

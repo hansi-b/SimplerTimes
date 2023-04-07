@@ -70,8 +70,9 @@ public class SimplerTimesFx extends Application {
 		AppPrefs prefs = AppPrefs.create();
 		DisclaimerChecker.checkDisclaimer(prefs.disclaimerAccepted(), this::fireCloseRequest);
 
-		spansStore = new SpansStore();
-		treeStore = new ProjectStore(new AppData().dataPath("projects.yml"));
+		AppData appData = AppData.atDefault();
+		spansStore = new SpansStore(appData.spansPath());
+		treeStore = new ProjectStore(appData.projectsPath());
 
 		Image logo = fxLoader.loadImage("logo.png");
 		if (logo == null)
