@@ -39,4 +39,24 @@ class Icons {
 	static final Node showSpans() {
 		return new FontIcon("codicon-calendar");
 	}
+
+	static final Node weekBack() {
+		return new FontIcon("unil-angle-left");
+	}
+
+	static final Node weekForward() {
+		return new FontIcon("unil-angle-right");
+	}
+
+	static final Node monthBack() {
+		return new FontIcon("unil-angle-double-left");
+	}
+
+	static final Node monthForward() {
+		return new FontIcon("unil-angle-double-right");
+	}
+
+	static final Node today() {
+		return new FontIcon("unil-bullseye");
+	}
 }
