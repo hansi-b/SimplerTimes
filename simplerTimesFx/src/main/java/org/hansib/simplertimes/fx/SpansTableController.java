@@ -25,6 +25,7 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +41,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -158,9 +163,18 @@ public class SpansTableController {
 
 	private void deleteSelected(TableView<SpanRow> table) {
 		final ObservableList<SpanRow> selectedItems = table.getSelectionModel().getSelectedItems();
-		for (SpanRow r : selectedItems) {
-			spans.remove(r.span());
-		}
+		Alert alert = new Alert(AlertType.WARNING,
+				"Delete the " + selectedItems.size() + " selected item(s)? This action cannot be undone.",
+				ButtonType.NO, ButtonType.YES);
+		Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+		noButton.setDefaultButton(true);
+		Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+		yesButton.setDefaultButton(false);
+
+		Optional<ButtonType> showAndWait = alert.showAndWait();
+		if (showAndWait.isEmpty() || showAndWait.get() != ButtonType.YES)
+			return;
+		selectedItems.forEach(i -> spans.remove(i.span()));
 		updateRows();
 	}
 
