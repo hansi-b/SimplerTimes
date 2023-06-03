@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 
 public class SpansCollection implements Iterable<Span> {
 
-	public final List<Span> spans;
+	private final List<Span> spans;
 
 	private SpansCollection(List<Span> spans) {
 		this.spans = spans;
