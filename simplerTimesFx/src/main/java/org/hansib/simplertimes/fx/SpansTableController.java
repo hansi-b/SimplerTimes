@@ -18,7 +18,7 @@
  */
 package org.hansib.simplertimes.fx;
 
-import static org.hansib.sundries.fx.table.TableViewTools.initDragCellCol;
+import static org.hansib.sundries.fx.table.TableViewTools.initDragSelectCellCol;
 import static org.hansib.sundries.fx.table.TableViewTools.setPrefWidth;
 
 import java.time.Duration;
@@ -31,13 +31,16 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
+import org.hansib.simplertimes.times.Utils;
+import org.hansib.sundries.fx.ContextMenuBuilder;
 
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -57,16 +60,40 @@ public class SpansTableController {
 
 	}
 
-	private static record SpanRow(//
-			ObjectProperty<Project> project, //
-			ObjectProperty<OffsetDateTime> start, //
-			ObjectProperty<OffsetDateTime> end, //
-			ObjectProperty<Duration> duration) {
+	private static class SpanRow {
+
+		private final Span span;
+		private final SimpleObjectProperty<Project> project;
+		private final SimpleObjectProperty<OffsetDateTime> start;
+		private final SimpleObjectProperty<OffsetDateTime> end;
+		private final ReadOnlyObjectProperty<Duration> duration;
 
 		SpanRow(Span span) {
-			this(new SimpleObjectProperty<>(span.project()), new SimpleObjectProperty<>(span.start()),
-					new SimpleObjectProperty<>(span.end()),
-					new SimpleObjectProperty<>(Duration.between(span.start(), span.end())));
+			this.span = span;
+			this.project = new SimpleObjectProperty<>(span.project());
+			this.start = new SimpleObjectProperty<>(span.start());
+			this.end = new SimpleObjectProperty<>(span.end());
+			this.duration = new SimpleObjectProperty<>(span.duration());
+		}
+
+		public Span span() {
+			return span;
+		}
+
+		public ReadOnlyObjectProperty<Project> project() {
+			return project;
+		}
+
+		public ReadOnlyObjectProperty<OffsetDateTime> start() {
+			return start;
+		}
+
+		public ReadOnlyObjectProperty<OffsetDateTime> end() {
+			return end;
+		}
+
+		public ReadOnlyObjectProperty<Duration> duration() {
+			return duration;
 		}
 	}
 
@@ -89,6 +116,8 @@ public class SpansTableController {
 	@FXML
 	private TableView<SpanRow> spansTable;
 
+	private SpansCollection spans;
+
 	@FXML
 	void initialize() {
 		log.info("Initialising spans table");
@@ -99,13 +128,14 @@ public class SpansTableController {
 		durationCol.setText("Duration");
 
 		spansTable.setItems(rows);
-		initDragCellCol(startCol, SpanRow::start, t -> t.format(dateTimeFormatter));
-		initDragCellCol(endCol, SpanRow::end, t -> t.format(dateTimeFormatter));
 
-		initDragCellCol(projectCol, SpanRow::project, Project::name);
+		initDragSelectCellCol(startCol, SpanRow::start, t -> t.format(dateTimeFormatter));
+		initDragSelectCellCol(endCol, SpanRow::end, t -> t.format(dateTimeFormatter));
+
+		initDragSelectCellCol(projectCol, SpanRow::project, Project::name);
 		projectCol.setComparator(new ProjectComparator());
 
-		initDragCellCol(durationCol, SpanRow::duration, SpansTableController::formatduration);
+		initDragSelectCellCol(durationCol, SpanRow::duration, Utils::toHmsString);
 
 		setPrefWidth(spansTable, startCol, .25);
 		setPrefWidth(spansTable, endCol, .25);
@@ -116,13 +146,30 @@ public class SpansTableController {
 				.multiply(1.01);
 
 		durationCol.prefWidthProperty().bind(spansTable.widthProperty().subtract(colsWidth));
+
+		createContextMenu();
 	}
 
-	static String formatduration(Duration diff) {
-		return String.format("%d:%02d:%02d", diff.toHours(), diff.toMinutesPart(), diff.toSecondsPart());
+	private void createContextMenu() {
+		ContextMenu cm = new ContextMenuBuilder().withItem("Delete", e -> deleteSelected(spansTable)).build();
+
+		spansTable.setContextMenu(cm);
+	}
+
+	private void deleteSelected(TableView<SpanRow> table) {
+		final ObservableList<SpanRow> selectedItems = table.getSelectionModel().getSelectedItems();
+		for (SpanRow r : selectedItems) {
+			spans.remove(r.span());
+		}
+		updateRows();
 	}
 
 	void setSpans(SpansCollection spans) {
+		this.spans = spans;
+		updateRows();
+	}
+
+	private void updateRows() {
 		rows.setAll(spans.stream().map(SpanRow::new).toList());
 	}
 }

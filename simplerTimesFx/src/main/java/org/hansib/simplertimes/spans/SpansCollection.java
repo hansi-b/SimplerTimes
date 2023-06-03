@@ -46,6 +46,10 @@ public class SpansCollection implements Iterable<Span> {
 		spans.add(span);
 	}
 
+	public boolean remove(Span span) {
+		return spans.remove(span);
+	}
+
 	public List<Span> view() {
 		return Collections.unmodifiableList(spans);
 	}
