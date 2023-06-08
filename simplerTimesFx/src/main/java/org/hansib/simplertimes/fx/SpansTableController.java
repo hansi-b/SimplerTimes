@@ -24,7 +24,6 @@ import static org.hansib.sundries.fx.table.TableViewTools.setPrefWidth;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,18 +49,6 @@ import javafx.scene.control.TableView;
 public class SpansTableController {
 
 	private static final Logger log = LogManager.getLogger();
-
-	private static class ProjectComparator implements Comparator<Project> {
-		@Override
-		public int compare(Project p1, Project p2) {
-			if (p1.name() == null)
-				return -1;
-			if (p2.name() == null)
-				return 1;
-			return p1.name().compareTo(p2.name());
-		}
-
-	}
 
 	private static class SpanRow {
 
@@ -136,7 +123,7 @@ public class SpansTableController {
 		initDragSelectCellCol(endCol, SpanRow::end, t -> t.format(dateTimeFormatter));
 
 		initDragSelectCellCol(projectCol, SpanRow::project, Project::name);
-		projectCol.setComparator(new ProjectComparator());
+		projectCol.setComparator(Project.nameComparator);
 
 		initDragSelectCellCol(durationCol, SpanRow::duration, Utils::toHmsString);
 

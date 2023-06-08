@@ -20,6 +20,7 @@ package org.hansib.simplertimes.projects;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +34,17 @@ import org.hansib.sundries.Errors;
 import org.hansib.sundries.Strings;
 
 public class Project {
+
+	/**
+	 * Compares projects by name.
+	 */
+	public static final Comparator<Project> nameComparator = (p1, p2) -> {
+		if (p1.name() == null)
+			return -1;
+		if (p2.name() == null)
+			return 1;
+		return p1.name().compareTo(p2.name());
+	};
 
 	/**
 	 * A builder for a project tree. Basically a mutable mirror of Project to allow
