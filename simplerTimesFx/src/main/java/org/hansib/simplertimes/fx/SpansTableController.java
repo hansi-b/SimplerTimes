@@ -18,9 +18,6 @@
  */
 package org.hansib.simplertimes.fx;
 
-import static org.hansib.sundries.fx.table.TableViewTools.initDragSelectCellCol;
-import static org.hansib.sundries.fx.table.TableViewTools.setPrefWidth;
-
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +30,7 @@ import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;
+import org.hansib.sundries.fx.table.TableColumnBuilder;
 
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -119,21 +117,26 @@ public class SpansTableController {
 
 		spansTable.setItems(rows);
 
-		initDragSelectCellCol(startCol, SpanRow::start, t -> t.format(dateTimeFormatter));
-		initDragSelectCellCol(endCol, SpanRow::end, t -> t.format(dateTimeFormatter));
+		new TableColumnBuilder<>(startCol) //
+				.value(SpanRow::start).format(t -> t.format(dateTimeFormatter)) //
+				.build();
+		new TableColumnBuilder<>(endCol) //
+				.value(SpanRow::end).format(t -> t.format(dateTimeFormatter)) //
+				.build();
+		new TableColumnBuilder<>(projectCol) //
+				.value(SpanRow::project).format(Project::name).comparator(Project.nameComparator) //
+				.build();
+		new TableColumnBuilder<>(durationCol) //
+				.value(SpanRow::duration).format(Utils::toHmsString) //
+				.build();
 
-		initDragSelectCellCol(projectCol, SpanRow::project, Project::name);
-		projectCol.setComparator(Project.nameComparator);
+		startCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.25));
+		endCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.25));
+		projectCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.35));
 
-		initDragSelectCellCol(durationCol, SpanRow::duration, Utils::toHmsString);
-
-		setPrefWidth(spansTable, startCol, .25);
-		setPrefWidth(spansTable, endCol, .25);
-		setPrefWidth(spansTable, projectCol, .35);
-
-		final DoubleBinding colsWidth = projectCol.widthProperty()//
-				.add(startCol.widthProperty()).add(endCol.widthProperty())//
-				.multiply(1.01);
+		final DoubleBinding colsWidth = projectCol.widthProperty() //
+				.add(startCol.widthProperty()).add(endCol.widthProperty()) //
+				.multiply(1.03);
 
 		durationCol.prefWidthProperty().bind(spansTable.widthProperty().subtract(colsWidth));
 
@@ -141,7 +144,7 @@ public class SpansTableController {
 	}
 
 	private void createContextMenu() {
-		ContextMenu cm = new ContextMenuBuilder().withItem("Delete", e -> deleteSelected(spansTable)).build();
+		ContextMenu cm = new ContextMenuBuilder().item("Delete", e -> deleteSelected(spansTable)).build();
 
 		spansTable.setContextMenu(cm);
 	}

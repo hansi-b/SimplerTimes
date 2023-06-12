@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Utils;
-import org.hansib.sundries.fx.ButtonDecorator;
+import org.hansib.sundries.fx.ButtonBuilder;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -88,15 +88,20 @@ public class SpansStatsController {
 
 		dateProp = new SimpleObjectProperty<>(LocalDate.now());
 
-		new ButtonDecorator(monthBack).graphic(Icons.monthBack()).onAction(e -> shiftDate(Period.ofMonths(-1)));
-		new ButtonDecorator(weekBack).graphic(Icons.weekBack()).onAction(e -> shiftDate(Period.ofDays(-7)));
+		new ButtonBuilder(monthBack) //
+				.graphic(Icons.monthBack()).onAction(e -> shiftDate(Period.ofMonths(-1))).build();
+		new ButtonBuilder(weekBack) //
+				.graphic(Icons.weekBack()).onAction(e -> shiftDate(Period.ofDays(-7))).build();
 
-		new ButtonDecorator(today).graphic(Icons.today()).onAction(e -> setDate(LocalDate.now()));
+		new ButtonBuilder(today) //
+				.graphic(Icons.today()).onAction(e -> setDate(LocalDate.now())).build();
 		today.disableProperty()
 				.bind(Bindings.createBooleanBinding(() -> LocalDate.now().equals(dateProp.get()), dateProp));
 
-		new ButtonDecorator(weekForward).graphic(Icons.weekForward()).onAction(e -> shiftDate(Period.ofDays(7)));
-		new ButtonDecorator(monthForward).graphic(Icons.monthForward()).onAction(e -> shiftDate(Period.ofMonths(1)));
+		new ButtonBuilder(weekForward) //
+				.graphic(Icons.weekForward()).onAction(e -> shiftDate(Period.ofDays(7))).build();
+		new ButtonBuilder(monthForward) //
+				.graphic(Icons.monthForward()).onAction(e -> shiftDate(Period.ofMonths(1))).build();
 	}
 
 	public void setSpans(SpansCollection spansCollection) {

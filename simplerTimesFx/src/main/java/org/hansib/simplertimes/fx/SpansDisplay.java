@@ -21,7 +21,7 @@ package org.hansib.simplertimes.fx;
 import java.util.function.Supplier;
 
 import org.hansib.simplertimes.spans.SpansCollection;
-import org.hansib.sundries.fx.ButtonDecorator;
+import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
 
 import javafx.scene.control.Button;
@@ -37,7 +37,8 @@ class SpansDisplay {
 
 		this.spansSupplier = spansSupplier;
 
-		new ButtonDecorator(showSpansButton).graphic(Icons.showSpans()).onAction(event -> showSpansInfo());
+		new ButtonBuilder(showSpansButton) //
+				.graphic(Icons.showSpans()).onAction(event -> showSpansInfo()).build();
 	}
 
 	private void showSpansInfo() {

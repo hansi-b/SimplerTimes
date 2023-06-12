@@ -39,8 +39,8 @@ class TextFieldTreeCellImpl extends TreeCell<Project> {
 
 	public TextFieldTreeCellImpl(TreeView<Project> treeview, Supplier<String> nodeSupplier) {
 		contextMenu = new ContextMenuBuilder() //
-				.withItem(MenuItems.NewSubproject.fmt(), e -> addItem(treeview, nodeSupplier)) //
-				.withItem(MenuItems.RemoveSubproject.fmt(), e -> removeItem()) //
+				.item(MenuItems.NewSubproject.fmt(), e -> addItem(treeview, nodeSupplier)) //
+				.item(MenuItems.RemoveSubproject.fmt(), e -> removeItem()) //
 				.build();
 	}
 

@@ -92,7 +92,7 @@ public class TreeViewWindow {
 
 	private void showMenu(ContextMenuEvent e, Window owner, TreeView<Project> tree) {
 		new ContextMenuBuilder() //
-				.withItem("New project", t -> createNewProject(tree, MenuItems.NewProject::fmt)) //
+				.item("New project", t -> createNewProject(tree, MenuItems.NewProject::fmt)) //
 				.build().show(owner, e.getScreenX(), e.getScreenY());
 	}
 

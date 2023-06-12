@@ -30,7 +30,7 @@ import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.times.DurationTicker;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.Utils;
-import org.hansib.sundries.fx.ButtonDecorator;
+import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.Converters;
 
 import javafx.application.Platform;
@@ -65,8 +65,10 @@ class SpanRecorder {
 		this.durationTicker = new DurationTicker(tickReceiver);
 		this.spanReceiver = spanReceiver;
 
-		new ButtonDecorator(startButton).graphic(Icons.start()).onAction(a -> startRecording()).disabled();
-		new ButtonDecorator(stopButton).graphic(Icons.stop()).onAction(a -> stopRecording()).disabled();
+		new ButtonBuilder(startButton) //
+				.graphic(Icons.start()).onAction(a -> startRecording()).disabled().build();
+		new ButtonBuilder(stopButton) //
+				.graphic(Icons.stop()).onAction(a -> stopRecording()).disabled().build();
 
 		startButton.disableProperty()
 				.bind(projectSelection.getSelectionModel().selectedItemProperty().isNull().or(isRecording));
