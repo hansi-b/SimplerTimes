@@ -19,8 +19,10 @@
 package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +32,7 @@ import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;
+import org.hansib.sundries.fx.Converters;
 import org.hansib.sundries.fx.table.TableColumnBuilder;
 
 import javafx.beans.binding.DoubleBinding;
@@ -42,11 +45,15 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
 
 public class SpansTableController {
 
 	private static final Logger log = LogManager.getLogger();
+
+	private static final Converters converters = new Converters();
 
 	private static class SpanRow {
 
@@ -116,10 +123,30 @@ public class SpansTableController {
 		durationCol.setText("Duration");
 
 		spansTable.setItems(rows);
+		spansTable.setEditable(true);
 
 		new TableColumnBuilder<>(startCol) //
 				.value(SpanRow::start).format(t -> t.format(dateTimeFormatter)) //
 				.build();
+		startCol.setCellFactory(TextFieldTableCell.forTableColumn(converters.stringConverter( //
+				d -> d == null ? "null" : dateTimeFormatter.format(d), //
+				string -> {
+					try {
+						return OffsetDateTime.of(LocalDateTime.parse(string, dateTimeFormatter),
+								OffsetDateTime.now().getOffset());
+					} catch (DateTimeParseException ex) {
+						log.debug("Could not parse new value as date: {}", string);
+						return null;
+					}
+				})));
+		startCol.setOnEditCommit((CellEditEvent<SpanRow, OffsetDateTime> e) -> {
+			SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
+			log.info(">>>>>>> {}", spanRow.span);
+			log.info(">>>>>>> {}", e.getOldValue());
+			log.info(">>>>>>> {}", e.getNewValue());
+		});
+		startCol.setEditable(true);
+
 		new TableColumnBuilder<>(endCol) //
 				.value(SpanRow::end).format(t -> t.format(dateTimeFormatter)) //
 				.build();
