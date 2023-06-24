@@ -1,3 +1,3 @@
 # SimplerTimes
 
-Simple desktop timer.
+Simple desktop timer written in JavaFX.
