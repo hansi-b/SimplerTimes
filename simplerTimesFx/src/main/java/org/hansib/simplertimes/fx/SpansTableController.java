@@ -33,6 +33,7 @@ import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;
 import org.hansib.sundries.fx.Converters;
+import org.hansib.sundries.fx.table.EditingCell;
 import org.hansib.sundries.fx.table.TableColumnBuilder;
 
 import javafx.beans.binding.DoubleBinding;
@@ -47,7 +48,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.TextFieldTableCell;
 
 public class SpansTableController {
 
@@ -75,15 +75,15 @@ public class SpansTableController {
 			return span;
 		}
 
-		public ReadOnlyObjectProperty<Project> project() {
+		public SimpleObjectProperty<Project> project() {
 			return project;
 		}
 
-		public ReadOnlyObjectProperty<OffsetDateTime> start() {
+		public SimpleObjectProperty<OffsetDateTime> start() {
 			return start;
 		}
 
-		public ReadOnlyObjectProperty<OffsetDateTime> end() {
+		public SimpleObjectProperty<OffsetDateTime> end() {
 			return end;
 		}
 
@@ -123,7 +123,7 @@ public class SpansTableController {
 		new TableColumnBuilder<>(startCol).headerText("Start") //
 				.value(SpanRow::start).format(t -> t.format(dateTimeFormatter)) //
 				.build();
-		startCol.setCellFactory(TextFieldTableCell.forTableColumn(converters.stringConverter( //
+		startCol.setCellFactory(list -> new EditingCell<>(converters.stringConverter( //
 				d -> d == null ? "null" : dateTimeFormatter.format(d), //
 				string -> {
 					try {
@@ -134,11 +134,13 @@ public class SpansTableController {
 						return null;
 					}
 				})));
+
 		startCol.setOnEditCommit((CellEditEvent<SpanRow, OffsetDateTime> e) -> {
 			SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
-			log.info(">>>>>>> {}", spanRow.span);
-			log.info(">>>>>>> {}", e.getOldValue());
-			log.info(">>>>>>> {}", e.getNewValue());
+			log.info(">>>>>>> {} --> {}", e.getOldValue(), e.getNewValue());
+			Span span = spanRow.span();
+			spans.remove(span);
+			spans.add(new Span(span.project(), e.getNewValue(), span.end()));
 		});
 		startCol.setEditable(true);
 

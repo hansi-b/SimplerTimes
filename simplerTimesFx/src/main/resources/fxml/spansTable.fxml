@@ -8,7 +8,7 @@
 
 <TableView xmlns:fx="http://javafx.com/fxml"
 	xmlns="http://javafx.com/javafx"
-	fx:controller="org.hansib.simplertimes.fx.SpansTableController"
+	fx:controller="org.hansib.simplertimes.fx.SpansTableController" stylesheets="fxml/app.css"
 	fx:id="spansTable" prefWidth="600" HBox.hgrow="ALWAYS"
 	VBox.vgrow="ALWAYS">
 	<columns>
