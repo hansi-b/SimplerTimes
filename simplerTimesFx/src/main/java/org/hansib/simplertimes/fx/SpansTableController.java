@@ -117,15 +117,10 @@ public class SpansTableController {
 	void initialize() {
 		log.info("Initialising spans table");
 
-		projectCol.setText("Project");
-		startCol.setText("Start");
-		endCol.setText("End");
-		durationCol.setText("Duration");
-
 		spansTable.setItems(rows);
 		spansTable.setEditable(true);
 
-		new TableColumnBuilder<>(startCol) //
+		new TableColumnBuilder<>(startCol).headerText("Start") //
 				.value(SpanRow::start).format(t -> t.format(dateTimeFormatter)) //
 				.build();
 		startCol.setCellFactory(TextFieldTableCell.forTableColumn(converters.stringConverter( //
@@ -147,13 +142,13 @@ public class SpansTableController {
 		});
 		startCol.setEditable(true);
 
-		new TableColumnBuilder<>(endCol) //
+		new TableColumnBuilder<>(endCol).headerText("End") //
 				.value(SpanRow::end).format(t -> t.format(dateTimeFormatter)) //
 				.build();
-		new TableColumnBuilder<>(projectCol) //
+		new TableColumnBuilder<>(projectCol).headerText("Project") //
 				.value(SpanRow::project).format(Project::name).comparator(Project.nameComparator) //
 				.build();
-		new TableColumnBuilder<>(durationCol) //
+		new TableColumnBuilder<>(durationCol).headerText("Duration") //
 				.value(SpanRow::duration).format(Utils::toHmsString) //
 				.build();
 
