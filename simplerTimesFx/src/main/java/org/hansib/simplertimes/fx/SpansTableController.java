@@ -165,6 +165,7 @@ public class SpansTableController {
 				.multiply(1.03);
 
 		durationCol.prefWidthProperty().bind(spansTable.widthProperty().subtract(colsWidth));
+		spansTable.getSortOrder().add(startCol);
 
 		createContextMenu();
 	}
