@@ -19,11 +19,7 @@
 package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +29,6 @@ import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;
-import org.hansib.sundries.fx.Converters;
 import org.hansib.sundries.fx.table.EditingCell;
 import org.hansib.sundries.fx.table.TableColumnBuilder;
 
@@ -53,8 +48,6 @@ import javafx.scene.control.TableView;
 public class SpansTableController {
 
 	private static final Logger log = LogManager.getLogger();
-
-	private static final Converters converters = new Converters();
 
 	private static class SpanRow {
 
@@ -107,9 +100,6 @@ public class SpansTableController {
 
 	private final ObservableList<SpanRow> rows = FXCollections.observableArrayList();
 
-	private static final ZoneOffset offset = OffsetDateTime.now().getOffset();
-	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
 	@FXML
 	private TableView<SpanRow> spansTable;
 
@@ -119,15 +109,16 @@ public class SpansTableController {
 	void initialize() {
 		log.info("Initialising spans table");
 
+		DateTimeHandler dtHandler = new DateTimeHandler();
+
 		spansTable.setItems(rows);
 		spansTable.setEditable(true);
 
 		new TableColumnBuilder<>(startCol).headerText("Start") //
-				.value(SpanRow::start).format(t -> t.format(dateTimeFormatter)) //
+				.value(SpanRow::start).format(dtHandler.formatter()) //
 				.build();
-		startCol.setCellFactory(list -> new EditingCell<>(converters.stringConverter( //
-				d -> d == null ? "null" : dateTimeFormatter.format(d), SpansTableController::parseToOffsetDateTime), //
-				SpansTableController::isDateTimeStrValid));
+		startCol.setCellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
+				dtHandler::isDateTimeStrValid));
 
 		startCol.setOnEditCommit((CellEditEvent<SpanRow, OffsetDateTime> e) -> {
 			SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
@@ -140,7 +131,7 @@ public class SpansTableController {
 		startCol.setEditable(true);
 
 		new TableColumnBuilder<>(endCol).headerText("End") //
-				.value(SpanRow::end).format(t -> t.format(dateTimeFormatter)) //
+				.value(SpanRow::end).format(dtHandler.formatter()) //
 				.build();
 		new TableColumnBuilder<>(projectCol).headerText("Project") //
 				.value(SpanRow::project).format(Project::name).comparator(Project.nameComparator) //
@@ -164,31 +155,13 @@ public class SpansTableController {
 	}
 
 	private void createContextMenu() {
-		ContextMenu cm = new ContextMenuBuilder().item("Delete", e -> deleteSelected(spansTable)).build();
+		ContextMenu cm = new ContextMenuBuilder().item("Delete", e -> deleteSelected()).build();
 
 		spansTable.setContextMenu(cm);
 	}
 
-	private static OffsetDateTime parseToOffsetDateTime(String text) {
-		try {
-			return OffsetDateTime.of(LocalDateTime.parse(text, dateTimeFormatter), offset);
-		} catch (DateTimeParseException ex) {
-			log.debug("Could not parse new value as date: {}", text);
-			return null;
-		}
-	}
-
-	private static boolean isDateTimeStrValid(String dateTimeStr) {
-		try {
-			LocalDateTime.parse(dateTimeStr, dateTimeFormatter);
-			return true;
-		} catch (DateTimeParseException ex) {
-			return false;
-		}
-	}
-
-	private void deleteSelected(TableView<SpanRow> table) {
-		final ObservableList<SpanRow> selectedItems = table.getSelectionModel().getSelectedItems();
+	private void deleteSelected() {
+		final ObservableList<SpanRow> selectedItems = spansTable.getSelectionModel().getSelectedItems();
 
 		boolean userAgreed = new AlertBuilder(AlertType.WARNING,
 				"The deletion of the " + selectedItems.size() + " selected item(s) cannot be undone.") //
