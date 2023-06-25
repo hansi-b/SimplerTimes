@@ -21,6 +21,7 @@ package org.hansib.simplertimes.fx;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -123,12 +124,12 @@ public class SpansTableController {
 		new TableColumnBuilder<>(startCol).headerText("Start") //
 				.value(SpanRow::start).format(t -> t.format(dateTimeFormatter)) //
 				.build();
+		ZoneOffset offset = OffsetDateTime.now().getOffset();
 		startCol.setCellFactory(list -> new EditingCell<>(converters.stringConverter( //
 				d -> d == null ? "null" : dateTimeFormatter.format(d), //
 				string -> {
 					try {
-						return OffsetDateTime.of(LocalDateTime.parse(string, dateTimeFormatter),
-								OffsetDateTime.now().getOffset());
+						return OffsetDateTime.of(LocalDateTime.parse(string, dateTimeFormatter), offset);
 					} catch (DateTimeParseException ex) {
 						log.debug("Could not parse new value as date: {}", string);
 						return null;
@@ -137,10 +138,11 @@ public class SpansTableController {
 
 		startCol.setOnEditCommit((CellEditEvent<SpanRow, OffsetDateTime> e) -> {
 			SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
-			log.info(">>>>>>> {} --> {}", e.getOldValue(), e.getNewValue());
+
+			OffsetDateTime newValue = e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset());
 			Span span = spanRow.span();
 			spans.remove(span);
-			spans.add(new Span(span.project(), e.getNewValue(), span.end()));
+			spans.add(new Span(span.project(), newValue, span.end()));
 		});
 		startCol.setEditable(true);
 
