@@ -107,7 +107,8 @@ public class SpansTableController {
 
 	private final ObservableList<SpanRow> rows = FXCollections.observableArrayList();
 
-	private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+	private static final ZoneOffset offset = OffsetDateTime.now().getOffset();
+	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
 	@FXML
 	private TableView<SpanRow> spansTable;
@@ -124,17 +125,9 @@ public class SpansTableController {
 		new TableColumnBuilder<>(startCol).headerText("Start") //
 				.value(SpanRow::start).format(t -> t.format(dateTimeFormatter)) //
 				.build();
-		ZoneOffset offset = OffsetDateTime.now().getOffset();
 		startCol.setCellFactory(list -> new EditingCell<>(converters.stringConverter( //
-				d -> d == null ? "null" : dateTimeFormatter.format(d), //
-				string -> {
-					try {
-						return OffsetDateTime.of(LocalDateTime.parse(string, dateTimeFormatter), offset);
-					} catch (DateTimeParseException ex) {
-						log.debug("Could not parse new value as date: {}", string);
-						return null;
-					}
-				})));
+				d -> d == null ? "null" : dateTimeFormatter.format(d), SpansTableController::parseToOffsetDateTime), //
+				SpansTableController::isDateTimeStrValid));
 
 		startCol.setOnEditCommit((CellEditEvent<SpanRow, OffsetDateTime> e) -> {
 			SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
@@ -174,6 +167,24 @@ public class SpansTableController {
 		ContextMenu cm = new ContextMenuBuilder().item("Delete", e -> deleteSelected(spansTable)).build();
 
 		spansTable.setContextMenu(cm);
+	}
+
+	private static OffsetDateTime parseToOffsetDateTime(String text) {
+		try {
+			return OffsetDateTime.of(LocalDateTime.parse(text, dateTimeFormatter), offset);
+		} catch (DateTimeParseException ex) {
+			log.debug("Could not parse new value as date: {}", text);
+			return null;
+		}
+	}
+
+	private static boolean isDateTimeStrValid(String dateTimeStr) {
+		try {
+			LocalDateTime.parse(dateTimeStr, dateTimeFormatter);
+			return true;
+		} catch (DateTimeParseException ex) {
+			return false;
+		}
 	}
 
 	private void deleteSelected(TableView<SpanRow> table) {
