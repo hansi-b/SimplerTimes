@@ -23,9 +23,8 @@ import java.time.OffsetDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.fx.SpansTableModel.SpanRow;
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.spans.Span;
-import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;
@@ -33,9 +32,6 @@ import org.hansib.sundries.fx.table.EditingCell;
 import org.hansib.sundries.fx.table.TableColumnBuilder;
 
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
@@ -49,43 +45,6 @@ public class SpansTableController {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private static class SpanRow {
-
-		private final Span span;
-		private final SimpleObjectProperty<Project> project;
-		private final SimpleObjectProperty<OffsetDateTime> start;
-		private final SimpleObjectProperty<OffsetDateTime> end;
-		private final ReadOnlyObjectProperty<Duration> duration;
-
-		SpanRow(Span span) {
-			this.span = span;
-			this.project = new SimpleObjectProperty<>(span.project());
-			this.start = new SimpleObjectProperty<>(span.start());
-			this.end = new SimpleObjectProperty<>(span.end());
-			this.duration = new SimpleObjectProperty<>(span.duration());
-		}
-
-		public Span span() {
-			return span;
-		}
-
-		public SimpleObjectProperty<Project> project() {
-			return project;
-		}
-
-		public SimpleObjectProperty<OffsetDateTime> start() {
-			return start;
-		}
-
-		public SimpleObjectProperty<OffsetDateTime> end() {
-			return end;
-		}
-
-		public ReadOnlyObjectProperty<Duration> duration() {
-			return duration;
-		}
-	}
-
 	@FXML
 	private TableColumn<SpanRow, Project> projectCol;
 
@@ -98,12 +57,10 @@ public class SpansTableController {
 	@FXML
 	private TableColumn<SpanRow, Duration> durationCol;
 
-	private final ObservableList<SpanRow> rows = FXCollections.observableArrayList();
-
 	@FXML
 	private TableView<SpanRow> spansTable;
 
-	private SpansCollection spans;
+	private SpansTableModel model;
 
 	@FXML
 	void initialize() {
@@ -111,7 +68,6 @@ public class SpansTableController {
 
 		DateTimeHandler dtHandler = new DateTimeHandler();
 
-		spansTable.setItems(rows);
 		spansTable.setEditable(true);
 
 		new TableColumnBuilder<>(startCol).headerText("Start") //
@@ -122,11 +78,8 @@ public class SpansTableController {
 
 		startCol.setOnEditCommit((CellEditEvent<SpanRow, OffsetDateTime> e) -> {
 			SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
+			model.setStart(spanRow, e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
 
-			OffsetDateTime newValue = e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset());
-			Span span = spanRow.span();
-			spans.remove(span);
-			spans.add(new Span(span.project(), newValue, span.end()));
 		});
 		startCol.setEditable(true);
 
@@ -149,7 +102,8 @@ public class SpansTableController {
 				.multiply(1.03);
 
 		durationCol.prefWidthProperty().bind(spansTable.widthProperty().subtract(colsWidth));
-		spansTable.getSortOrder().add(startCol);
+
+		log.info("Setting sort order");
 
 		createContextMenu();
 	}
@@ -170,17 +124,13 @@ public class SpansTableController {
 						.showAndWaitFor(ButtonType.YES);
 
 		if (userAgreed) {
-			selectedItems.forEach(i -> spans.remove(i.span()));
-			updateRows();
+			model.deleteItems(selectedItems);
 		}
 	}
 
-	void setSpans(SpansCollection spans) {
-		this.spans = spans;
-		updateRows();
-	}
-
-	private void updateRows() {
-		rows.setAll(spans.stream().map(SpanRow::new).toList());
+	void setSpans(SpansTableModel model) {
+		this.model = model;
+		spansTable.setItems(model.getItems());
+		spansTable.getSortOrder().add(startCol);
 	}
 }

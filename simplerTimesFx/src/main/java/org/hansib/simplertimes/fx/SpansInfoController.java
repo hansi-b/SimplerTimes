@@ -47,7 +47,7 @@ public class SpansInfoController {
 	}
 
 	public void setSpans(SpansCollection spansCollection) {
-		spansTableController.setSpans(spansCollection);
+		spansTableController.setSpans(new SpansTableModel(spansCollection));
 		spansStatsController.setSpans(spansCollection);
 	}
 }
