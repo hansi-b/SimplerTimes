@@ -23,7 +23,7 @@ import java.time.OffsetDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.fx.SpansTableModel.SpanRow;
+import org.hansib.simplertimes.fx.ObservableSpans.SpanRow;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
@@ -60,7 +60,7 @@ public class SpansTableController {
 	@FXML
 	private TableView<SpanRow> spansTable;
 
-	private SpansTableModel model;
+	private ObservableSpans model;
 
 	@FXML
 	void initialize() {
@@ -128,7 +128,7 @@ public class SpansTableController {
 		}
 	}
 
-	void setSpans(SpansTableModel model) {
+	void setSpans(ObservableSpans model) {
 		this.model = model;
 		spansTable.setItems(model.getItems());
 		spansTable.getSortOrder().add(startCol);
