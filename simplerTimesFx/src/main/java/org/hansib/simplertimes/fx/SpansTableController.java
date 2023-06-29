@@ -78,6 +78,7 @@ public class SpansTableController {
 
 		startCol.setOnEditCommit((CellEditEvent<SpanRow, OffsetDateTime> e) -> {
 			SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
+			log.info("startCol: {} -> {}", spanRow, e.getNewValue());
 			model.setStart(spanRow, e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
 
 		});
