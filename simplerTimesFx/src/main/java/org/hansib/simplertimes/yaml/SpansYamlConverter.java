@@ -42,6 +42,6 @@ class SpansYamlConverter {
 	}
 
 	static String toYaml(SpansCollection spans) throws IOException {
-		return YamlMapper.instance().asString(spans.view());
+		return YamlMapper.instance().asString(spans.stream().toList());
 	}
 }

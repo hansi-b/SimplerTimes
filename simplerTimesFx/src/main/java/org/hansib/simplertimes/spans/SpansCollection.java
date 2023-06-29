@@ -20,13 +20,11 @@ package org.hansib.simplertimes.spans;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public class SpansCollection implements Iterable<Span> {
+public class SpansCollection {
 
 	private final List<Span> spans;
 
@@ -46,21 +44,8 @@ public class SpansCollection implements Iterable<Span> {
 		spans.add(span);
 	}
 
-	public boolean remove(Span span) {
-		return spans.remove(span);
-	}
-
-	public List<Span> view() {
-		return Collections.unmodifiableList(spans);
-	}
-
 	public Stream<Span> stream() {
 		return spans.stream();
-	}
-
-	@Override
-	public Iterator<Span> iterator() {
-		return spans.iterator();
 	}
 
 	@Override

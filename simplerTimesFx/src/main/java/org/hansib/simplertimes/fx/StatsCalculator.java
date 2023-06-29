@@ -49,7 +49,7 @@ class StatsCalculator {
 
 	public Map<LocalDate, Duration> get(Project p, SortedSet<LocalDate> allDates) {
 		Map<LocalDate, Duration> result = new HashMap<>();
-		spansCollection.forEach(s -> {
+		spansCollection.stream().forEach(s -> {
 			if (s.project() == p && allDates.contains(s.start().toLocalDate()))
 				result.compute(s.start().toLocalDate(),
 						(k, oldV) -> s.duration().plus(oldV == null ? Duration.ZERO : oldV));

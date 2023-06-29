@@ -56,7 +56,7 @@ public class SpansYamlConverterSpec extends Specification {
   end: "2022-05-24T08:25:00Z"
 """
 		SpansCollection sc = SpansYamlConverter.fromYaml(root, yaml)
-		List<Span> spans = sc.view();
+		List<Span> spans = sc.stream().toList();
 
 		then:
 		spans.size() == 3
