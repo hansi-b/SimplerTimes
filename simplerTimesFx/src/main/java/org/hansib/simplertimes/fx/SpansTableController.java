@@ -35,7 +35,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
@@ -73,12 +72,7 @@ public class SpansTableController {
 		startCol.setCellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
 				dtHandler::isDateTimeStrValid));
 
-		startCol.setOnEditCommit((CellEditEvent<SpanRow, OffsetDateTime> e) -> {
-			SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
-			log.info("startCol: {} -> {}", spanRow, e.getNewValue());
-			spanRow.start().set(e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
-			spansTable.sort();
-		});
+		startCol.setOnEditCommit(this::setNewStart);
 		startCol.setEditable(true);
 
 		new TableColumnBuilder<>(endCol).headerText("End") //
@@ -101,30 +95,31 @@ public class SpansTableController {
 
 		durationCol.prefWidthProperty().bind(spansTable.widthProperty().subtract(colsWidth));
 
-		createContextMenu();
+		spansTable.setContextMenu(new ContextMenuBuilder() //
+				.item("Delete", e -> deleteSelected()).build());
 	}
 
-	private void createContextMenu() {
-		ContextMenu cm = new ContextMenuBuilder().item("Delete", e -> deleteSelected()).build();
+	void setSpans(ObservableList<SpanRow> items) {
+		spansTable.setItems(items);
+		spansTable.getSortOrder().add(startCol);
+	}
 
-		spansTable.setContextMenu(cm);
+	private void setNewStart(CellEditEvent<SpanRow, OffsetDateTime> e) {
+		SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
+		spanRow.start().set(e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
+		spansTable.sort();
 	}
 
 	private void deleteSelected() {
 		final ObservableList<SpanRow> selectedItems = spansTable.getSelectionModel().getSelectedItems();
 
 		boolean userAgreed = new AlertBuilder(AlertType.WARNING,
-				"The deletion of the " + selectedItems.size() + " selected item(s) cannot be undone.") //
+				"The deletion of the %d selected item(s) cannot be undone.".formatted(selectedItems.size())) //
 						.withDefaultButton(ButtonType.CANCEL, "Cancel") //
 						.withButton(ButtonType.YES, "Delete") //
 						.showAndWaitFor(ButtonType.YES);
 
 		if (userAgreed)
 			spansTable.getItems().removeAll(selectedItems);
-	}
-
-	void setSpans(ObservableList<SpanRow> items) {
-		spansTable.setItems(items);
-		spansTable.getSortOrder().add(startCol);
 	}
 }
