@@ -23,7 +23,6 @@ import java.time.OffsetDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.fx.ObservableSpans.SpanRow;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
@@ -60,8 +59,6 @@ public class SpansTableController {
 	@FXML
 	private TableView<SpanRow> spansTable;
 
-	private ObservableSpans model;
-
 	@FXML
 	void initialize() {
 		log.info("Initialising spans table");
@@ -79,8 +76,8 @@ public class SpansTableController {
 		startCol.setOnEditCommit((CellEditEvent<SpanRow, OffsetDateTime> e) -> {
 			SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
 			log.info("startCol: {} -> {}", spanRow, e.getNewValue());
-			model.setStart(spanRow, e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
-
+			spanRow.start().set(e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
+			spansTable.sort();
 		});
 		startCol.setEditable(true);
 
@@ -104,8 +101,6 @@ public class SpansTableController {
 
 		durationCol.prefWidthProperty().bind(spansTable.widthProperty().subtract(colsWidth));
 
-		log.info("Setting sort order");
-
 		createContextMenu();
 	}
 
@@ -124,14 +119,12 @@ public class SpansTableController {
 						.withButton(ButtonType.YES, "Delete") //
 						.showAndWaitFor(ButtonType.YES);
 
-		if (userAgreed) {
-			model.deleteItems(selectedItems);
-		}
+		if (userAgreed)
+			spansTable.getItems().removeAll(selectedItems);
 	}
 
-	void setSpans(ObservableSpans model) {
-		this.model = model;
-		spansTable.setItems(model.getItems());
+	void setSpans(ObservableList<SpanRow> items) {
+		spansTable.setItems(items);
 		spansTable.getSortOrder().add(startCol);
 	}
 }
