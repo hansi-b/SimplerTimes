@@ -34,6 +34,7 @@ import org.hansib.sundries.fx.ButtonBuilder;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,8 +51,8 @@ public class SpansStatsController {
 
 		static Stats of(Project p, Map<LocalDate, Duration> durations) {
 			Map<LocalDate, ObjectProperty<String>> res = new HashMap<>();
-			durations.forEach((odt, d) -> res.put(odt, new SimpleObjectProperty<>(Utils.toHmsString(d))));
-			return new Stats(new SimpleObjectProperty<>(p.name()), res);
+			durations.forEach((odt, d) -> res.put(odt, new ReadOnlyObjectWrapper<>(Utils.toHmsString(d))));
+			return new Stats(new ReadOnlyObjectWrapper<>(p.name()), res);
 		}
 
 		ObjectProperty<String> ldStr(LocalDate odt) {
@@ -103,7 +104,7 @@ public class SpansStatsController {
 				.graphic(Icons.monthForward()).onAction(e -> shiftDate(Period.ofMonths(1))).build();
 	}
 
-	public void setSpans(ObservableList<SpanRow> spans) {
+	void setSpans(ObservableList<SpanRow> spans) {
 		this.spans = spans;
 
 		updateStats();
@@ -141,7 +142,7 @@ public class SpansStatsController {
 		StatsCalculator calc = new StatsCalculator(spans);
 		Set<Project> allProjects = calc.allProjects();
 		ObservableList<Stats> items = FXCollections.observableArrayList();
-		items.addAll(allProjects.stream().map(p -> Stats.of(p, calc.get(p, allDates))).toList());
+		items.addAll(allProjects.stream().map(p -> Stats.of(p, calc.durationsByDate(p, allDates))).toList());
 		spansStats.setItems(items);
 	}
 }

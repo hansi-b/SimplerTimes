@@ -29,30 +29,39 @@ import java.util.stream.Collectors;
 
 import org.hansib.simplertimes.projects.Project;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
 
 class StatsCalculator {
 	private final ObservableList<SpanRow> spans;
 
+	private final ObjectBinding<Set<Project>> projects;
+	private final ObjectBinding<SortedSet<LocalDate>> dates;
+
 	StatsCalculator(ObservableList<SpanRow> spans) {
 		this.spans = spans;
+
+		projects = Bindings.createObjectBinding(
+				() -> spans.stream().map(s -> s.project().get()).collect(Collectors.toSet()), spans);
+		dates = Bindings.createObjectBinding(() -> spans.stream().map(s -> s.start().get().toLocalDate())
+				.collect(Collectors.toCollection(TreeSet::new)), spans);
 	}
 
 	Set<Project> allProjects() {
-		return spans.stream().map(s -> s.project().get()).collect(Collectors.toSet());
+		return projects.get();
 	}
 
 	SortedSet<LocalDate> allDates() {
-		return spans.stream().map(s -> s.start().get().toLocalDate()).collect(Collectors.toCollection(TreeSet::new));
+		return dates.get();
 	}
 
-	public Map<LocalDate, Duration> get(Project p, SortedSet<LocalDate> allDates) {
+	Map<LocalDate, Duration> durationsByDate(Project p, SortedSet<LocalDate> allDates) {
 		Map<LocalDate, Duration> result = new HashMap<>();
-		spans.stream().forEach(s -> {
-			if (s.project().get() == p && allDates.contains(s.start().get().toLocalDate()))
-				result.compute(s.start().get().toLocalDate(),
-						(k, oldV) -> s.duration().get().plus(oldV == null ? Duration.ZERO : oldV));
-		});
+		spans.stream() //
+				.filter(s -> s.project().get() == p && allDates.contains(s.start().get().toLocalDate())) //
+				.forEach(s -> result.compute(s.start().get().toLocalDate(),
+						(k, oldV) -> s.duration().get().plus(oldV == null ? Duration.ZERO : oldV)));
 		return result;
 	}
 }
