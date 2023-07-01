@@ -28,31 +28,30 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.spans.Span;
-import org.hansib.simplertimes.spans.SpansCollection;
+
+import javafx.collections.ObservableList;
 
 class StatsCalculator {
-	private final SpansCollection spansCollection;
+	private final ObservableList<SpanRow> spans;
 
-	StatsCalculator(SpansCollection spansCollection) {
-		this.spansCollection = spansCollection;
+	StatsCalculator(ObservableList<SpanRow> spans) {
+		this.spans = spans;
 	}
 
 	Set<Project> allProjects() {
-		return spansCollection.stream().map(Span::project).collect(Collectors.toSet());
+		return spans.stream().map(s -> s.project().get()).collect(Collectors.toSet());
 	}
 
 	SortedSet<LocalDate> allDates() {
-		return spansCollection.stream().map(s -> s.start().toLocalDate())
-				.collect(Collectors.toCollection(TreeSet::new));
+		return spans.stream().map(s -> s.start().get().toLocalDate()).collect(Collectors.toCollection(TreeSet::new));
 	}
 
 	public Map<LocalDate, Duration> get(Project p, SortedSet<LocalDate> allDates) {
 		Map<LocalDate, Duration> result = new HashMap<>();
-		spansCollection.stream().forEach(s -> {
-			if (s.project() == p && allDates.contains(s.start().toLocalDate()))
-				result.compute(s.start().toLocalDate(),
-						(k, oldV) -> s.duration().plus(oldV == null ? Duration.ZERO : oldV));
+		spans.stream().forEach(s -> {
+			if (s.project().get() == p && allDates.contains(s.start().get().toLocalDate()))
+				result.compute(s.start().get().toLocalDate(),
+						(k, oldV) -> s.duration().get().plus(oldV == null ? Duration.ZERO : oldV));
 		});
 		return result;
 	}

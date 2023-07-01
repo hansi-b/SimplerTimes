@@ -19,6 +19,8 @@
 package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.projects.Project;
@@ -27,6 +29,8 @@ import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Utils;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -57,7 +61,7 @@ public class TimesMainController {
 
 	private SpanRecorder spanRecorder;
 
-	private SpansCollection spans;
+	private ObservableList<SpanRow> spans;
 	private Project projectTree;
 
 	@FXML
@@ -67,7 +71,7 @@ public class TimesMainController {
 
 		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, this::addSpan);
 
-		new SpansDisplay(showSpansButton, this::getSpans);
+		new SpansDisplay(showSpansButton, () -> spans);
 		new TreeDisplay(editTreeButton, this::getProjects, this::updateProjectSelectionItems);
 		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
 	}
@@ -83,7 +87,7 @@ public class TimesMainController {
 	}
 
 	private void addSpan(Span span) {
-		spans.add(span);
+		spans.add(new SpanRow(span));
 	}
 
 	void setProjects(Project projects) {
@@ -95,12 +99,15 @@ public class TimesMainController {
 		return projectTree;
 	}
 
-	void setSpans(SpansCollection spans) {
-		this.spans = spans;
+	void setSpans(SpansCollection spansCollection) {
+		this.spans = FXCollections.observableArrayList(
+				spansCollection.stream().map(SpanRow::new).collect(Collectors.toCollection(() -> new ArrayList<>())));
 	}
 
 	SpansCollection getSpans() {
-		return spans;
+		SpansCollection spansCollection = new SpansCollection();
+		spans.forEach(r -> spansCollection.add(r.toSpan()));
+		return spansCollection;
 	}
 
 }

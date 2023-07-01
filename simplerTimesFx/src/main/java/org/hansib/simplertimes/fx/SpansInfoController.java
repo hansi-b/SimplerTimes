@@ -18,14 +18,9 @@
  */
 package org.hansib.simplertimes.fx;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.spans.SpansCollection;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -51,10 +46,8 @@ public class SpansInfoController {
 		log.info("Initialising spans info");
 	}
 
-	public void setSpans(SpansCollection spansCollection) {
-		ObservableList<SpanRow> observableSpans = FXCollections.observableArrayList(
-				spansCollection.stream().map(SpanRow::new).collect(Collectors.toCollection(() -> new ArrayList<>())));
-		spansTableController.setSpans(observableSpans);
-		spansStatsController.setSpans(spansCollection);
+	void setSpans(ObservableList<SpanRow> spans) {
+		spansTableController.setSpans(spans);
+		spansStatsController.setSpans(spans);
 	}
 }

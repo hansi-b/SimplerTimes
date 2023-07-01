@@ -43,6 +43,10 @@ class SpanRow {
 		return duration;
 	}
 
+	public Span toSpan() {
+		return new Span(project.get(), start.get(), end.get());
+	}
+
 	@Override
 	public String toString() {
 		return "[%s -> %s: %s]".formatted(start.get(), end.get(), project.get());

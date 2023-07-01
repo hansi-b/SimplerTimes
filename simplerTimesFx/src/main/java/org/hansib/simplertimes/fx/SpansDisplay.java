@@ -20,22 +20,22 @@ package org.hansib.simplertimes.fx;
 
 import java.util.function.Supplier;
 
-import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 class SpansDisplay {
 
-	private final Supplier<SpansCollection> spansSupplier;
+	private final Supplier<ObservableList<SpanRow>> lazySpans;
 	private Stage spansStage;
 	private SpansInfoController spansInfoController;
 
-	SpansDisplay(Button showSpansButton, Supplier<SpansCollection> spansSupplier) {
+	SpansDisplay(Button showSpansButton, Supplier<ObservableList<SpanRow>> lazySpans) {
 
-		this.spansSupplier = spansSupplier;
+		this.lazySpans = lazySpans;
 
 		new ButtonBuilder(showSpansButton) //
 				.graphic(Icons.showSpans()).onAction(event -> showSpansInfo()).build();
@@ -46,7 +46,7 @@ class SpansDisplay {
 			spansStage = new Stage();
 			spansInfoController = new FxResourceLoader().loadFxmlToStage("spansInfo.fxml", spansStage);
 		}
-		spansInfoController.setSpans(spansSupplier.get());
+		spansInfoController.setSpans(lazySpans.get());
 		spansStage.setTitle("Spans");
 
 		spansStage.show();

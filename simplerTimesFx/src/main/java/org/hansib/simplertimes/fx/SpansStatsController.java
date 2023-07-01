@@ -29,7 +29,6 @@ import java.util.SortedSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
 
@@ -74,7 +73,7 @@ public class SpansStatsController {
 	@FXML
 	Button monthForward;
 
-	private SpansCollection spansCollection;
+	private ObservableList<SpanRow> spans;
 
 	private ObjectProperty<LocalDate> dateProp;
 
@@ -104,8 +103,8 @@ public class SpansStatsController {
 				.graphic(Icons.monthForward()).onAction(e -> shiftDate(Period.ofMonths(1))).build();
 	}
 
-	public void setSpans(SpansCollection spansCollection) {
-		this.spansCollection = spansCollection;
+	public void setSpans(ObservableList<SpanRow> spans) {
+		this.spans = spans;
 
 		updateStats();
 	}
@@ -139,7 +138,7 @@ public class SpansStatsController {
 	}
 
 	private void fillStats(SortedSet<LocalDate> allDates) {
-		StatsCalculator calc = new StatsCalculator(spansCollection);
+		StatsCalculator calc = new StatsCalculator(spans);
 		Set<Project> allProjects = calc.allProjects();
 		ObservableList<Stats> items = FXCollections.observableArrayList();
 		items.addAll(allProjects.stream().map(p -> Stats.of(p, calc.get(p, allDates))).toList());
