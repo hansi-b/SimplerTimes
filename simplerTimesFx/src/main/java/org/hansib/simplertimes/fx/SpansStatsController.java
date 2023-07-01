@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 
 import org.apache.logging.log4j.LogManager;
@@ -74,9 +73,8 @@ public class SpansStatsController {
 	@FXML
 	Button monthForward;
 
-	private ObservableList<SpanRow> spans;
-
-	private ObjectProperty<LocalDate> dateProp;
+	private StatsCalculator calc;
+	private ObjectProperty<LocalDate> dateShown;
 
 	@FXML
 	void initialize() {
@@ -86,7 +84,7 @@ public class SpansStatsController {
 		projectColumn.setCellValueFactory(data -> data.getValue().project);
 		spansStats.getColumns().add(projectColumn);
 
-		dateProp = new SimpleObjectProperty<>(LocalDate.now());
+		dateShown = new SimpleObjectProperty<>(LocalDate.now());
 
 		new ButtonBuilder(monthBack) //
 				.graphic(Icons.monthBack()).onAction(e -> shiftDate(Period.ofMonths(-1))).build();
@@ -96,7 +94,7 @@ public class SpansStatsController {
 		new ButtonBuilder(today) //
 				.graphic(Icons.today()).onAction(e -> setDate(LocalDate.now())).build();
 		today.disableProperty()
-				.bind(Bindings.createBooleanBinding(() -> LocalDate.now().equals(dateProp.get()), dateProp));
+				.bind(Bindings.createBooleanBinding(() -> LocalDate.now().equals(dateShown.get()), dateShown));
 
 		new ButtonBuilder(weekForward) //
 				.graphic(Icons.weekForward()).onAction(e -> shiftDate(Period.ofDays(7))).build();
@@ -105,25 +103,24 @@ public class SpansStatsController {
 	}
 
 	void setSpans(ObservableList<SpanRow> spans) {
-		this.spans = spans;
-
+		this.calc = new StatsCalculator(spans);
 		updateStats();
 	}
 
 	private void setDate(LocalDate newDate) {
-		dateProp.set(newDate);
+		dateShown.set(newDate);
 		updateStats();
 	}
 
 	private void shiftDate(Period shift) {
-		dateProp.set(dateProp.get().plus(shift));
+		dateShown.set(dateShown.get().plus(shift));
 		updateStats();
 	}
 
 	private void updateStats() {
-		SortedSet<LocalDate> dates = Utils.daysOfWeek(dateProp.get());
-		updateDateColumns(dates);
+		SortedSet<LocalDate> dates = Utils.daysOfWeek(dateShown.get());
 
+		updateDateColumns(dates);
 		fillStats(dates);
 	}
 
@@ -139,10 +136,8 @@ public class SpansStatsController {
 	}
 
 	private void fillStats(SortedSet<LocalDate> dates) {
-		StatsCalculator calc = new StatsCalculator(spans);
-		Set<Project> allProjects = calc.allProjects();
 		ObservableList<Stats> items = FXCollections.observableArrayList(
-				allProjects.stream().map(p -> Stats.of(p, calc.durationsByDate(p, dates))).toList());
+				calc.allProjects().stream().map(p -> Stats.of(p, calc.durationsByDate(p, dates))).toList());
 		spansStats.setItems(items);
 	}
 }
