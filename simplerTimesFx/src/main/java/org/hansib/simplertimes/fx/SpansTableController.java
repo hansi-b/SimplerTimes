@@ -78,6 +78,13 @@ public class SpansTableController {
 		new TableColumnBuilder<>(endCol).headerText("End") //
 				.value(SpanRow::end).format(dtHandler.formatter()) //
 				.build();
+
+		endCol.setCellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
+				dtHandler::isDateTimeStrValid));
+
+		endCol.setOnEditCommit(this::setNewEnd);
+		endCol.setEditable(true);
+
 		new TableColumnBuilder<>(projectCol).headerText("Project") //
 				.value(SpanRow::project).format(Project::name).comparator(Project.nameComparator) //
 				.build();
@@ -102,11 +109,19 @@ public class SpansTableController {
 	void setSpans(ObservableList<SpanRow> items) {
 		spansTable.setItems(items);
 		spansTable.getSortOrder().add(startCol);
+		spansTable.getSortOrder().add(endCol);
+		spansTable.getSortOrder().add(projectCol);
 	}
 
 	private void setNewStart(CellEditEvent<SpanRow, OffsetDateTime> e) {
 		SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
 		spanRow.start().set(e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
+		spansTable.sort();
+	}
+
+	private void setNewEnd(CellEditEvent<SpanRow, OffsetDateTime> e) {
+		SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
+		spanRow.end().set(e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
 		spansTable.sort();
 	}
 
