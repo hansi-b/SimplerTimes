@@ -22,26 +22,26 @@ public class SpansYamlConverterSpec extends Specification {
 	def s2 = new Span(y, start.minusHours(2), start.minusHours(1))
 	def s3 = new Span(b, start.minusHours(1), start.minusMinutes(30))
 
-	def 'can serialize'() {
+	def 'serialization sorts'() {
 
 		when:
 		def sc = SpansCollection.with(s1, s2, s3)
 
 		then:
 		SpansYamlConverter.toYaml(sc) == """---
-- projectId: ${x.id}
-  start: "2022-05-24T08:54:00Z"
-  end: "2022-05-24T08:55:00Z"
 - projectId: ${y.id}
   start: "2022-05-24T06:55:00Z"
   end: "2022-05-24T07:55:00Z"
 - projectId: ${b.id}
   start: "2022-05-24T07:55:00Z"
   end: "2022-05-24T08:25:00Z"
+- projectId: ${x.id}
+  start: "2022-05-24T08:54:00Z"
+  end: "2022-05-24T08:55:00Z"
 """
 	}
 
-	def 'can de/serialize'() {
+	def 'can deserialize unsorted'() {
 
 		when:
 		String yaml = """---
