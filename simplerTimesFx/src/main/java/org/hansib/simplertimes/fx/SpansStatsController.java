@@ -121,28 +121,28 @@ public class SpansStatsController {
 	}
 
 	private void updateStats() {
-		SortedSet<LocalDate> allDates = Utils.daysOfWeek(dateProp.get());
-		updateDateColumns(allDates);
+		SortedSet<LocalDate> dates = Utils.daysOfWeek(dateProp.get());
+		updateDateColumns(dates);
 
-		fillStats(allDates);
+		fillStats(dates);
 	}
 
-	private void updateDateColumns(SortedSet<LocalDate> allDates) {
+	private void updateDateColumns(SortedSet<LocalDate> dates) {
 		if (spansStats.getColumns().size() > 1)
 			spansStats.getColumns().remove(1, spansStats.getColumns().size());
 
-		for (LocalDate dt : allDates) {
+		for (LocalDate dt : dates) {
 			TableColumn<Stats, String> odtColumn = new TableColumn<>(dt.toString());
 			odtColumn.setCellValueFactory(data -> data.getValue().ldStr(dt));
 			spansStats.getColumns().add(odtColumn);
 		}
 	}
 
-	private void fillStats(SortedSet<LocalDate> allDates) {
+	private void fillStats(SortedSet<LocalDate> dates) {
 		StatsCalculator calc = new StatsCalculator(spans);
 		Set<Project> allProjects = calc.allProjects();
-		ObservableList<Stats> items = FXCollections.observableArrayList();
-		items.addAll(allProjects.stream().map(p -> Stats.of(p, calc.durationsByDate(p, allDates))).toList());
+		ObservableList<Stats> items = FXCollections.observableArrayList(
+				allProjects.stream().map(p -> Stats.of(p, calc.durationsByDate(p, dates))).toList());
 		spansStats.setItems(items);
 	}
 }
