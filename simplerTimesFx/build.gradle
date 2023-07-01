@@ -2,12 +2,10 @@ plugins {
 	id 'distribution'
 
 	id 'org.hansib.application'
-
-	id 'org.openjfx.javafxplugin' version '0.0.13'
+	id 'org.hansib.javafx'
 }
 
 javafx {
-	version = '17'
 	modules = [
 		'javafx.controls',
 		'javafx.fxml',
@@ -29,12 +27,6 @@ dependencies {
 	implementation 'org.kordamp.ikonli:ikonli-javafx:12.3.1'
 	implementation 'org.kordamp.ikonli:ikonli-codicons-pack:12.3.1'
 	implementation 'org.kordamp.ikonli:ikonli-unicons-pack:12.3.1'
-
-	testImplementation 'org.hamcrest:hamcrest-core:2.2'
-	testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
-	testImplementation 'org.testfx:testfx-spock:4.0.16-alpha'
-
-	testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
 }
 
 application {
