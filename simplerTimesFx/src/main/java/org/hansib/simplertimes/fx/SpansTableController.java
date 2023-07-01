@@ -35,6 +35,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
@@ -65,6 +66,7 @@ public class SpansTableController {
 		DateTimeHandler dtHandler = new DateTimeHandler();
 
 		spansTable.setEditable(true);
+		spansTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 		new TableColumnBuilder<>(startCol).headerText("Start") //
 				.value(SpanRow::start).format(dtHandler.formatter()) //
