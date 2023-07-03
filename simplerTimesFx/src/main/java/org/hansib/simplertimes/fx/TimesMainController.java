@@ -61,7 +61,7 @@ public class TimesMainController {
 
 	private SpanRecorder spanRecorder;
 
-	private ObservableList<SpanRow> spans;
+	private ObservableList<FxSpan> spans;
 	private Project projectTree;
 
 	@FXML
@@ -87,7 +87,7 @@ public class TimesMainController {
 	}
 
 	private void addSpan(Span span) {
-		spans.add(new SpanRow(span));
+		spans.add(new FxSpan(span));
 	}
 
 	void setProjects(Project projects) {
@@ -101,7 +101,7 @@ public class TimesMainController {
 
 	void setSpans(SpansCollection spansCollection) {
 		this.spans = FXCollections.observableArrayList(
-				spansCollection.stream().map(SpanRow::new).collect(Collectors.toCollection(() -> new ArrayList<>())));
+				spansCollection.stream().map(FxSpan::new).collect(Collectors.toCollection(() -> new ArrayList<>())));
 	}
 
 	SpansCollection getSpans() {

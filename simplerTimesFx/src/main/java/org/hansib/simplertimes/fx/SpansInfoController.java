@@ -46,7 +46,7 @@ public class SpansInfoController {
 		log.info("Initialising spans info");
 	}
 
-	void setSpans(ObservableList<SpanRow> spans) {
+	void setSpans(ObservableList<FxSpan> spans) {
 		spansTableController.setSpans(spans);
 		spansStatsController.setSpans(spans);
 	}

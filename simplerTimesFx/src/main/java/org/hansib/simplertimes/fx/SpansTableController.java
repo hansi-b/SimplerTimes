@@ -45,19 +45,19 @@ public class SpansTableController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
-	private TableColumn<SpanRow, Project> projectCol;
+	private TableColumn<FxSpan, Project> projectCol;
 
 	@FXML
-	private TableColumn<SpanRow, OffsetDateTime> startCol;
+	private TableColumn<FxSpan, OffsetDateTime> startCol;
 
 	@FXML
-	private TableColumn<SpanRow, OffsetDateTime> endCol;
+	private TableColumn<FxSpan, OffsetDateTime> endCol;
 
 	@FXML
-	private TableColumn<SpanRow, Duration> durationCol;
+	private TableColumn<FxSpan, Duration> durationCol;
 
 	@FXML
-	private TableView<SpanRow> spansTable;
+	private TableView<FxSpan> spansTable;
 
 	@FXML
 	void initialize() {
@@ -69,7 +69,7 @@ public class SpansTableController {
 		spansTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 		new TableColumnBuilder<>(startCol).headerText("Start") //
-				.value(SpanRow::start).format(dtHandler.formatter()) //
+				.value(FxSpan::start).format(dtHandler.formatter()) //
 				.build();
 		startCol.setCellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
 				dtHandler::isDateTimeStrValid));
@@ -78,7 +78,7 @@ public class SpansTableController {
 		startCol.setEditable(true);
 
 		new TableColumnBuilder<>(endCol).headerText("End") //
-				.value(SpanRow::end).format(dtHandler.formatter()) //
+				.value(FxSpan::end).format(dtHandler.formatter()) //
 				.build();
 
 		endCol.setCellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
@@ -88,10 +88,10 @@ public class SpansTableController {
 		endCol.setEditable(true);
 
 		new TableColumnBuilder<>(projectCol).headerText("Project") //
-				.value(SpanRow::project).format(Project::name).comparator(Project.nameComparator) //
+				.value(FxSpan::project).format(Project::name).comparator(Project.nameComparator) //
 				.build();
 		new TableColumnBuilder<>(durationCol).headerText("Duration") //
-				.value(SpanRow::duration).format(Utils::toHmsString) //
+				.value(FxSpan::duration).format(Utils::toHmsString) //
 				.build();
 
 		startCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.25));
@@ -108,27 +108,27 @@ public class SpansTableController {
 				.item("Delete", e -> deleteSelected()).build());
 	}
 
-	void setSpans(ObservableList<SpanRow> items) {
+	void setSpans(ObservableList<FxSpan> items) {
 		spansTable.setItems(items);
 		spansTable.getSortOrder().add(startCol);
 		spansTable.getSortOrder().add(endCol);
 		spansTable.getSortOrder().add(projectCol);
 	}
 
-	private void setNewStart(CellEditEvent<SpanRow, OffsetDateTime> e) {
-		SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
+	private void setNewStart(CellEditEvent<FxSpan, OffsetDateTime> e) {
+		FxSpan spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
 		spanRow.start().set(e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
 		spansTable.sort();
 	}
 
-	private void setNewEnd(CellEditEvent<SpanRow, OffsetDateTime> e) {
-		SpanRow spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
+	private void setNewEnd(CellEditEvent<FxSpan, OffsetDateTime> e) {
+		FxSpan spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
 		spanRow.end().set(e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
 		spansTable.sort();
 	}
 
 	private void deleteSelected() {
-		final ObservableList<SpanRow> selectedItems = spansTable.getSelectionModel().getSelectedItems();
+		final ObservableList<FxSpan> selectedItems = spansTable.getSelectionModel().getSelectedItems();
 
 		boolean userAgreed = new AlertBuilder(AlertType.WARNING,
 				"The deletion of the %d selected item(s) cannot be undone.".formatted(selectedItems.size())) //

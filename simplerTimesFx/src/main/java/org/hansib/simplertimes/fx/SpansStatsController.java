@@ -102,7 +102,7 @@ public class SpansStatsController {
 				.graphic(Icons.monthForward()).onAction(e -> shiftDate(Period.ofMonths(1))).build();
 	}
 
-	void setSpans(ObservableList<SpanRow> spans) {
+	void setSpans(ObservableList<FxSpan> spans) {
 		this.calc = new StatsCalculator(spans);
 		updateStats();
 	}

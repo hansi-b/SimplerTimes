@@ -11,14 +11,14 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 
-class SpanRow {
+class FxSpan {
 
 	private final SimpleObjectProperty<Project> project;
 	private final SimpleObjectProperty<OffsetDateTime> start;
 	private final SimpleObjectProperty<OffsetDateTime> end;
 	private final ReadOnlyObjectWrapper<Duration> duration;
 
-	SpanRow(Span span) {
+	FxSpan(Span span) {
 		this.project = new SimpleObjectProperty<>(span.project());
 		this.start = new SimpleObjectProperty<>(span.start());
 		this.end = new SimpleObjectProperty<>(span.end());

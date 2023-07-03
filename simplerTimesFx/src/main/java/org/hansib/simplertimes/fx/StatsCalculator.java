@@ -33,11 +33,11 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
 
 class StatsCalculator {
-	private final ObservableList<SpanRow> spans;
+	private final ObservableList<FxSpan> spans;
 
 	private final ObjectBinding<Set<Project>> projects;
 
-	StatsCalculator(ObservableList<SpanRow> spans) {
+	StatsCalculator(ObservableList<FxSpan> spans) {
 		this.spans = spans;
 
 		projects = Bindings.createObjectBinding(

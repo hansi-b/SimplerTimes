@@ -29,11 +29,11 @@ import javafx.stage.Stage;
 
 class SpansDisplay {
 
-	private final Supplier<ObservableList<SpanRow>> lazySpans;
+	private final Supplier<ObservableList<FxSpan>> lazySpans;
 	private Stage spansStage;
 	private SpansInfoController spansInfoController;
 
-	SpansDisplay(Button showSpansButton, Supplier<ObservableList<SpanRow>> lazySpans) {
+	SpansDisplay(Button showSpansButton, Supplier<ObservableList<FxSpan>> lazySpans) {
 
 		this.lazySpans = lazySpans;
 

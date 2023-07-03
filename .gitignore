@@ -14,7 +14,7 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 # IDEs
-
+.vscode/
 .idea/
 **/resources/compiled
 
