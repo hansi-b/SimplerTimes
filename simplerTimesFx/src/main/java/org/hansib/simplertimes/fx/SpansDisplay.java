@@ -20,14 +20,19 @@ package org.hansib.simplertimes.fx;
 
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 class SpansDisplay {
+
+	private static final Logger log = LogManager.getLogger();
 
 	private final Supplier<ObservableList<FxSpan>> lazySpans;
 	private Stage spansStage;
@@ -43,12 +48,24 @@ class SpansDisplay {
 
 	private void showSpansInfo() {
 		if (spansStage == null) {
-			spansStage = new Stage();
-			spansInfoController = new FxResourceLoader().loadFxmlToStage("spansInfo.fxml", spansStage);
+			initStage();
 		}
-		spansInfoController.setSpans(lazySpans.get());
+
+		spansInfoController.setSpans(lazySpans.get());		
+		spansStage.show();
+	}
+
+	private void initStage() {
+		spansStage = new Stage();
+		
+		FxResourceLoader fxLoader = new FxResourceLoader();
+		spansInfoController = fxLoader.loadFxmlToStage("spansInfo.fxml", spansStage);
 		spansStage.setTitle("Spans");
 
-		spansStage.show();
+		Image logo = fxLoader.loadImage("logo.png");
+		if (logo == null)
+			log.warn("Could not load application icon");
+		else
+			spansStage.getIcons().add(logo);
 	}
 }
