@@ -20,15 +20,19 @@ package org.hansib.simplertimes.fx.tree;
 
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.fx.ContextMenuBuilder;
+import org.hansib.sundries.fx.FxResourceLoader;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -36,6 +40,8 @@ import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 public class TreeViewWindow {
+
+	private static final Logger log = LogManager.getLogger();
 
 	private Runnable closeHandler;
 
@@ -72,6 +78,12 @@ public class TreeViewWindow {
 
 		Stage window = new Stage();
 		window.setTitle("Projects");
+
+		Image logo = new FxResourceLoader().loadImage("logo.png");
+		if (logo == null)
+			log.warn("Could not load application icon");
+		else
+			window.getIcons().add(logo);
 
 		// window.initStyle(StageStyle.UNDECORATED);
 		window.setScene(secondScene);
