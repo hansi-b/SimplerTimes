@@ -54,7 +54,7 @@ public class TreeViewWindow {
 		return treeItem;
 	}
 
-	public void openTreeViewWindow(Node parent) {
+	public void show(Node parent) {
 
 		rootItem.setExpanded(true);
 
