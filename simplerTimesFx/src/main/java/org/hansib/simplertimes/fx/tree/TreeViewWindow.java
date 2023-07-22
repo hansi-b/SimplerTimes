@@ -85,7 +85,6 @@ public class TreeViewWindow {
 		else
 			window.getIcons().add(logo);
 
-		// window.initStyle(StageStyle.UNDECORATED);
 		window.setScene(secondScene);
 
 		Bounds boundsInScene = parent.localToScreen(parent.getBoundsInLocal());
