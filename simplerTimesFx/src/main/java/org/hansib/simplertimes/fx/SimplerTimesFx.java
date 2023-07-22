@@ -96,8 +96,10 @@ public class SimplerTimesFx extends Application {
 
 		if (canShowTrayIcon(logo)) {
 			log.info("Showing FXTrayIcon ...");
-			new FXTrayIcon.Builder(primaryStage, logo).addTitleItem(true).addExitMenuItem(MenuItems.Exit.fmt()).show()
-					.build();
+			new FXTrayIcon.Builder(primaryStage, logo) //
+					.addTitleItem(true) //
+					.addExitMenuItem(MenuItems.Exit.fmt()) //
+					.show().build();
 		} else {
 			primaryStage.setOnCloseRequest(event -> Platform.exit());
 		}
