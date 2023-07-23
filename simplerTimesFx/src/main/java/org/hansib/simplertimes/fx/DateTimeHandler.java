@@ -39,14 +39,4 @@ class DateTimeHandler {
 			return null;
 		}
 	}
-
-	boolean isDateTimeStrValid(String dateTimeStr) {
-		try {
-			LocalDateTime.parse(dateTimeStr, dateTimeFormatter);
-			return true;
-		} catch (DateTimeParseException ex) {
-			return false;
-		}
-	}
-
 }

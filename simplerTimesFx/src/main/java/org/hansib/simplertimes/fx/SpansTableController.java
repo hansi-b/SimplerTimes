@@ -72,7 +72,11 @@ public class SpansTableController {
 				.value(FxSpan::start).format(dtHandler.formatter()) //
 				.build();
 		startCol.setCellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
-				dtHandler::isDateTimeStrValid));
+				(cell, text) -> {
+					OffsetDateTime newStartTime = dtHandler.parseToOffsetDateTime(text)
+							.withOffsetSameLocal(cell.getItem().getOffset());
+					return newStartTime != null && newStartTime.isBefore(endCol.getCellData(cell.getIndex()));
+				}));
 
 		startCol.setOnEditCommit(this::setNewStart);
 		startCol.setEditable(true);
@@ -82,7 +86,11 @@ public class SpansTableController {
 				.build();
 
 		endCol.setCellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
-				dtHandler::isDateTimeStrValid));
+				(cell, text) -> {
+					OffsetDateTime newEndTime = dtHandler.parseToOffsetDateTime(text);
+					return newEndTime != null && newEndTime.withOffsetSameLocal(cell.getItem().getOffset())
+							.isAfter(startCol.getCellData(cell.getIndex()));
+				}));
 
 		endCol.setOnEditCommit(this::setNewEnd);
 		endCol.setEditable(true);
