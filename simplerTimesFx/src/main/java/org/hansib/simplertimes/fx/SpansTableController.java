@@ -77,10 +77,8 @@ public class SpansTableController {
 									.withOffsetSameLocal(cell.getItem().getOffset());
 							return newStartTime != null && newStartTime.isBefore(endCol.getCellData(cell.getIndex()));
 						})) //
+				.onEditCommit(this::setNewStart) //
 				.build();
-
-		startCol.setOnEditCommit(this::setNewStart);
-		startCol.setEditable(true);
 
 		new TableColumnBuilder<>(endCol).headerText("End") //
 				.value(FxSpan::end) //
@@ -90,10 +88,8 @@ public class SpansTableController {
 							return newEndTime != null && newEndTime.withOffsetSameLocal(cell.getItem().getOffset())
 									.isAfter(startCol.getCellData(cell.getIndex()));
 						})) //
+				.onEditCommit(this::setNewEnd) //
 				.build();
-
-		endCol.setOnEditCommit(this::setNewEnd);
-		endCol.setEditable(true);
 
 		new TableColumnBuilder<>(projectCol).headerText("Project") //
 				.value(FxSpan::project) //
