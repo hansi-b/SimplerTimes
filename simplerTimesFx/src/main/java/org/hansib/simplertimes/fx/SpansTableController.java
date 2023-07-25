@@ -73,9 +73,9 @@ public class SpansTableController {
 				.value(FxSpan::start) //
 				.cellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
 						(cell, text) -> {
-							OffsetDateTime newStartTime = dtHandler.parseToOffsetDateTime(text)
-									.withOffsetSameLocal(cell.getItem().getOffset());
-							return newStartTime != null && newStartTime.isBefore(endCol.getCellData(cell.getIndex()));
+							OffsetDateTime newStartTime = dtHandler.parseToOffsetDateTime(text);
+							return newStartTime != null && withReferenceOffset(newStartTime, cell.getItem())
+									.isBefore(endCol.getCellData(cell.getIndex()));
 						})) //
 				.onEditCommit(this::setNewStart) //
 				.build();
@@ -85,7 +85,7 @@ public class SpansTableController {
 				.cellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
 						(cell, text) -> {
 							OffsetDateTime newEndTime = dtHandler.parseToOffsetDateTime(text);
-							return newEndTime != null && newEndTime.withOffsetSameLocal(cell.getItem().getOffset())
+							return newEndTime != null && withReferenceOffset(newEndTime, cell.getItem())
 									.isAfter(startCol.getCellData(cell.getIndex()));
 						})) //
 				.onEditCommit(this::setNewEnd) //
@@ -96,6 +96,7 @@ public class SpansTableController {
 				.cellFactory(new CellFactoryBuilder<>(projectCol).format(Project::name).build()) //
 				.comparator(Project.nameComparator) //
 				.build();
+
 		new TableColumnBuilder<>(durationCol).headerText("Duration") //
 				.value(FxSpan::duration) //
 				.cellFactory(new CellFactoryBuilder<>(durationCol).format(Utils::toHmsString).build()) //
@@ -124,14 +125,18 @@ public class SpansTableController {
 
 	private void setNewStart(CellEditEvent<FxSpan, OffsetDateTime> e) {
 		FxSpan spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
-		spanRow.start().set(e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
+		spanRow.start().set(withReferenceOffset(e.getNewValue(), e.getOldValue()));
 		spansTable.sort();
 	}
 
 	private void setNewEnd(CellEditEvent<FxSpan, OffsetDateTime> e) {
 		FxSpan spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
-		spanRow.end().set(e.getNewValue().withOffsetSameLocal(e.getOldValue().getOffset()));
+		spanRow.end().set(withReferenceOffset(e.getNewValue(), e.getOldValue()));
 		spansTable.sort();
+	}
+
+	private static OffsetDateTime withReferenceOffset(OffsetDateTime target, OffsetDateTime offsetReferences) {
+		return target.withOffsetSameLocal(offsetReferences.getOffset());
 	}
 
 	private void deleteSelected() {
