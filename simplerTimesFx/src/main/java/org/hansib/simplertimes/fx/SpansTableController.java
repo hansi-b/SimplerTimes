@@ -27,6 +27,7 @@ import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;
+import org.hansib.sundries.fx.table.CellFactoryBuilder;
 import org.hansib.sundries.fx.table.EditingCell;
 import org.hansib.sundries.fx.table.TableColumnBuilder;
 
@@ -69,37 +70,39 @@ public class SpansTableController {
 		spansTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 		new TableColumnBuilder<>(startCol).headerText("Start") //
-				.value(FxSpan::start).format(dtHandler.formatter()) //
+				.value(FxSpan::start) //
+				.cellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
+						(cell, text) -> {
+							OffsetDateTime newStartTime = dtHandler.parseToOffsetDateTime(text)
+									.withOffsetSameLocal(cell.getItem().getOffset());
+							return newStartTime != null && newStartTime.isBefore(endCol.getCellData(cell.getIndex()));
+						})) //
 				.build();
-		startCol.setCellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
-				(cell, text) -> {
-					OffsetDateTime newStartTime = dtHandler.parseToOffsetDateTime(text)
-							.withOffsetSameLocal(cell.getItem().getOffset());
-					return newStartTime != null && newStartTime.isBefore(endCol.getCellData(cell.getIndex()));
-				}));
 
 		startCol.setOnEditCommit(this::setNewStart);
 		startCol.setEditable(true);
 
 		new TableColumnBuilder<>(endCol).headerText("End") //
-				.value(FxSpan::end).format(dtHandler.formatter()) //
+				.value(FxSpan::end) //
+				.cellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
+						(cell, text) -> {
+							OffsetDateTime newEndTime = dtHandler.parseToOffsetDateTime(text);
+							return newEndTime != null && newEndTime.withOffsetSameLocal(cell.getItem().getOffset())
+									.isAfter(startCol.getCellData(cell.getIndex()));
+						})) //
 				.build();
-
-		endCol.setCellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
-				(cell, text) -> {
-					OffsetDateTime newEndTime = dtHandler.parseToOffsetDateTime(text);
-					return newEndTime != null && newEndTime.withOffsetSameLocal(cell.getItem().getOffset())
-							.isAfter(startCol.getCellData(cell.getIndex()));
-				}));
 
 		endCol.setOnEditCommit(this::setNewEnd);
 		endCol.setEditable(true);
 
 		new TableColumnBuilder<>(projectCol).headerText("Project") //
-				.value(FxSpan::project).format(Project::name).comparator(Project.nameComparator) //
+				.value(FxSpan::project) //
+				.cellFactory(new CellFactoryBuilder<>(projectCol).format(Project::name).build()) //
+				.comparator(Project.nameComparator) //
 				.build();
 		new TableColumnBuilder<>(durationCol).headerText("Duration") //
-				.value(FxSpan::duration).format(Utils::toHmsString) //
+				.value(FxSpan::duration) //
+				.cellFactory(new CellFactoryBuilder<>(durationCol).format(Utils::toHmsString).build()) //
 				.build();
 
 		startCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.25));
