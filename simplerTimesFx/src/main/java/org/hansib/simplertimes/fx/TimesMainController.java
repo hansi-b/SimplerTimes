@@ -18,9 +18,11 @@
  */
 package org.hansib.simplertimes.fx;
 
+import static java.util.stream.Collectors.toCollection;
+import static javafx.collections.FXCollections.observableArrayList;
+
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.projects.Project;
@@ -29,7 +31,6 @@ import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Utils;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -100,8 +101,8 @@ public class TimesMainController {
 	}
 
 	void setSpans(SpansCollection spansCollection) {
-		this.spans = FXCollections.observableArrayList(
-				spansCollection.stream().map(FxSpan::new).collect(Collectors.toCollection(() -> new ArrayList<>())));
+		this.spans = observableArrayList(
+				spansCollection.stream().map(FxSpan::new).collect(toCollection(() -> new ArrayList<>())));
 	}
 
 	SpansCollection getSpans() {
