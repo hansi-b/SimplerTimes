@@ -27,10 +27,10 @@ import javafx.scene.control.Button;
 
 class TreeDisplay {
 
-	TreeDisplay(Button editTreeButton, Supplier<Project> rootSupplier, Runnable closeHandler) {
+	TreeDisplay(Button editTreeButton, Supplier<Project> rootSupplier, Runnable updateHandler) {
 
 		editTreeButton.setGraphic(Icons.editTree());
 		editTreeButton.setOnAction(
-				event -> new TreeViewWindow(rootSupplier.get()).withCloseHandler(closeHandler).show(editTreeButton));
+				event -> new TreeViewWindow(rootSupplier.get()).withCloseHandler(updateHandler).show(editTreeButton));
 	}
 }
