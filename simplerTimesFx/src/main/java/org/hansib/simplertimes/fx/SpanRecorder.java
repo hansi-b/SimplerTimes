@@ -113,8 +113,8 @@ class SpanRecorder {
 			log.info("Registering interval {}", span);
 			spanReceiver.accept(span);
 		} else {
-			log.info("Ignoring interval {} - {} (is smaller than {})", t.start(), t.end(),
-					Utils.toHmsString(minimumSpanDuration));
+			log.info("Ignoring interval {} - {} (is smaller than {})", () -> t.start(), () -> t.end(),
+					() -> Utils.toHmsString(minimumSpanDuration));
 		}
 
 		projectSelection.requestFocus();
