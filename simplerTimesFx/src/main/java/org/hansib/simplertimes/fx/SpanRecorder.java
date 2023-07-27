@@ -37,7 +37,6 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -49,7 +48,6 @@ class SpanRecorder {
 	private static final Logger log = LogManager.getLogger();
 
 	private final SearchableComboBox<Project> projectSelection;
-	private final ObservableList<Project> originalList;
 
 	private final DurationTicker durationTicker;
 	private final Consumer<Span> spanReceiver;
@@ -60,7 +58,6 @@ class SpanRecorder {
 			Consumer<Duration> tickReceiver, Consumer<Span> spanReceiver) {
 
 		this.projectSelection = projectSelection;
-		this.originalList = projectSelection.getItems();
 
 		this.durationTicker = new DurationTicker(tickReceiver);
 		this.spanReceiver = spanReceiver;
@@ -94,7 +91,7 @@ class SpanRecorder {
 	}
 
 	void updateProjects(Collection<Project> newProjects) {
-		originalList.setAll(newProjects);
+		projectSelection.getItems().setAll(newProjects);
 	}
 
 	private void startRecording() {
