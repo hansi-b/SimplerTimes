@@ -40,6 +40,8 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.util.StringConverter;
 
 public class SpansTableController {
 
@@ -59,6 +61,8 @@ public class SpansTableController {
 
 	@FXML
 	private TableView<FxSpan> spansTable;
+
+	private ObservableList<Project> projects;
 
 	@FXML
 	void initialize() {
@@ -97,6 +101,19 @@ public class SpansTableController {
 				.comparator(Project.nameComparator) //
 				.build();
 
+		projectCol.setCellFactory(list -> new ComboBoxTableCell<>(new StringConverter<Project>() {
+			@Override
+			public String toString(Project object) {
+				return object == null ? null : object.name();
+			}
+
+			@Override
+			public Project fromString(String string) {
+				throw new UnsupportedOperationException();
+			}
+		}, projects()));
+		projectCol.setEditable(true);
+
 		new TableColumnBuilder<>(durationCol).headerText("Duration") //
 				.value(FxSpan::duration) //
 				.cellFactory(new CellFactoryBuilder<>(durationCol).format(Utils::toHmsString).build()) //
@@ -116,7 +133,14 @@ public class SpansTableController {
 				.item("Delete", e -> deleteSelected()).build());
 	}
 
-	void setSpans(ObservableList<FxSpan> items) {
+	ObservableList<Project> projects() {
+		return projects;
+	}
+
+	void setData(ObservableList<FxSpan> items, ObservableList<Project> projects) {
+
+		this.projects = projects;
+
 		spansTable.setItems(items);
 		spansTable.getSortOrder().add(startCol);
 		spansTable.getSortOrder().add(endCol);

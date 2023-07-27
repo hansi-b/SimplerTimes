@@ -122,7 +122,7 @@ public class SimplerTimesFx extends Application {
 	public void stop() {
 		log.info("Stopping ...");
 		try {
-			treeStore.save(timesMainController.getProjects());
+			treeStore.save(timesMainController.getProjectTree());
 		} catch (IOException e) {
 			log.error("Could not save projects", e);
 		}

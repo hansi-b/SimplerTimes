@@ -19,7 +19,6 @@
 package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
-import java.util.Collection;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
@@ -88,10 +87,6 @@ class SpanRecorder {
 
 	ReadOnlyBooleanProperty isRecordingProperty() {
 		return isRecording;
-	}
-
-	void updateProjects(Collection<Project> newProjects) {
-		projectSelection.getItems().setAll(newProjects);
 	}
 
 	private void startRecording() {

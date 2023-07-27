@@ -20,6 +20,7 @@ package org.hansib.simplertimes.fx;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.projects.Project;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -46,8 +47,8 @@ public class SpansInfoController {
 		log.info("Initialising spans info");
 	}
 
-	void setSpans(ObservableList<FxSpan> spans) {
-		spansTableController.setSpans(spans);
+	void setData(ObservableList<FxSpan> spans, ObservableList<Project> projects) {
+		spansTableController.setData(spans, projects);
 		spansStatsController.setSpans(spans);
 	}
 }

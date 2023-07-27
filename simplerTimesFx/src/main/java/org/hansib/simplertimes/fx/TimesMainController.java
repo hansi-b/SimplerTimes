@@ -19,7 +19,6 @@
 package org.hansib.simplertimes.fx;
 
 import static java.util.stream.Collectors.toCollection;
-import static javafx.collections.FXCollections.observableArrayList;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Utils;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -60,27 +60,29 @@ public class TimesMainController {
 	@FXML
 	private Button showSpansButton;
 
-	private SpanRecorder spanRecorder;
+	private final ObservableList<FxSpan> spans = FXCollections.observableArrayList();
 
-	private ObservableList<FxSpan> spans;
 	private Project projectTree;
+	private final ObservableList<Project> projectList = FXCollections.observableArrayList();
 
 	@FXML
 	void initialize() {
 
 		setElapsedTime(Duration.ZERO);
+		projectSelection.setItems(projectList);
 
-		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, this::addSpan);
+		new SpansDisplay(showSpansButton, () -> spans, () -> projectList);
+		new TreeDisplay(editTreeButton, this::getProjectTree, this::updateProjectList);
 
-		new SpansDisplay(showSpansButton, () -> spans);
-		new TreeDisplay(editTreeButton, this::getProjects, this::updateProjectSelectionItems);
+		SpanRecorder spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime,
+				this::addSpan);
 		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
 	}
 
-	private void updateProjectSelectionItems() {
+	private void updateProjectList() {
 		if (projectTree == null)
 			return;
-		spanRecorder.updateProjects(projectTree.dfStream().filter(p -> p.name() != null).toList());
+		projectList.setAll(projectTree.dfStream().filter(p -> p.name() != null).toList());
 	}
 
 	private void setElapsedTime(Duration duration) {
@@ -91,18 +93,17 @@ public class TimesMainController {
 		spans.add(new FxSpan(span));
 	}
 
-	void setProjects(Project projects) {
-		this.projectTree = projects;
-		updateProjectSelectionItems();
+	void setProjects(Project projectTree) {
+		this.projectTree = projectTree;
+		updateProjectList();
 	}
 
-	Project getProjects() {
+	Project getProjectTree() {
 		return projectTree;
 	}
 
 	void setSpans(SpansCollection spansCollection) {
-		this.spans = observableArrayList(
-				spansCollection.stream().map(FxSpan::new).collect(toCollection(() -> new ArrayList<>())));
+		spans.setAll(spansCollection.stream().map(FxSpan::new).collect(toCollection(() -> new ArrayList<>())));
 	}
 
 	SpansCollection getSpans() {
