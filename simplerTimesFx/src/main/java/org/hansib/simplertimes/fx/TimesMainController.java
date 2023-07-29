@@ -89,10 +89,6 @@ public class TimesMainController {
 		Platform.runLater(() -> elapsedTime.setText(Utils.toHmsString(duration)));
 	}
 
-	private void addSpan(Span span) {
-		spans.add(new FxSpan(span));
-	}
-
 	void setProjects(Project projectTree) {
 		this.projectTree = projectTree;
 		updateProjectList();
@@ -104,6 +100,10 @@ public class TimesMainController {
 
 	void setSpans(SpansCollection spansCollection) {
 		spans.setAll(spansCollection.stream().map(FxSpan::new).collect(toCollection(() -> new ArrayList<>())));
+	}
+
+	private void addSpan(Span span) {
+		spans.add(new FxSpan(span));
 	}
 
 	SpansCollection getSpans() {

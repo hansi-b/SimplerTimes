@@ -20,6 +20,7 @@ package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +33,7 @@ import org.hansib.sundries.fx.table.EditingCell;
 import org.hansib.sundries.fx.table.TableColumnBuilder;
 
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
@@ -81,7 +83,7 @@ public class SpansTableController {
 							return newStartTime != null && withReferenceOffset(newStartTime, cell.getItem())
 									.isBefore(endCol.getCellData(cell.getIndex()));
 						})) //
-				.onEditCommit(this::setNewStart) //
+				.onEditCommit(e -> setNewDateTime(e, FxSpan::start)) //
 				.build();
 
 		new TableColumnBuilder<>(endCol).headerText("End") //
@@ -92,7 +94,7 @@ public class SpansTableController {
 							return newEndTime != null && withReferenceOffset(newEndTime, cell.getItem())
 									.isAfter(startCol.getCellData(cell.getIndex()));
 						})) //
-				.onEditCommit(this::setNewEnd) //
+				.onEditCommit(e -> setNewDateTime(e, FxSpan::end)) //
 				.build();
 
 		new TableColumnBuilder<>(projectCol).headerText("Project") //
@@ -111,7 +113,7 @@ public class SpansTableController {
 			public Project fromString(String string) {
 				throw new UnsupportedOperationException();
 			}
-		}, projects()));
+		}, lazyProjects()));
 		projectCol.setEditable(true);
 
 		new TableColumnBuilder<>(durationCol).headerText("Duration") //
@@ -133,29 +135,24 @@ public class SpansTableController {
 				.item("Delete", e -> deleteSelected()).build());
 	}
 
-	ObservableList<Project> projects() {
+	private ObservableList<Project> lazyProjects() {
 		return projects;
 	}
 
-	void setData(ObservableList<FxSpan> items, ObservableList<Project> projects) {
+	void setData(ObservableList<FxSpan> spans, ObservableList<Project> projects) {
 
 		this.projects = projects;
 
-		spansTable.setItems(items);
+		spansTable.setItems(spans);
 		spansTable.getSortOrder().add(startCol);
 		spansTable.getSortOrder().add(endCol);
 		spansTable.getSortOrder().add(projectCol);
 	}
 
-	private void setNewStart(CellEditEvent<FxSpan, OffsetDateTime> e) {
-		FxSpan spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
-		spanRow.start().set(withReferenceOffset(e.getNewValue(), e.getOldValue()));
-		spansTable.sort();
-	}
-
-	private void setNewEnd(CellEditEvent<FxSpan, OffsetDateTime> e) {
-		FxSpan spanRow = e.getTableView().getItems().get(e.getTablePosition().getRow());
-		spanRow.end().set(withReferenceOffset(e.getNewValue(), e.getOldValue()));
+	private void setNewDateTime(CellEditEvent<FxSpan, OffsetDateTime> event,
+			Function<FxSpan, SimpleObjectProperty<OffsetDateTime>> propertyGetter) {
+		FxSpan spanRow = event.getTableView().getItems().get(event.getTablePosition().getRow());
+		propertyGetter.apply(spanRow).set(withReferenceOffset(event.getNewValue(), event.getOldValue()));
 		spansTable.sort();
 	}
 

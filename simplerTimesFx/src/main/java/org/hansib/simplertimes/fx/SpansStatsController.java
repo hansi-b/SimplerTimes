@@ -113,8 +113,7 @@ public class SpansStatsController {
 	}
 
 	private void shiftDate(Period shift) {
-		dateShown.set(dateShown.get().plus(shift));
-		updateStats();
+		setDate(dateShown.get().plus(shift));
 	}
 
 	private void updateStats() {
