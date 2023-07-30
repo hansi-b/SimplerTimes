@@ -32,7 +32,6 @@ import org.hansib.sundries.fx.ButtonBuilder;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -118,8 +117,6 @@ public class SpansStatsController {
 	}
 
 	private void fillStats(SortedSet<LocalDate> dates) {
-		ObservableList<StatsRow> items = FXCollections.observableArrayList(
-				calc.allProjects().stream().map(p -> StatsRow.of(p, calc.durationsByDate(p, dates))).toList());
-		spansStats.setItems(items);
+		spansStats.setItems(calc.calcItems(dates));
 	}
 }

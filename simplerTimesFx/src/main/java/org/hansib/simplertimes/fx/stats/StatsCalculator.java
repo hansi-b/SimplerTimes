@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import org.hansib.simplertimes.fx.FxSpan;
 import org.hansib.simplertimes.projects.Project;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 class StatsCalculator {
@@ -38,11 +39,16 @@ class StatsCalculator {
 		this.spans = spans;
 	}
 
-	Set<Project> allProjects() {
+	ObservableList<StatsRow> calcItems(SortedSet<LocalDate> dates) {
+		return FXCollections.observableArrayList(
+				allProjects().stream().map(p -> StatsRow.of(p, durationsByDate(p, dates))).toList());
+	}
+
+	private Set<Project> allProjects() {
 		return this.spans.stream().map(s -> s.project().get()).collect(Collectors.toSet());
 	}
 
-	Map<LocalDate, Duration> durationsByDate(Project p, SortedSet<LocalDate> dates) {
+	private Map<LocalDate, Duration> durationsByDate(Project p, SortedSet<LocalDate> dates) {
 		Map<LocalDate, Duration> result = new HashMap<>();
 		spans.stream() //
 				.filter(s -> s.project().get() == p && dates.contains(s.start().get().toLocalDate())) //
