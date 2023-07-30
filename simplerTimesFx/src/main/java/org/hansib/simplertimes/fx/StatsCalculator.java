@@ -28,24 +28,17 @@ import java.util.stream.Collectors;
 
 import org.hansib.simplertimes.projects.Project;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
 import javafx.collections.ObservableList;
 
 class StatsCalculator {
 	private final ObservableList<FxSpan> spans;
 
-	private final ObjectBinding<Set<Project>> projects;
-
 	StatsCalculator(ObservableList<FxSpan> spans) {
 		this.spans = spans;
-
-		projects = Bindings.createObjectBinding(
-				() -> spans.stream().map(s -> s.project().get()).collect(Collectors.toSet()), spans);
 	}
 
 	Set<Project> allProjects() {
-		return projects.get();
+		return this.spans.stream().map(s -> s.project().get()).collect(Collectors.toSet());
 	}
 
 	Map<LocalDate, Duration> durationsByDate(Project p, SortedSet<LocalDate> dates) {

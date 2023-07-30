@@ -116,9 +116,8 @@ public class SpansStatsController {
 		setDate(dateShown.get().plus(shift));
 	}
 
-	private void updateStats() {
+	void updateStats() {
 		SortedSet<LocalDate> dates = Utils.daysOfWeek(dateShown.get());
-
 		updateDateColumns(dates);
 		fillStats(dates);
 	}

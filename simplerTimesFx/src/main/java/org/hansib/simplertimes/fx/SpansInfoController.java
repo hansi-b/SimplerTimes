@@ -45,6 +45,7 @@ public class SpansInfoController {
 	@FXML
 	void initialize() {
 		log.info("Initialising spans info");
+		spansTableController.setUpdateHandler(() -> spansStatsController.updateStats());
 	}
 
 	void setData(ObservableList<FxSpan> spans, ObservableList<Project> projects) {

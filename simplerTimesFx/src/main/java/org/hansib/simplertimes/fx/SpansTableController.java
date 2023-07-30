@@ -47,6 +47,32 @@ import javafx.util.StringConverter;
 
 public class SpansTableController {
 
+	private static class ProjectComboBoxTableCell extends ComboBoxTableCell<FxSpan, Project> {
+
+		private Runnable updateHandler;
+
+		ProjectComboBoxTableCell(ObservableList<Project> projects, Runnable updateHandler) {
+			super(new StringConverter<Project>() {
+				@Override
+				public String toString(Project object) {
+					return object == null ? null : object.name();
+				}
+
+				@Override
+				public Project fromString(String string) {
+					throw new UnsupportedOperationException();
+				}
+			}, projects);
+			this.updateHandler = updateHandler;
+		}
+
+		@Override
+		public void commitEdit(Project newValue) {
+			super.commitEdit(newValue);
+			updateHandler.run();
+		}
+	}
+
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
@@ -65,6 +91,8 @@ public class SpansTableController {
 	private TableView<FxSpan> spansTable;
 
 	private ObservableList<Project> projects;
+
+	private Runnable updateHandler;
 
 	@FXML
 	void initialize() {
@@ -103,17 +131,7 @@ public class SpansTableController {
 				.comparator(Project.nameComparator) //
 				.build();
 
-		projectCol.setCellFactory(list -> new ComboBoxTableCell<>(new StringConverter<Project>() {
-			@Override
-			public String toString(Project object) {
-				return object == null ? null : object.name();
-			}
-
-			@Override
-			public Project fromString(String string) {
-				throw new UnsupportedOperationException();
-			}
-		}, lazyProjects()));
+		projectCol.setCellFactory(list -> new ProjectComboBoxTableCell(lazyProjects(), updateHandler));
 		projectCol.setEditable(true);
 
 		new TableColumnBuilder<>(durationCol).headerText("Duration") //
@@ -139,6 +157,10 @@ public class SpansTableController {
 		return projects;
 	}
 
+	void setUpdateHandler(Runnable updateHandler) {
+		this.updateHandler = updateHandler;
+	}
+
 	void setData(ObservableList<FxSpan> spans, ObservableList<Project> projects) {
 
 		this.projects = projects;
@@ -154,6 +176,7 @@ public class SpansTableController {
 		FxSpan spanRow = event.getTableView().getItems().get(event.getTablePosition().getRow());
 		propertyGetter.apply(spanRow).set(withReferenceOffset(event.getNewValue(), event.getOldValue()));
 		spansTable.sort();
+		updateHandler.run();
 	}
 
 	private static OffsetDateTime withReferenceOffset(OffsetDateTime target, OffsetDateTime offsetReferences) {
@@ -169,7 +192,9 @@ public class SpansTableController {
 						.withButton(ButtonType.YES, "Delete") //
 						.showAndWaitFor(ButtonType.YES);
 
-		if (userAgreed)
+		if (userAgreed) {
 			spansTable.getItems().removeAll(selectedItems);
+			updateHandler.run();
+		}
 	}
 }
