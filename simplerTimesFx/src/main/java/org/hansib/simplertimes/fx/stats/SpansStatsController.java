@@ -18,24 +18,19 @@
  */
 package org.hansib.simplertimes.fx.stats;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.SortedSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.FxSpan;
 import org.hansib.simplertimes.fx.Icons;
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -48,21 +43,8 @@ public class SpansStatsController {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private static record Stats(ObjectProperty<String> project, Map<LocalDate, ObjectProperty<String>> durations) {
-
-		static Stats of(Project p, Map<LocalDate, Duration> durations) {
-			Map<LocalDate, ObjectProperty<String>> res = new HashMap<>();
-			durations.forEach((odt, d) -> res.put(odt, new ReadOnlyObjectWrapper<>(Utils.toHmsString(d))));
-			return new Stats(new ReadOnlyObjectWrapper<>(p.name()), res);
-		}
-
-		ObjectProperty<String> ldStr(LocalDate odt) {
-			return durations.get(odt);
-		}
-	}
-
 	@FXML
-	private TableView<Stats> spansStats;
+	private TableView<StatsRow> spansStats;
 
 	@FXML
 	Button monthBack;
@@ -82,8 +64,8 @@ public class SpansStatsController {
 	void initialize() {
 		log.info("Initialising spans stats");
 
-		TableColumn<Stats, String> projectColumn = new TableColumn<>("Project");
-		projectColumn.setCellValueFactory(data -> data.getValue().project);
+		TableColumn<StatsRow, String> projectColumn = new TableColumn<>("Project");
+		projectColumn.setCellValueFactory(data -> data.getValue().project());
 		spansStats.getColumns().add(projectColumn);
 
 		dateShown = new SimpleObjectProperty<>(LocalDate.now());
@@ -129,15 +111,15 @@ public class SpansStatsController {
 			spansStats.getColumns().remove(1, spansStats.getColumns().size());
 
 		for (LocalDate dt : dates) {
-			TableColumn<Stats, String> odtColumn = new TableColumn<>(dt.toString());
+			TableColumn<StatsRow, String> odtColumn = new TableColumn<>(dt.toString());
 			odtColumn.setCellValueFactory(data -> data.getValue().ldStr(dt));
 			spansStats.getColumns().add(odtColumn);
 		}
 	}
 
 	private void fillStats(SortedSet<LocalDate> dates) {
-		ObservableList<Stats> items = FXCollections.observableArrayList(
-				calc.allProjects().stream().map(p -> Stats.of(p, calc.durationsByDate(p, dates))).toList());
+		ObservableList<StatsRow> items = FXCollections.observableArrayList(
+				calc.allProjects().stream().map(p -> StatsRow.of(p, calc.durationsByDate(p, dates))).toList());
 		spansStats.setItems(items);
 	}
 }
