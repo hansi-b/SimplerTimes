@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimes.fx.stats;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
+import org.hansib.simplertimes.fx.FxSpan;
 import org.hansib.simplertimes.projects.Project;
 
 import javafx.collections.ObservableList;

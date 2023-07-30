@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimes.fx.stats;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -27,6 +27,8 @@ import java.util.SortedSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.fx.FxSpan;
+import org.hansib.simplertimes.fx.Icons;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
@@ -102,7 +104,7 @@ public class SpansStatsController {
 				.graphic(Icons.monthForward()).onAction(e -> shiftDate(Period.ofMonths(1))).build();
 	}
 
-	void setSpans(ObservableList<FxSpan> spans) {
+	public void setSpans(ObservableList<FxSpan> spans) {
 		this.calc = new StatsCalculator(spans);
 		updateStats();
 	}
@@ -116,7 +118,7 @@ public class SpansStatsController {
 		setDate(dateShown.get().plus(shift));
 	}
 
-	void updateStats() {
+	public void updateStats() {
 		SortedSet<LocalDate> dates = Utils.daysOfWeek(dateShown.get());
 		updateDateColumns(dates);
 		fillStats(dates);

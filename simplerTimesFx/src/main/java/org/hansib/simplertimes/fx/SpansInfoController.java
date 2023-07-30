@@ -20,6 +20,7 @@ package org.hansib.simplertimes.fx;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.fx.stats.SpansStatsController;
 import org.hansib.simplertimes.projects.Project;
 
 import javafx.collections.ObservableList;

@@ -11,7 +11,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 
-class FxSpan {
+public class FxSpan {
 
 	private final SimpleObjectProperty<Project> project;
 	private final SimpleObjectProperty<OffsetDateTime> start;
