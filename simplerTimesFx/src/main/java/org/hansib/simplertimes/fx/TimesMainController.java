@@ -24,6 +24,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 
 import org.controlsfx.control.SearchableComboBox;
+import org.hansib.simplertimes.fx.tree.TreeDisplay;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;

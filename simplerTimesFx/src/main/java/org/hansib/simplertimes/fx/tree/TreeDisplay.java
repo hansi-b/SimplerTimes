@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimes.fx.tree;
 
 import java.util.function.Supplier;
 
-import org.hansib.simplertimes.fx.tree.TreeViewWindow;
+import org.hansib.simplertimes.fx.Icons;
 import org.hansib.simplertimes.projects.Project;
 
 import javafx.scene.control.Button;
 
-class TreeDisplay {
+public class TreeDisplay {
 
-	TreeDisplay(Button editTreeButton, Supplier<Project> rootSupplier, Runnable updateHandler) {
+	public TreeDisplay(Button editTreeButton, Supplier<Project> rootSupplier, Runnable updateHandler) {
 
 		editTreeButton.setGraphic(Icons.editTree());
 		editTreeButton.setOnAction(
