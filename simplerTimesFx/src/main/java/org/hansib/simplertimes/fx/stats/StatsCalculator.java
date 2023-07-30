@@ -22,7 +22,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
@@ -40,20 +39,21 @@ class StatsCalculator {
 	}
 
 	ObservableList<StatsRow> calcItems(SortedSet<LocalDate> dates) {
-		return FXCollections.observableArrayList(
-				allProjects().stream().map(p -> StatsRow.of(p, durationsByDate(p, dates))).toList());
+
+		Map<Project, Map<LocalDate, Duration>> durationsByProject = aggregateStats(dates);
+
+		return durationsByProject.entrySet().stream().map(e -> StatsRow.of(e.getKey(), e.getValue()))
+				.collect(Collectors.toCollection(FXCollections::observableArrayList));
 	}
 
-	private Set<Project> allProjects() {
-		return this.spans.stream().map(s -> s.project().get()).collect(Collectors.toSet());
-	}
-
-	private Map<LocalDate, Duration> durationsByDate(Project p, SortedSet<LocalDate> dates) {
-		Map<LocalDate, Duration> result = new HashMap<>();
-		spans.stream() //
-				.filter(s -> s.project().get() == p && dates.contains(s.start().get().toLocalDate())) //
-				.forEach(s -> result.compute(s.start().get().toLocalDate(),
-						(k, oldV) -> s.duration().get().plus(oldV == null ? Duration.ZERO : oldV)));
-		return result;
+	private Map<Project, Map<LocalDate, Duration>> aggregateStats(SortedSet<LocalDate> dates) {
+		Map<Project, Map<LocalDate, Duration>> durationsByProject = new HashMap<>();
+		spans.stream().filter(s -> dates.contains(s.start().get().toLocalDate())) //
+				.forEach(s -> {
+					durationsByProject.computeIfAbsent(s.project().get(), x -> new HashMap<>()).compute(
+							s.start().get().toLocalDate(),
+							(k, oldV) -> s.duration().get().plus(oldV == null ? Duration.ZERO : oldV));
+				});
+		return durationsByProject;
 	}
 }
