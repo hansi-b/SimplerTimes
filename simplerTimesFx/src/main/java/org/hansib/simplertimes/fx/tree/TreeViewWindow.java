@@ -43,12 +43,12 @@ public class TreeViewWindow {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private Runnable closeHandler;
-
 	private final TreeItem<Project> rootItem;
+	private final Runnable updateHandler;
 
-	public TreeViewWindow(Project root) {
-		rootItem = linkToTreeItem(root);
+	public TreeViewWindow(Project root, Runnable updateHandler) {
+		this.rootItem = linkToTreeItem(root);
+		this.updateHandler = updateHandler;
 	}
 
 	private static TreeItem<Project> linkToTreeItem(Project treeNode) {
@@ -91,14 +91,8 @@ public class TreeViewWindow {
 		window.setX(boundsInScene.getMinX());
 		window.setY(boundsInScene.getMinY());
 
-		if (closeHandler != null)
-			window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> closeHandler.run());
+		window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> updateHandler.run());
 		window.show();
-	}
-
-	public TreeViewWindow withCloseHandler(Runnable closeHandler) {
-		this.closeHandler = closeHandler;
-		return this;
 	}
 
 	private void showMenu(ContextMenuEvent e, Window owner, TreeView<Project> tree) {

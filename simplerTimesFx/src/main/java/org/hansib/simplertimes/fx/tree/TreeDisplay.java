@@ -30,7 +30,6 @@ public class TreeDisplay {
 	public TreeDisplay(Button editTreeButton, Supplier<Project> rootSupplier, Runnable updateHandler) {
 
 		editTreeButton.setGraphic(Icons.editTree());
-		editTreeButton.setOnAction(
-				event -> new TreeViewWindow(rootSupplier.get()).withCloseHandler(updateHandler).show(editTreeButton));
+		editTreeButton.setOnAction(event -> new TreeViewWindow(rootSupplier.get(), updateHandler).show(editTreeButton));
 	}
 }
