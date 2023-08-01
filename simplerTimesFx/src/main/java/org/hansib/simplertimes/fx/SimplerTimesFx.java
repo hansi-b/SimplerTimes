@@ -20,17 +20,13 @@ package org.hansib.simplertimes.fx;
 
 import static org.hansib.simplertimes.fx.l10n.L10nKeys.AppNameWindowTitle;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.DataPaths;
 import org.hansib.simplertimes.AppPrefs;
+import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.yaml.ProjectStore;
-import org.hansib.simplertimes.yaml.SpansStore;
 import org.hansib.sundries.fx.FxResourceLoader;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
@@ -54,8 +50,7 @@ public class SimplerTimesFx extends Application {
 
 	private Stage primaryStage;
 
-	private SpansStore spansStore;
-	private ProjectStore treeStore;
+	private DataStore dataStore;
 
 	private TimesMainController timesMainController;
 
@@ -70,10 +65,6 @@ public class SimplerTimesFx extends Application {
 		AppPrefs prefs = AppPrefs.create();
 		DisclaimerChecker.checkDisclaimer(prefs.disclaimerAccepted(), this::fireCloseRequest);
 
-		DataPaths appData = DataPaths.atDefault();
-		spansStore = new SpansStore(appData.spansPath());
-		treeStore = new ProjectStore(appData.projectsPath());
-
 		Image logo = fxLoader.loadImage("logo.png");
 		if (logo == null)
 			log.warn("Could not load application icon");
@@ -83,9 +74,10 @@ public class SimplerTimesFx extends Application {
 		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
 				(Parent root) -> primaryStage.setScene(new Scene(root)));
 
-		Project projectRoot = treeStore.load();
+		dataStore = new DataStore();
+		Project projectRoot = dataStore.loadProjectTree();
 		timesMainController.setProjects(projectRoot);
-		timesMainController.setSpans(spansStore.load(projectRoot));
+		timesMainController.setSpans(dataStore.loadSpans(projectRoot));
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
 
@@ -121,16 +113,7 @@ public class SimplerTimesFx extends Application {
 	@Override
 	public void stop() {
 		log.info("Stopping ...");
-		try {
-			treeStore.save(timesMainController.getProjectTree());
-		} catch (IOException e) {
-			log.error("Could not save projects", e);
-		}
-		try {
-			spansStore.save(timesMainController.getSpans());
-		} catch (IOException e) {
-			log.error("Could not save spans", e);
-		}
+		dataStore.save(timesMainController.getProjectTree(), timesMainController.getSpans());
 	}
 
 	public static void main(String[] args) {
