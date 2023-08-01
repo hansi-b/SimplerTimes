@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.AppData;
+import org.hansib.simplertimes.DataPaths;
 import org.hansib.simplertimes.AppPrefs;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
@@ -70,7 +70,7 @@ public class SimplerTimesFx extends Application {
 		AppPrefs prefs = AppPrefs.create();
 		DisclaimerChecker.checkDisclaimer(prefs.disclaimerAccepted(), this::fireCloseRequest);
 
-		AppData appData = AppData.atDefault();
+		DataPaths appData = DataPaths.atDefault();
 		spansStore = new SpansStore(appData.spansPath());
 		treeStore = new ProjectStore(appData.projectsPath());
 

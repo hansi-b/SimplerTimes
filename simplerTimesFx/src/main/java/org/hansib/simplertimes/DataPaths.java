@@ -25,10 +25,10 @@ import org.hansib.sundries.Errors;
 
 import net.harawata.appdirs.AppDirsFactory;
 
-public class AppData {
+public class DataPaths {
 	private final Path dataDir;
 
-	private AppData(Path dataDir) {
+	private DataPaths(Path dataDir) {
 		assertDataDir(dataDir);
 		this.dataDir = dataDir;
 	}
@@ -42,12 +42,12 @@ public class AppData {
 		}
 	}
 
-	public static AppData atDefault() {
+	public static DataPaths atDefault() {
 		return at(Path.of(AppDirsFactory.getInstance().getUserDataDir("SimplerTimes", "", "HansiB")));
 	}
 
-	public static AppData at(Path dataDir) {
-		return new AppData(dataDir);
+	public static DataPaths at(Path dataDir) {
+		return new DataPaths(dataDir);
 
 	}
 

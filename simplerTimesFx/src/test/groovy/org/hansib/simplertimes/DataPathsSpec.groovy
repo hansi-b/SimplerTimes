@@ -5,7 +5,7 @@ import java.nio.file.Path
 import spock.lang.Specification
 import spock.lang.TempDir
 
-public class AppDataSpec extends Specification {
+public class DataPathsSpec extends Specification {
 
 	@TempDir
 	Path testDir
@@ -13,13 +13,13 @@ public class AppDataSpec extends Specification {
 	def "can create app data in existing dir"() {
 
 		expect:
-		AppData.at(testDir).spansPath() == testDir.resolve("spans.yml")
+		DataPaths.at(testDir).spansPath() == testDir.resolve("spans.yml")
 	}
 
 	def "can create app data in new dir"() {
 
 		expect:
-		AppData.at(testDir.resolve("does_not_exist")).spansPath() == testDir.resolve("does_not_exist/spans.yml")
+		DataPaths.at(testDir.resolve("does_not_exist")).spansPath() == testDir.resolve("does_not_exist/spans.yml")
 	}
 
 	def "app data creation fails if target is file"() {
@@ -29,7 +29,7 @@ public class AppDataSpec extends Specification {
 		tmpFilePath.toFile().createNewFile()
 
 		when:
-		AppData.at(tmpFilePath)
+		DataPaths.at(tmpFilePath)
 		then:
 		thrown IllegalArgumentException
 	}
