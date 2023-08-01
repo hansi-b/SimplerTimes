@@ -32,22 +32,22 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 
-class TextFieldTreeCellImpl extends TreeCell<Project> {
+class TextFieldTreeCellImpl extends TreeCell<Project> { // NOSONAR
 
 	private TextField textField;
 	private final ContextMenu contextMenu;
 
-	public TextFieldTreeCellImpl(TreeView<Project> treeview, Supplier<String> nodeSupplier) {
+	public TextFieldTreeCellImpl(TreeView<Project> treeview, Supplier<String> newNameSupplier) {
 		contextMenu = new ContextMenuBuilder() //
-				.item(MenuItems.NewSubproject.fmt(), e -> addItem(treeview, nodeSupplier)) //
+				.item(MenuItems.NewSubproject.fmt(), e -> addItem(treeview, newNameSupplier)) //
 				.item(MenuItems.RemoveSubproject.fmt(), e -> removeItem()) //
 				.build();
 	}
 
-	private void addItem(TreeView<Project> treeview, Supplier<String> elementSupplier) {
+	private void addItem(TreeView<Project> treeview, Supplier<String> newNameSupplier) {
 		TreeItem<Project> i = getTreeItem();
 		TreeItem<Project> current = i != null ? i : treeview.getRoot();
-		Project nodeChild = current.getValue().add(elementSupplier.get());
+		Project nodeChild = current.getValue().add(newNameSupplier.get());
 		TreeItem<Project> newItem = new TreeItem<>(nodeChild);
 		current.getChildren().add(newItem);
 		treeview.getSelectionModel().select(newItem);
