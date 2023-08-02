@@ -24,6 +24,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 
 import org.controlsfx.control.SearchableComboBox;
+import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.fx.tree.TreeDisplay;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
@@ -90,21 +91,19 @@ public class TimesMainController {
 		Platform.runLater(() -> elapsedTime.setText(Utils.toHmsString(duration)));
 	}
 
-	void setProjects(Project projectTree) {
-		this.projectTree = projectTree;
+	void setDataStore(DataStore dataStore) {
+		this.projectTree = dataStore.loadProjectTree();
 		updateProjectList();
-	}
-
-	Project getProjectTree() {
-		return projectTree;
-	}
-
-	void setSpans(SpansCollection spansCollection) {
-		spans.setAll(spansCollection.stream().map(FxSpan::new).collect(toCollection(() -> new ArrayList<>())));
+		spans.setAll(dataStore.loadSpans(projectTree).stream().map(FxSpan::new)
+				.collect(toCollection(() -> new ArrayList<>())));
 	}
 
 	private void addSpan(Span span) {
 		spans.add(new FxSpan(span));
+	}
+
+	Project getProjectTree() {
+		return projectTree;
 	}
 
 	SpansCollection getSpans() {
@@ -112,5 +111,4 @@ public class TimesMainController {
 		spans.forEach(r -> spansCollection.add(r.toSpan()));
 		return spansCollection;
 	}
-
 }

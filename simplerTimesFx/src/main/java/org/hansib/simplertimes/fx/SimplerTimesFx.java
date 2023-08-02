@@ -26,7 +26,6 @@ import org.hansib.simplertimes.AppPrefs;
 import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.fx.FxResourceLoader;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
@@ -65,21 +64,18 @@ public class SimplerTimesFx extends Application {
 		AppPrefs prefs = AppPrefs.create();
 		DisclaimerChecker.checkDisclaimer(prefs.disclaimerAccepted(), this::fireCloseRequest);
 
+		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
+				(Parent root) -> primaryStage.setScene(new Scene(root)));
+
+		dataStore = new DataStore();
+		timesMainController.setDataStore(dataStore);
+
+		primaryStage.setTitle(AppNameWindowTitle.fmt());
 		Image logo = fxLoader.loadImage("logo.png");
 		if (logo == null)
 			log.warn("Could not load application icon");
 		else
 			primaryStage.getIcons().add(logo);
-
-		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
-				(Parent root) -> primaryStage.setScene(new Scene(root)));
-
-		dataStore = new DataStore();
-		Project projectRoot = dataStore.loadProjectTree();
-		timesMainController.setProjects(projectRoot);
-		timesMainController.setSpans(dataStore.loadSpans(projectRoot));
-
-		primaryStage.setTitle(AppNameWindowTitle.fmt());
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
 			if (ev.getCode() == KeyCode.Q && ev.isControlDown())
