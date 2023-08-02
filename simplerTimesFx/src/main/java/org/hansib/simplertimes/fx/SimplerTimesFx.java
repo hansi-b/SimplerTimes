@@ -68,7 +68,7 @@ public class SimplerTimesFx extends Application {
 				(Parent root) -> primaryStage.setScene(new Scene(root)));
 
 		dataStore = new DataStore();
-		timesMainController.setDataStore(dataStore);
+		timesMainController.setData(ObservableData.load(dataStore));
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
 		Image logo = fxLoader.loadImage("logo.png");
@@ -109,7 +109,7 @@ public class SimplerTimesFx extends Application {
 	@Override
 	public void stop() {
 		log.info("Stopping ...");
-		dataStore.save(timesMainController.getProjectTree(), timesMainController.getSpans());
+		timesMainController.getData().store(dataStore);
 	}
 
 	public static void main(String[] args) {

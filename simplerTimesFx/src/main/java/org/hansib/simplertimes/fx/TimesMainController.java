@@ -18,22 +18,14 @@
  */
 package org.hansib.simplertimes.fx;
 
-import static java.util.stream.Collectors.toCollection;
-
 import java.time.Duration;
-import java.util.ArrayList;
 
 import org.controlsfx.control.SearchableComboBox;
-import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.fx.tree.TreeDisplay;
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.spans.Span;
-import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.times.Utils;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -62,53 +54,31 @@ public class TimesMainController {
 	@FXML
 	private Button showSpansButton;
 
-	private final ObservableList<FxSpan> spans = FXCollections.observableArrayList();
-
-	private Project projectTree;
-	private final ObservableList<Project> projectList = FXCollections.observableArrayList();
+	private ObservableData observableData;
 
 	@FXML
 	void initialize() {
 
 		setElapsedTime(Duration.ZERO);
-		projectSelection.setItems(projectList);
 
-		new SpansDisplay(showSpansButton, () -> spans, () -> projectList);
-		new TreeDisplay(editTreeButton, this::getProjectTree, this::updateProjectList);
+		new SpansDisplay(showSpansButton, () -> observableData.spans(), () -> observableData.projects());
+		new TreeDisplay(editTreeButton, () -> observableData.projectTree(), () -> observableData.updateProjectList());
 
 		SpanRecorder spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime,
-				this::addSpan);
+				s -> observableData.addSpan(s));
 		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
-	}
-
-	private void updateProjectList() {
-		if (projectTree == null)
-			return;
-		projectList.setAll(projectTree.dfStream().filter(p -> p.name() != null).toList());
 	}
 
 	private void setElapsedTime(Duration duration) {
 		Platform.runLater(() -> elapsedTime.setText(Utils.toHmsString(duration)));
 	}
 
-	void setDataStore(DataStore dataStore) {
-		this.projectTree = dataStore.loadProjectTree();
-		updateProjectList();
-		spans.setAll(dataStore.loadSpans(projectTree).stream().map(FxSpan::new)
-				.collect(toCollection(() -> new ArrayList<>())));
+	void setData(ObservableData data) {
+		observableData = data;
+		projectSelection.setItems(observableData.projects());
 	}
 
-	private void addSpan(Span span) {
-		spans.add(new FxSpan(span));
-	}
-
-	Project getProjectTree() {
-		return projectTree;
-	}
-
-	SpansCollection getSpans() {
-		SpansCollection spansCollection = new SpansCollection();
-		spans.forEach(r -> spansCollection.add(r.toSpan()));
-		return spansCollection;
+	ObservableData getData() {
+		return observableData;
 	}
 }
