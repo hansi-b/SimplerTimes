@@ -47,7 +47,7 @@ import javafx.util.StringConverter;
 
 public class SpansTableController {
 
-	private static class ProjectComboBoxTableCell extends ComboBoxTableCell<FxSpan, Project> {
+	private static class ProjectComboBoxTableCell extends ComboBoxTableCell<FxSpan, Project> { // NOSONAR
 
 		private Runnable updateHandler;
 
@@ -131,7 +131,7 @@ public class SpansTableController {
 				.comparator(Project.nameComparator) //
 				.build();
 
-		projectCol.setCellFactory(list -> new ProjectComboBoxTableCell(lazyProjects(), updateHandler));
+		projectCol.setCellFactory(list -> new ProjectComboBoxTableCell(projects, updateHandler));
 		projectCol.setEditable(true);
 
 		new TableColumnBuilder<>(durationCol).headerText("Duration") //
@@ -151,10 +151,6 @@ public class SpansTableController {
 
 		spansTable.setContextMenu(new ContextMenuBuilder() //
 				.item("Delete", e -> deleteSelected()).build());
-	}
-
-	private ObservableList<Project> lazyProjects() {
-		return projects;
 	}
 
 	void setUpdateHandler(Runnable updateHandler) {
