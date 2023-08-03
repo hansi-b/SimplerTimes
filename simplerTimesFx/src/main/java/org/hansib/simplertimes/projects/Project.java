@@ -172,12 +172,12 @@ public class Project {
 	 *         this project
 	 */
 	public List<String> nameWords() {
-		LinkedList<String> hierarchy = new LinkedList<>();
+		LinkedList<String> words = new LinkedList<>();
 		for (Project current = this; current.parent != null; current = current.parent) {
 			if (current.name != null)
-				hierarchy.addFirst(current.name);
+				words.addFirst(current.name);
 		}
-		return hierarchy;
+		return words;
 	}
 
 	public Project parent() {
