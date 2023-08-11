@@ -10,7 +10,7 @@ import org.hansib.simplertimes.spans.SpansCollection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-class ObservableData {
+public class ObservableData {
 
 	private final Project projectTree;
 	private final ObservableList<Project> projectList = FXCollections.observableArrayList();
@@ -23,7 +23,7 @@ class ObservableData {
 		this.spans.setAll(spans);
 	}
 
-	void updateProjectList() {
+	public void updateProjectList() {
 		projectList.setAll(projectTree.dfStream().filter(p -> p.name() != null).toList());
 	}
 
@@ -38,7 +38,7 @@ class ObservableData {
 		dataStore.save(projectTree, spansCollection);
 	}
 
-	Project projectTree() {
+	public Project projectTree() {
 		return projectTree;
 	}
 

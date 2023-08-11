@@ -22,11 +22,9 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
 
-import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -38,15 +36,11 @@ class SpansDisplay {
 	private Stage spansStage;
 	private SpansInfoController spansInfoController;
 
-	private final Supplier<ObservableList<FxSpan>> lazySpans;
-	private final Supplier<ObservableList<Project>> lazyProjects;
+	private final Supplier<ObservableData> lazyData;
 
-	SpansDisplay(Button showSpansButton, Supplier<ObservableList<FxSpan>> lazySpans,
-			Supplier<ObservableList<Project>> lazyProjects) {
+	SpansDisplay(Button showSpansButton, Supplier<ObservableData> lazyData) {
 
-		this.lazySpans = lazySpans;
-		this.lazyProjects = lazyProjects;
-
+		this.lazyData = lazyData;
 		new ButtonBuilder(showSpansButton) //
 				.graphic(Icons.showSpans()).onAction(event -> showSpansInfo()).build();
 	}
@@ -56,7 +50,7 @@ class SpansDisplay {
 			initStage();
 		}
 
-		spansInfoController.setData(lazySpans.get(), lazyProjects.get());
+		spansInfoController.setData(lazyData.get());
 		spansStage.show();
 	}
 

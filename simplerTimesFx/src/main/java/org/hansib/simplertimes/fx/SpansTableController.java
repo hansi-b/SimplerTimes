@@ -157,11 +157,11 @@ public class SpansTableController {
 		this.updateHandler = updateHandler;
 	}
 
-	void setData(ObservableList<FxSpan> spans, ObservableList<Project> projects) {
+	void setData(ObservableData data) {
 
-		this.projects = projects;
+		this.projects = data.projects();
 
-		spansTable.setItems(spans);
+		spansTable.setItems(data.spans());
 		spansTable.getSortOrder().add(startCol);
 		spansTable.getSortOrder().add(endCol);
 		spansTable.getSortOrder().add(projectCol);

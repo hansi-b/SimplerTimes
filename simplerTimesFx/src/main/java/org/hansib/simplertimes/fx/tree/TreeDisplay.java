@@ -21,15 +21,15 @@ package org.hansib.simplertimes.fx.tree;
 import java.util.function.Supplier;
 
 import org.hansib.simplertimes.fx.Icons;
-import org.hansib.simplertimes.projects.Project;
+import org.hansib.simplertimes.fx.ObservableData;
 
 import javafx.scene.control.Button;
 
 public class TreeDisplay {
 
-	public TreeDisplay(Button editTreeButton, Supplier<Project> rootSupplier, Runnable updateHandler) {
+	public TreeDisplay(Button editTreeButton, Supplier<ObservableData> lazyData) {
 
 		editTreeButton.setGraphic(Icons.editTree());
-		editTreeButton.setOnAction(event -> new TreeViewWindow(rootSupplier.get(), updateHandler).show(editTreeButton));
+		editTreeButton.setOnAction(event -> new TreeViewWindow(lazyData.get()).show(editTreeButton));
 	}
 }

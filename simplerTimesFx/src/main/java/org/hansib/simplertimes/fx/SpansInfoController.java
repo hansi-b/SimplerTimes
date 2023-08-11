@@ -21,9 +21,7 @@ package org.hansib.simplertimes.fx;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.stats.SpansStatsController;
-import org.hansib.simplertimes.projects.Project;
 
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 
@@ -49,8 +47,8 @@ public class SpansInfoController {
 		spansTableController.setUpdateHandler(() -> spansStatsController.updateStats());
 	}
 
-	void setData(ObservableList<FxSpan> spans, ObservableList<Project> projects) {
-		spansTableController.setData(spans, projects);
-		spansStatsController.setSpans(spans);
+	void setData(ObservableData data) {
+		spansTableController.setData(data);
+		spansStatsController.setSpans(data.spans());
 	}
 }

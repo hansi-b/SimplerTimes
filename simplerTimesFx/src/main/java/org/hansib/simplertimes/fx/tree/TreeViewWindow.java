@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.fx.ObservableData;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.fx.ContextMenuBuilder;
@@ -46,9 +47,9 @@ public class TreeViewWindow {
 	private final TreeItem<Project> rootItem;
 	private final Runnable updateHandler;
 
-	public TreeViewWindow(Project root, Runnable updateHandler) {
-		this.rootItem = linkToTreeItem(root);
-		this.updateHandler = updateHandler;
+	public TreeViewWindow(ObservableData data) {
+		this.rootItem = linkToTreeItem(data.projectTree());
+		this.updateHandler = data::updateProjectList;
 	}
 
 	private static TreeItem<Project> linkToTreeItem(Project treeNode) {

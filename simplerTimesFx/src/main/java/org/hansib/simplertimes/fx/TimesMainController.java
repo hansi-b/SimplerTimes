@@ -61,8 +61,8 @@ public class TimesMainController {
 
 		setElapsedTime(Duration.ZERO);
 
-		new SpansDisplay(showSpansButton, () -> observableData.spans(), () -> observableData.projects());
-		new TreeDisplay(editTreeButton, () -> observableData.projectTree(), () -> observableData.updateProjectList());
+		new SpansDisplay(showSpansButton, this::getData);
+		new TreeDisplay(editTreeButton, this::getData);
 
 		SpanRecorder spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime,
 				s -> observableData.addSpan(s));
