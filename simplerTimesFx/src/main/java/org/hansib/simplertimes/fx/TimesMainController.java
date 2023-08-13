@@ -65,7 +65,7 @@ public class TimesMainController {
 		new TreeDisplay(editTreeButton, this::getData);
 
 		SpanRecorder spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime,
-				s -> observableData.addSpan(s));
+				this::getData);
 		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
 	}
 

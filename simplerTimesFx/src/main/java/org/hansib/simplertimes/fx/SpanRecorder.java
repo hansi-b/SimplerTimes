@@ -20,12 +20,12 @@ package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.times.DurationTicker;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.Utils;
@@ -49,17 +49,17 @@ class SpanRecorder {
 	private final SearchableComboBox<Project> projectSelection;
 
 	private final DurationTicker durationTicker;
-	private final Consumer<Span> spanReceiver;
+	private final Supplier<ObservableData> lazySpanReceiver;
 
 	private final BooleanProperty isRecording = new SimpleBooleanProperty(false);
 
 	SpanRecorder(SearchableComboBox<Project> projectSelection, Button startButton, Button stopButton,
-			Consumer<Duration> tickReceiver, Consumer<Span> spanReceiver) {
+			Consumer<Duration> tickReceiver, Supplier<ObservableData> lazySpanReceiver) {
 
 		this.projectSelection = projectSelection;
 
 		this.durationTicker = new DurationTicker(tickReceiver);
-		this.spanReceiver = spanReceiver;
+		this.lazySpanReceiver = lazySpanReceiver;
 
 		new ButtonBuilder(startButton) //
 				.graphic(Icons.start()).onAction(a -> startRecording()).disabled().build();
@@ -101,11 +101,10 @@ class SpanRecorder {
 		Project project = projectSelection.getValue();
 
 		if (Duration.between(t.start(), t.end()).compareTo(minimumSpanDuration) > 0) {
-			Span span = new Span(project, t.start(), t.end());
-			log.info("Registering interval {}", span);
-			spanReceiver.accept(span);
+			log.info("Registering {} during {}", project, t);
+			lazySpanReceiver.get().addSpan(project, t.start(), t.end());
 		} else {
-			log.info("Ignoring interval {} - {} (is smaller than {})", () -> t.start(), () -> t.end(),
+			log.info("Ignoring interval {} - {} (is smaller than {})", t::start, t::end,
 					() -> Utils.toHmsString(minimumSpanDuration));
 		}
 
@@ -113,7 +112,6 @@ class SpanRecorder {
 	}
 
 	private static String fullName(Project p) {
-
 		/*
 		 * other options: · • › » ▹ ▷ | – #
 		 */

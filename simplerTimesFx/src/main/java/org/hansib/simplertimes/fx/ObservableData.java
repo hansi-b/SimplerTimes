@@ -1,5 +1,6 @@
 package org.hansib.simplertimes.fx;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.hansib.simplertimes.DataStore;
@@ -50,7 +51,7 @@ public class ObservableData {
 		return spans;
 	}
 
-	void addSpan(Span span) {
-		spans.add(new FxSpan(span));
+	public void addSpan(Project project, ZonedDateTime start, ZonedDateTime end) {
+		spans.add(new FxSpan(new Span(project, start, end)));
 	}
 }

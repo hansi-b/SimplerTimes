@@ -1,12 +1,11 @@
 package org.hansib.simplertimes.fx
 
 import java.time.Duration
-import java.time.OffsetDateTime
+import java.time.ZonedDateTime
 import java.util.function.Consumer
 
 import org.controlsfx.control.SearchableComboBox
 import org.hansib.simplertimes.projects.Project
-import org.hansib.simplertimes.spans.Span
 
 import javafx.scene.Scene
 import javafx.scene.control.Button
@@ -27,7 +26,7 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 	List ticks = []
 	List spans = []
 	Consumer<Duration> tickReceiver = t -> ticks << t
-	Consumer<Span> spanReceiver = s -> spans << s
+	ObservableData observableData =  Mock()
 
 	SpanRecorder recorder
 
@@ -40,7 +39,7 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 		startButton = new Button("start")
 		stopButton = new Button("stop")
 
-		recorder = new SpanRecorder(projectSelection, startButton, stopButton, tickReceiver, spanReceiver)
+		recorder = new SpanRecorder(projectSelection, startButton, stopButton, tickReceiver, () -> observableData)
 
 		return new Scene(new VBox(projectSelection, startButton, stopButton))
 	}
@@ -81,26 +80,33 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 		stopButton.isFocused()
 
 		!ticks.isEmpty()
-		spans.isEmpty()
+		0 * observableData.addSpan(_, _, _)
 	}
 
 	def 'having started recording, enter registers span'() {
 
+		given:
+		def startTime = null
+		def endTime = null
+		def actualProject = null
+		def actualStart = null
+		def actualEnd = null
+
 		when:
 		selectProjectA()
-		def startTime = OffsetDateTime.now().minusSeconds(1)
+		startTime = ZonedDateTime.now().minusSeconds(1)
 		// start
 		type(KeyCode.ENTER)
 		// ... recording ...
 		Thread.sleep(1000)
 		// stop
 		type(KeyCode.ENTER)
-		def endTime = OffsetDateTime.now().plusSeconds(1)
+		endTime = ZonedDateTime.now().plusSeconds(1)
 
 		then:
-		spans.size() == 1
-		spans[0].start >= startTime
-		spans[0].end <= endTime
+		1 * observableData.addSpan(alpha, _, _ ) >> { actualStart = it[1]; actualEnd = it[2] }
+		actualStart >= startTime
+		actualEnd <= endTime
 
 		isEnabled projectSelection
 		isEnabled startButton
