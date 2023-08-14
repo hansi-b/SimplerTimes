@@ -18,8 +18,6 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
-import java.util.function.Supplier;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.ObservableData;
@@ -68,7 +66,7 @@ public class TreeViewWindow {
 		TreeView<Project> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		tree.setShowRoot(false);
-		tree.setCellFactory(p -> new TextFieldTreeCellImpl(tree, MenuItems.NewProject::fmt));
+		tree.setCellFactory(p -> new TextFieldTreeCellImpl(tree));
 
 		StackPane treeLayout = new StackPane();
 		treeLayout.getChildren().add(tree);
@@ -98,13 +96,13 @@ public class TreeViewWindow {
 
 	private void showMenu(ContextMenuEvent e, Window owner, TreeView<Project> tree) {
 		new ContextMenuBuilder() //
-				.item("New project", t -> createNewProject(tree, MenuItems.NewProject::fmt)) //
+				.item(MenuItems.NewProject.fmt(), t -> addItem(tree, tree.getRoot())) //
 				.build().show(owner, e.getScreenX(), e.getScreenY());
 	}
 
-	private static void createNewProject(TreeView<Project> treeview, Supplier<String> newProjectSupplier) {
-		TreeItem<Project> current = treeview.getRoot();
-		Project nodeChild = current.getValue().add(newProjectSupplier.get());
+	static void addItem(TreeView<Project> treeview, TreeItem<Project> parent) {
+		TreeItem<Project> current = parent != null ? parent : treeview.getRoot();
+		Project nodeChild = current.getValue().add(MenuItems.NewProject.fmt());
 		TreeItem<Project> newItem = new TreeItem<>(nodeChild);
 		current.getChildren().add(newItem);
 		treeview.getSelectionModel().select(newItem);

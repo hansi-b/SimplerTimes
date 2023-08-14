@@ -18,8 +18,6 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
-import java.util.function.Supplier;
-
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.fx.ContextMenuBuilder;
@@ -37,21 +35,11 @@ class TextFieldTreeCellImpl extends TreeCell<Project> { // NOSONAR
 	private TextField textField;
 	private final ContextMenu contextMenu;
 
-	public TextFieldTreeCellImpl(TreeView<Project> treeview, Supplier<String> newNameSupplier) {
+	public TextFieldTreeCellImpl(TreeView<Project> treeview) {
 		contextMenu = new ContextMenuBuilder() //
-				.item(MenuItems.NewSubproject.fmt(), e -> addItem(treeview, newNameSupplier)) //
+				.item(MenuItems.NewSubproject.fmt(), e -> TreeViewWindow.addItem(treeview, getTreeItem())) //
 				.item(MenuItems.RemoveSubproject.fmt(), e -> removeItem()) //
 				.build();
-	}
-
-	private void addItem(TreeView<Project> treeview, Supplier<String> newNameSupplier) {
-		TreeItem<Project> i = getTreeItem();
-		TreeItem<Project> current = i != null ? i : treeview.getRoot();
-		Project nodeChild = current.getValue().add(newNameSupplier.get());
-		TreeItem<Project> newItem = new TreeItem<>(nodeChild);
-		current.getChildren().add(newItem);
-		treeview.getSelectionModel().select(newItem);
-		treeview.edit(newItem);
 	}
 
 	private void removeItem() {
