@@ -30,6 +30,8 @@ public class TreeDisplay {
 	public TreeDisplay(Button editTreeButton, Supplier<ObservableData> lazyData) {
 
 		editTreeButton.setGraphic(Icons.editTree());
-		editTreeButton.setOnAction(event -> new TreeViewWindow(lazyData.get()).show(editTreeButton));
+		editTreeButton.setOnAction(
+				event -> new TreeViewWindow<>(() -> lazyData.get().fxProjectTree(), lazyData.get()::updateProjectList)
+						.show(editTreeButton));
 	}
 }

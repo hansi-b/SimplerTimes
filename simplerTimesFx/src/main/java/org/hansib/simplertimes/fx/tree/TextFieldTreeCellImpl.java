@@ -19,7 +19,6 @@
 package org.hansib.simplertimes.fx.tree;
 
 import org.hansib.simplertimes.fx.l10n.MenuItems;
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.fx.ContextMenuBuilder;
 
 import javafx.application.Platform;
@@ -30,12 +29,12 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 
-class TextFieldTreeCellImpl extends TreeCell<Project> { // NOSONAR
+class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> { // NOSONAR
 
 	private TextField textField;
 	private final ContextMenu contextMenu;
 
-	public TextFieldTreeCellImpl(TreeView<Project> treeview) {
+	public TextFieldTreeCellImpl(TreeView<T> treeview) {
 		contextMenu = new ContextMenuBuilder() //
 				.item(MenuItems.NewSubproject.fmt(), e -> TreeViewWindow.addItem(treeview, getTreeItem())) //
 				.item(MenuItems.RemoveSubproject.fmt(), e -> removeItem()) //
@@ -43,9 +42,8 @@ class TextFieldTreeCellImpl extends TreeCell<Project> { // NOSONAR
 	}
 
 	private void removeItem() {
-		TreeItem<Project> current = getTreeItem();
-		Project nodeChild = current.getValue();
-		nodeChild.parent().remove(nodeChild);
+		TreeItem<T> current = getTreeItem();
+		current.getValue().remove();
 		current.getParent().getChildren().remove(current);
 	}
 
@@ -55,7 +53,7 @@ class TextFieldTreeCellImpl extends TreeCell<Project> { // NOSONAR
 		if (textField == null) {
 			createTextField();
 		}
-		textField.setText(itemName());
+		textField.setText(itemText());
 		setText(null);
 		setGraphic(textField);
 		textField.requestFocus();
@@ -65,12 +63,12 @@ class TextFieldTreeCellImpl extends TreeCell<Project> { // NOSONAR
 	public void cancelEdit() {
 		super.cancelEdit();
 
-		setText(itemName());
+		setText(itemText());
 		setGraphic(getTreeItem().getGraphic());
 	}
 
 	@Override
-	public void updateItem(Project item, boolean empty) {
+	public void updateItem(T item, boolean empty) {
 		super.updateItem(item, empty);
 
 		if (empty) {
@@ -78,12 +76,12 @@ class TextFieldTreeCellImpl extends TreeCell<Project> { // NOSONAR
 			setGraphic(null);
 		} else if (isEditing()) {
 			if (textField != null) {
-				textField.setText(itemName());
+				textField.setText(itemText());
 			}
 			setText(null);
 			setGraphic(textField);
 		} else {
-			setText(itemName());
+			setText(itemText());
 			setGraphic(getTreeItem().getGraphic());
 			if (getTreeItem().getParent() != null) {
 				setContextMenu(contextMenu);
@@ -92,23 +90,21 @@ class TextFieldTreeCellImpl extends TreeCell<Project> { // NOSONAR
 	}
 
 	private void createTextField() {
-		textField = new TextField(itemName());
+		textField = new TextField(itemText());
 		textField.setOnKeyPressed(t -> {
 			if (t.getCode() == KeyCode.ESCAPE) {
-				textField.setText(itemName());
+				textField.setText(itemText());
 				cancelEdit();
 			}
 		});
 		textField.setOnKeyReleased(t -> {
 			if (t.getCode() == KeyCode.ENTER) {
-				getItem().setName(textField.getText());
-				commitEdit(getItem());
+				commitNewText();
 			}
 		});
 		textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (Boolean.FALSE.equals(newValue)) {
-				getItem().setName(textField.getText());
-				commitEdit(getItem());
+				commitNewText();
 			} else if (Boolean.TRUE.equals(newValue)) {
 				Platform.runLater(() -> {
 					if (!textField.getText().isEmpty())
@@ -118,7 +114,12 @@ class TextFieldTreeCellImpl extends TreeCell<Project> { // NOSONAR
 		});
 	}
 
-	private String itemName() {
-		return String.valueOf(getItem().name());
+	private void commitNewText() {
+		getItem().setText(textField.getText());
+		commitEdit(getItem());
+	}
+
+	private String itemText() {
+		return String.valueOf(getItem().text());
 	}
 }

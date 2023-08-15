@@ -13,34 +13,35 @@ import javafx.collections.ObservableList;
 
 public class ObservableData {
 
-	private final Project projectTree;
+	private final FxProject fxProjectTree;
 	private final ObservableList<Project> projectList = FXCollections.observableArrayList();
 
 	private final ObservableList<FxSpan> spans = FXCollections.observableArrayList();
 
-	private ObservableData(Project projectTree, List<FxSpan> spans) {
-		this.projectTree = projectTree;
+	private ObservableData(FxProject fxProjectTree, List<FxSpan> spans) {
+		this.fxProjectTree = fxProjectTree;
 		updateProjectList();
 		this.spans.setAll(spans);
 	}
 
 	public void updateProjectList() {
-		projectList.setAll(projectTree.dfStream().filter(p -> p.name() != null).toList());
+		projectList.setAll(fxProjectTree.project().dfStream().filter(p -> p.name() != null).toList());
 	}
 
 	static ObservableData load(DataStore dataStore) {
 		Project projectTree = dataStore.loadProjectTree();
-		return new ObservableData(projectTree, dataStore.loadSpans(projectTree).stream().map(FxSpan::new).toList());
+		return new ObservableData(FxProject.root(projectTree),
+				dataStore.loadSpans(projectTree).stream().map(FxSpan::new).toList());
 	}
 
 	void store(DataStore dataStore) {
 		SpansCollection spansCollection = new SpansCollection();
 		spans.forEach(r -> spansCollection.add(r.toSpan()));
-		dataStore.save(projectTree, spansCollection);
+		dataStore.save(fxProjectTree.project(), spansCollection);
 	}
 
-	public Project projectTree() {
-		return projectTree;
+	public FxProject fxProjectTree() {
+		return fxProjectTree;
 	}
 
 	ObservableList<Project> projects() {

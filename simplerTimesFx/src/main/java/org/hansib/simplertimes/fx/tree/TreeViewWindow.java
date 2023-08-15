@@ -18,11 +18,11 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.fx.ObservableData;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.fx.ContextMenuBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
 
@@ -38,22 +38,22 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
-public class TreeViewWindow {
+public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private final TreeItem<Project> rootItem;
+	private final TreeItem<T> rootItem;
 	private final Runnable updateHandler;
 
-	public TreeViewWindow(ObservableData data) {
-		this.rootItem = linkToTreeItem(data.projectTree());
-		this.updateHandler = data::updateProjectList;
+	public TreeViewWindow(Supplier<T> rootSupplier, Runnable updateHandler) {
+		this.rootItem = linkToTreeItem(rootSupplier.get());
+		this.updateHandler = updateHandler;
 	}
 
-	private static TreeItem<Project> linkToTreeItem(Project treeNode) {
-		TreeItem<Project> treeItem = new TreeItem<>(treeNode);
+	private TreeItem<T> linkToTreeItem(T treeNode) {
+		TreeItem<T> treeItem = new TreeItem<>(treeNode);
 		treeNode.children().forEach(c -> {
-			TreeItem<Project> i = linkToTreeItem(c);
+			TreeItem<T> i = linkToTreeItem(c);
 			treeItem.getChildren().add(i);
 		});
 		return treeItem;
@@ -63,10 +63,10 @@ public class TreeViewWindow {
 
 		rootItem.setExpanded(true);
 
-		TreeView<Project> tree = new TreeView<>(rootItem);
+		TreeView<T> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		tree.setShowRoot(false);
-		tree.setCellFactory(p -> new TextFieldTreeCellImpl(tree));
+		tree.setCellFactory(p -> new TextFieldTreeCellImpl<>(tree));
 
 		StackPane treeLayout = new StackPane();
 		treeLayout.getChildren().add(tree);
@@ -94,16 +94,16 @@ public class TreeViewWindow {
 		window.show();
 	}
 
-	private void showMenu(ContextMenuEvent e, Window owner, TreeView<Project> tree) {
+	private void showMenu(ContextMenuEvent e, Window owner, TreeView<T> tree) {
 		new ContextMenuBuilder() //
 				.item(MenuItems.NewProject.fmt(), t -> addItem(tree, tree.getRoot())) //
 				.build().show(owner, e.getScreenX(), e.getScreenY());
 	}
 
-	static void addItem(TreeView<Project> treeview, TreeItem<Project> parent) {
-		TreeItem<Project> current = parent != null ? parent : treeview.getRoot();
-		Project nodeChild = current.getValue().add(MenuItems.NewProject.fmt());
-		TreeItem<Project> newItem = new TreeItem<>(nodeChild);
+	static <T extends TextFieldTreeNode<T>> void addItem(TreeView<T> treeview, TreeItem<T> parent) {
+		TreeItem<T> current = parent != null ? parent : treeview.getRoot();
+		T nodeChild = current.getValue().addChild(MenuItems.NewProject.fmt());
+		TreeItem<T> newItem = new TreeItem<>(nodeChild);
 		current.getChildren().add(newItem);
 		treeview.getSelectionModel().select(newItem);
 		treeview.edit(newItem);
