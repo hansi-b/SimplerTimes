@@ -49,4 +49,23 @@ public class FxProjectSpec extends Specification {
 		fx.children() as List == []
 		root.children().isEmpty()
 	}
+
+	def 'can get flat list'() {
+
+		given:
+		def c1 = root.add('1')
+		root.add('2')
+		def c3 = c1.add('1b')
+
+		when:
+		def fx = FxProject.root(root)
+
+		then:
+		def children = fx.children()
+		fx.flatList() == [
+			children[0],
+			children[0].children()[0],
+			children[1]
+		]
+	}
 }

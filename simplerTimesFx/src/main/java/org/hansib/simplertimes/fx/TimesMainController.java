@@ -22,7 +22,6 @@ import java.time.Duration;
 
 import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.fx.tree.TreeDisplay;
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.times.Utils;
 
 import javafx.application.Platform;
@@ -37,7 +36,7 @@ public class TimesMainController {
 	private Pane topLevelPane;
 
 	@FXML
-	private SearchableComboBox<Project> projectSelection;
+	private SearchableComboBox<FxProject> projectSelection;
 
 	@FXML
 	private Button startButton;

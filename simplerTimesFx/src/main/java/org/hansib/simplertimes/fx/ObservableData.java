@@ -2,6 +2,8 @@ package org.hansib.simplertimes.fx;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.projects.Project;
@@ -14,7 +16,7 @@ import javafx.collections.ObservableList;
 public class ObservableData {
 
 	private final FxProject fxProjectTree;
-	private final ObservableList<Project> projectList = FXCollections.observableArrayList();
+	private final ObservableList<FxProject> projectList = FXCollections.observableArrayList();
 
 	private final ObservableList<FxSpan> spans = FXCollections.observableArrayList();
 
@@ -25,13 +27,20 @@ public class ObservableData {
 	}
 
 	public void updateProjectList() {
-		projectList.setAll(fxProjectTree.project().dfStream().filter(p -> p.name() != null).toList());
+		projectList.setAll(fxProjectTree.flatList());
 	}
 
 	static ObservableData load(DataStore dataStore) {
 		Project projectTree = dataStore.loadProjectTree();
-		return new ObservableData(FxProject.root(projectTree),
-				dataStore.loadSpans(projectTree).stream().map(FxSpan::new).toList());
+		FxProject fxProjectTree = FxProject.root(projectTree);
+
+		Map<Project, FxProject> projectMap = fxProjectTree.flatList().stream()
+				.collect(Collectors.toMap(p -> p.project(), p -> p));
+
+		List<FxSpan> fxSpans = dataStore.loadSpans(projectTree).stream()
+				.map(s -> new FxSpan(projectMap.get(s.project()), s)).toList();
+
+		return new ObservableData(fxProjectTree, fxSpans);
 	}
 
 	void store(DataStore dataStore) {
@@ -44,7 +53,7 @@ public class ObservableData {
 		return fxProjectTree;
 	}
 
-	ObservableList<Project> projects() {
+	ObservableList<FxProject> projects() {
 		return projectList;
 	}
 
@@ -52,7 +61,7 @@ public class ObservableData {
 		return spans;
 	}
 
-	public void addSpan(Project project, ZonedDateTime start, ZonedDateTime end) {
-		spans.add(new FxSpan(new Span(project, start, end)));
+	public void addSpan(FxProject project, ZonedDateTime start, ZonedDateTime end) {
+		spans.add(new FxSpan(project, new Span(project.project(), start, end)));
 	}
 }

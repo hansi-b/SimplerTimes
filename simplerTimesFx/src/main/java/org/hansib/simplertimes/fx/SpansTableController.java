@@ -24,7 +24,6 @@ import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;
@@ -47,19 +46,19 @@ import javafx.util.StringConverter;
 
 public class SpansTableController {
 
-	private static class ProjectComboBoxTableCell extends ComboBoxTableCell<FxSpan, Project> { // NOSONAR
+	private static class ProjectComboBoxTableCell extends ComboBoxTableCell<FxSpan, FxProject> { // NOSONAR
 
 		private Runnable updateHandler;
 
-		ProjectComboBoxTableCell(ObservableList<Project> projects, Runnable updateHandler) {
-			super(new StringConverter<Project>() {
+		ProjectComboBoxTableCell(ObservableList<FxProject> projects, Runnable updateHandler) {
+			super(new StringConverter<FxProject>() {
 				@Override
-				public String toString(Project object) {
-					return object == null ? null : object.name();
+				public String toString(FxProject object) {
+					return object == null ? null : object.text();
 				}
 
 				@Override
-				public Project fromString(String string) {
+				public FxProject fromString(String string) {
 					throw new UnsupportedOperationException();
 				}
 			}, projects);
@@ -67,7 +66,7 @@ public class SpansTableController {
 		}
 
 		@Override
-		public void commitEdit(Project newValue) {
+		public void commitEdit(FxProject newValue) {
 			super.commitEdit(newValue);
 			updateHandler.run();
 		}
@@ -76,7 +75,7 @@ public class SpansTableController {
 	private static final Logger log = LogManager.getLogger();
 
 	@FXML
-	private TableColumn<FxSpan, Project> projectCol;
+	private TableColumn<FxSpan, FxProject> projectCol;
 
 	@FXML
 	private TableColumn<FxSpan, OffsetDateTime> startCol;
@@ -90,7 +89,7 @@ public class SpansTableController {
 	@FXML
 	private TableView<FxSpan> spansTable;
 
-	private ObservableList<Project> projects;
+	private ObservableList<FxProject> projects;
 
 	private Runnable updateHandler;
 
@@ -126,9 +125,9 @@ public class SpansTableController {
 				.build();
 
 		new TableColumnBuilder<>(projectCol).headerText("Project") //
-				.value(FxSpan::project) //
-				.cellFactory(new CellFactoryBuilder<>(projectCol).format(Project::name).build()) //
-				.comparator(Project.nameComparator) //
+				.value(FxSpan::fxProject) //
+				.cellFactory(new CellFactoryBuilder<>(projectCol).format(FxProject::text).build()) //
+				.comparator(FxProject.nameComparator) //
 				.build();
 
 		projectCol.setCellFactory(list -> new ProjectComboBoxTableCell(projects, updateHandler));

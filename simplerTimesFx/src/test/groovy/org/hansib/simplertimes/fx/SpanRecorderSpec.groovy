@@ -14,11 +14,12 @@ import javafx.scene.layout.VBox
 
 public class SpanRecorderSpec extends AbstractAppSpec {
 
-	Project root = Project.root()
-	Project alpha = root.add('Alpha')
-	Project beta = root.add('Beta')
+	FxProject root = FxProject.root(Project.root())
 
-	SearchableComboBox<Project> projectSelection
+	FxProject alpha = root.addChild('Alpha')
+	FxProject beta = root.addChild('Beta')
+
+	SearchableComboBox<FxProject> projectSelection
 
 	Button startButton
 	Button stopButton

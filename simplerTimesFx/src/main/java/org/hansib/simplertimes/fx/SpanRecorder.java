@@ -25,7 +25,6 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.SearchableComboBox;
-import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.times.DurationTicker;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.Utils;
@@ -46,14 +45,14 @@ class SpanRecorder {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private final SearchableComboBox<Project> projectSelection;
+	private final SearchableComboBox<FxProject> projectSelection;
 
 	private final DurationTicker durationTicker;
 	private final Supplier<ObservableData> lazySpanReceiver;
 
 	private final BooleanProperty isRecording = new SimpleBooleanProperty(false);
 
-	SpanRecorder(SearchableComboBox<Project> projectSelection, Button startButton, Button stopButton,
+	SpanRecorder(SearchableComboBox<FxProject> projectSelection, Button startButton, Button stopButton,
 			Consumer<Duration> tickReceiver, Supplier<ObservableData> lazySpanReceiver) {
 
 		this.projectSelection = projectSelection;
@@ -73,7 +72,7 @@ class SpanRecorder {
 
 		projectSelection.setConverter( //
 				new Converters().stringConverter( //
-						proj -> proj == null ? "" : fullName(proj), //
+						proj -> proj == null ? "" : proj.fullName(), //
 						projName -> projName == null || projName.isBlank() ? null
 								: projectSelection.getSelectionModel().getSelectedItem()));
 		projectSelection.showingProperty()
@@ -98,7 +97,7 @@ class SpanRecorder {
 		isRecording.set(false);
 
 		Interval t = durationTicker.stopAndGet();
-		Project project = projectSelection.getValue();
+		FxProject project = projectSelection.getValue();
 
 		if (Duration.between(t.start(), t.end()).compareTo(minimumSpanDuration) > 0) {
 			log.info("Registering {} during {}", project, t);
@@ -109,12 +108,5 @@ class SpanRecorder {
 		}
 
 		projectSelection.requestFocus();
-	}
-
-	private static String fullName(Project p) {
-		/*
-		 * other options: · • › » ▹ ▷ | – #
-		 */
-		return String.join(" › ", p.nameWords());
 	}
 }

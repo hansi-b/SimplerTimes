@@ -50,7 +50,7 @@ class StatsCalculator {
 		Map<Project, Map<LocalDate, Duration>> durationsByProject = new HashMap<>();
 		spans.stream().filter(s -> dates.contains(s.start().get().toLocalDate())) //
 				.forEach(s -> {
-					durationsByProject.computeIfAbsent(s.project().get(), x -> new HashMap<>()).compute(
+					durationsByProject.computeIfAbsent(s.fxProject().get().project(), x -> new HashMap<>()).compute(
 							s.start().get().toLocalDate(),
 							(k, oldV) -> s.duration().get().plus(oldV == null ? Duration.ZERO : oldV));
 				});
