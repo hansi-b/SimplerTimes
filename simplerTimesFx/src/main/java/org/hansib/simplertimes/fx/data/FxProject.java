@@ -1,4 +1,4 @@
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimes.fx.data;
 
 import java.util.ArrayList;
 import java.util.Comparator;

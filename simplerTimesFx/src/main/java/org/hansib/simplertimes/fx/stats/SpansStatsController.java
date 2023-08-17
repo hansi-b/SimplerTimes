@@ -24,8 +24,8 @@ import java.util.SortedSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.fx.FxSpan;
 import org.hansib.simplertimes.fx.Icons;
+import org.hansib.simplertimes.fx.data.FxSpan;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
 

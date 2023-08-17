@@ -1,4 +1,4 @@
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimes.fx.data;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -21,6 +21,7 @@ public class FxSpan {
 
 	FxSpan(FxProject project, OffsetDateTime start, OffsetDateTime end) {
 		this.fxProject = new SimpleObjectProperty<>(project);
+
 		this.start = new SimpleObjectProperty<>(start);
 		this.end = new SimpleObjectProperty<>(end);
 

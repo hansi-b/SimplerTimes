@@ -21,6 +21,8 @@ package org.hansib.simplertimes.fx;
 import java.time.Duration;
 
 import org.controlsfx.control.SearchableComboBox;
+import org.hansib.simplertimes.fx.data.FxProject;
+import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.tree.TreeDisplay;
 import org.hansib.simplertimes.times.Utils;
 

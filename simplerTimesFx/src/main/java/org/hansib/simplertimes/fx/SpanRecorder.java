@@ -25,6 +25,8 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.SearchableComboBox;
+import org.hansib.simplertimes.fx.data.FxProject;
+import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.times.DurationTicker;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.Utils;

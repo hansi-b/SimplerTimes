@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-import org.hansib.simplertimes.fx.FxSpan;
+import org.hansib.simplertimes.fx.data.FxSpan;
 import org.hansib.simplertimes.projects.Project;
 
 import javafx.collections.FXCollections;

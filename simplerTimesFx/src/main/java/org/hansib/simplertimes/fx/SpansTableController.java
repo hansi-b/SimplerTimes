@@ -24,6 +24,9 @@ import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.fx.data.FxProject;
+import org.hansib.simplertimes.fx.data.FxSpan;
+import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;

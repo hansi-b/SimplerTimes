@@ -5,6 +5,8 @@ import java.time.ZonedDateTime
 import java.util.function.Consumer
 
 import org.controlsfx.control.SearchableComboBox
+import org.hansib.simplertimes.fx.data.FxProject
+import org.hansib.simplertimes.fx.data.ObservableData
 import org.hansib.simplertimes.projects.Project
 
 import javafx.scene.Scene

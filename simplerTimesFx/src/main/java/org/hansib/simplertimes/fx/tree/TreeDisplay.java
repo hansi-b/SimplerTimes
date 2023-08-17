@@ -21,7 +21,7 @@ package org.hansib.simplertimes.fx.tree;
 import java.util.function.Supplier;
 
 import org.hansib.simplertimes.fx.Icons;
-import org.hansib.simplertimes.fx.ObservableData;
+import org.hansib.simplertimes.fx.data.ObservableData;
 
 import javafx.scene.control.Button;
 

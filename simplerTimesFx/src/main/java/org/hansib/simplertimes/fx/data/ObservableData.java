@@ -1,4 +1,4 @@
-package org.hansib.simplertimes.fx;
+package org.hansib.simplertimes.fx.data;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -30,7 +30,7 @@ public class ObservableData {
 		projectList.setAll(fxProjectTree.flatList());
 	}
 
-	static ObservableData load(DataStore dataStore) {
+	public static ObservableData load(DataStore dataStore) {
 		Project projectTree = dataStore.loadProjectTree();
 		FxProject fxProjectTree = FxProject.root(projectTree);
 
@@ -43,7 +43,7 @@ public class ObservableData {
 		return new ObservableData(fxProjectTree, fxSpans);
 	}
 
-	void store(DataStore dataStore) {
+	public void store(DataStore dataStore) {
 		SpansCollection spansCollection = new SpansCollection();
 		spans.forEach(s -> spansCollection.add(s.toSpan()));
 		dataStore.save(fxProjectTree.project(), spansCollection);
@@ -53,11 +53,11 @@ public class ObservableData {
 		return fxProjectTree;
 	}
 
-	ObservableList<FxProject> projects() {
+	public ObservableList<FxProject> projects() {
 		return projectList;
 	}
 
-	ObservableList<FxSpan> spans() {
+	public ObservableList<FxSpan> spans() {
 		return spans;
 	}
 
