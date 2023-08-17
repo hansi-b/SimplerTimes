@@ -19,13 +19,14 @@ public class FxSpan {
 	private final SimpleObjectProperty<OffsetDateTime> end;
 	private final ReadOnlyObjectWrapper<Duration> duration;
 
-	FxSpan(FxProject project, Span span) {
+	FxSpan(FxProject project, OffsetDateTime start, OffsetDateTime end) {
 		this.fxProject = new SimpleObjectProperty<>(project);
-		this.start = new SimpleObjectProperty<>(span.start());
-		this.end = new SimpleObjectProperty<>(span.end());
+		this.start = new SimpleObjectProperty<>(start);
+		this.end = new SimpleObjectProperty<>(end);
 
 		this.duration = new ReadOnlyObjectWrapper<>();
-		duration.bind(Bindings.createObjectBinding(() -> Duration.between(start.get(), end.get()), start, end));
+		duration.bind(Bindings.createObjectBinding(() -> Duration.between(this.start.get(), this.end.get()), this.start,
+				this.end));
 	}
 
 	public ObjectProperty<FxProject> fxProject() {
@@ -44,8 +45,8 @@ public class FxSpan {
 		return duration;
 	}
 
-	public Span toSpan() {
-		return new Span(fxProject.get().project(), start.get(), end.get());
+	Span toSpan() {
+		return new Span(fxProject().get().project(), start().get(), end().get());
 	}
 
 	@Override

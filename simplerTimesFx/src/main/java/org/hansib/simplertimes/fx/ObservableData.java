@@ -38,14 +38,14 @@ public class ObservableData {
 				.collect(Collectors.toMap(p -> p.project(), p -> p));
 
 		List<FxSpan> fxSpans = dataStore.loadSpans(projectTree).stream()
-				.map(s -> new FxSpan(projectMap.get(s.project()), s)).toList();
+				.map(s -> new FxSpan(projectMap.get(s.project()), s.start(), s.end())).toList();
 
 		return new ObservableData(fxProjectTree, fxSpans);
 	}
 
 	void store(DataStore dataStore) {
 		SpansCollection spansCollection = new SpansCollection();
-		spans.forEach(r -> spansCollection.add(r.toSpan()));
+		spans.forEach(s -> spansCollection.add(s.toSpan()));
 		dataStore.save(fxProjectTree.project(), spansCollection);
 	}
 
@@ -62,6 +62,8 @@ public class ObservableData {
 	}
 
 	public void addSpan(FxProject project, ZonedDateTime start, ZonedDateTime end) {
-		spans.add(new FxSpan(project, new Span(project.project(), start, end)));
+		// use the Span's truncation & precision:
+		Span temp = new Span(project.project(), start, end);
+		spans.add(new FxSpan(project, temp.start(), temp.end()));
 	}
 }
