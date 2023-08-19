@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
+import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.FxSpan;
-import org.hansib.simplertimes.projects.Project;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,17 +40,17 @@ class StatsCalculator {
 
 	ObservableList<StatsRow> calcItems(SortedSet<LocalDate> dates) {
 
-		Map<Project, Map<LocalDate, Duration>> durationsByProject = aggregateStats(dates);
+		Map<FxProject, Map<LocalDate, Duration>> durationsByProject = aggregateStats(dates);
 
 		return durationsByProject.entrySet().stream().map(e -> StatsRow.of(e.getKey(), e.getValue()))
 				.collect(Collectors.toCollection(FXCollections::observableArrayList));
 	}
 
-	private Map<Project, Map<LocalDate, Duration>> aggregateStats(SortedSet<LocalDate> dates) {
-		Map<Project, Map<LocalDate, Duration>> durationsByProject = new HashMap<>();
+	private Map<FxProject, Map<LocalDate, Duration>> aggregateStats(SortedSet<LocalDate> dates) {
+		Map<FxProject, Map<LocalDate, Duration>> durationsByProject = new HashMap<>();
 		spans.stream().filter(s -> dates.contains(s.start().get().toLocalDate())) //
 				.forEach(s -> {
-					durationsByProject.computeIfAbsent(s.fxProject().get().project(), x -> new HashMap<>()).compute(
+					durationsByProject.computeIfAbsent(s.fxProject().get(), x -> new HashMap<>()).compute(
 							s.start().get().toLocalDate(),
 							(k, oldV) -> s.duration().get().plus(oldV == null ? Duration.ZERO : oldV));
 				});
