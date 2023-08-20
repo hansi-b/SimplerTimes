@@ -129,11 +129,11 @@ public class SpansTableController {
 
 		new TableColumnBuilder<>(projectCol).headerText("Project") //
 				.value(FxSpan::fxProject) //
-				.cellFactory(new CellFactoryBuilder<>(projectCol).format(FxProject::text).build()) //
+				.cellFactory(list -> new ProjectComboBoxTableCell(projects, updateHandler)) //
+				.editable() //
 				.comparator(FxProject.nameComparator) //
 				.build();
 
-		projectCol.setCellFactory(list -> new ProjectComboBoxTableCell(projects, updateHandler));
 		projectCol.setEditable(true);
 
 		new TableColumnBuilder<>(durationCol).headerText("Duration") //
