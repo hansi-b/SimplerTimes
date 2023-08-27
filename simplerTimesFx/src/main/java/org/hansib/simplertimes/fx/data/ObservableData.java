@@ -20,7 +20,8 @@ public class ObservableData {
 	private final ObservableList<FxProject> projectList = FXCollections
 			.observableArrayList(p -> new Observable[] { p.name() });
 
-	private final ObservableList<FxSpan> spans = FXCollections.observableArrayList();
+	private final ObservableList<FxSpan> spans = FXCollections
+			.observableArrayList(s -> new Observable[] { s.fxProject(), s.duration() });
 
 	private ObservableData(FxProject fxProjectTree, List<FxSpan> spans) {
 		this.fxProjectTree = fxProjectTree;

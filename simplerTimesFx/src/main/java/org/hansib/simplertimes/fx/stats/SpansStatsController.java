@@ -29,9 +29,11 @@ import org.hansib.simplertimes.fx.data.FxSpan;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -57,7 +59,9 @@ public class SpansStatsController {
 	Button monthForward;
 
 	private StatsCalculator calc;
-	private ObjectProperty<LocalDate> dateShown;
+
+	private ObjectProperty<LocalDate> selectedDate;
+	private ObservableValue<SortedSet<LocalDate>> datesShown;
 
 	@FXML
 	void initialize() {
@@ -67,7 +71,9 @@ public class SpansStatsController {
 		projectColumn.setCellValueFactory(data -> data.getValue().project());
 		spansStats.getColumns().add(projectColumn);
 
-		dateShown = new SimpleObjectProperty<>(LocalDate.now());
+		selectedDate = new SimpleObjectProperty<>(LocalDate.now());
+		datesShown = selectedDate.map(Utils::daysOfWeek);
+		datesShown.addListener((InvalidationListener) observable -> updateStats());
 
 		new ButtonBuilder(monthBack) //
 				.graphic(Icons.monthBack()).onAction(e -> shiftDate(Period.ofMonths(-1))).build();
@@ -77,7 +83,7 @@ public class SpansStatsController {
 		new ButtonBuilder(today) //
 				.graphic(Icons.today()).onAction(e -> setDate(LocalDate.now())).build();
 		today.disableProperty()
-				.bind(Bindings.createBooleanBinding(() -> LocalDate.now().equals(dateShown.get()), dateShown));
+				.bind(Bindings.createBooleanBinding(() -> LocalDate.now().equals(selectedDate.get()), selectedDate));
 
 		new ButtonBuilder(weekForward) //
 				.graphic(Icons.weekForward()).onAction(e -> shiftDate(Period.ofDays(7))).build();
@@ -87,25 +93,25 @@ public class SpansStatsController {
 
 	public void setSpans(ObservableList<FxSpan> spans) {
 		this.calc = new StatsCalculator(spans);
+		spans.addListener((InvalidationListener) observable -> updateStats());
 		updateStats();
 	}
 
 	private void setDate(LocalDate newDate) {
-		dateShown.set(newDate);
-		updateStats();
+		selectedDate.set(newDate);
 	}
 
 	private void shiftDate(Period shift) {
-		setDate(dateShown.get().plus(shift));
+		setDate(selectedDate.get().plus(shift));
 	}
 
 	public void updateStats() {
-		SortedSet<LocalDate> dates = Utils.daysOfWeek(dateShown.get());
-		updateDateColumns(dates);
-		fillStats(dates);
+		updateDateColumns();
+		fillStats();
 	}
 
-	private void updateDateColumns(SortedSet<LocalDate> dates) {
+	private void updateDateColumns() {
+		SortedSet<LocalDate> dates = datesShown.getValue();
 		if (spansStats.getColumns().size() > 1)
 			spansStats.getColumns().remove(1, spansStats.getColumns().size());
 
@@ -116,7 +122,7 @@ public class SpansStatsController {
 		}
 	}
 
-	private void fillStats(SortedSet<LocalDate> dates) {
-		spansStats.setItems(calc.calcItems(dates));
+	private void fillStats() {
+		spansStats.setItems(calc.calcItems(datesShown.getValue()));
 	}
 }
