@@ -36,6 +36,7 @@ import org.hansib.sundries.fx.table.TableColumnBuilder;
 
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
@@ -51,9 +52,11 @@ public class SpansTableController {
 
 	private static class ProjectComboBoxTableCell extends ComboBoxTableCell<FxSpan, FxProject> { // NOSONAR
 
-		private Runnable updateHandler;
+		private final Runnable updateHandler;
+		private final ObservableValue<String> name;
 
 		ProjectComboBoxTableCell(ObservableList<FxProject> projects, Runnable updateHandler) {
+
 			super(new StringConverter<FxProject>() {
 				@Override
 				public String toString(FxProject object) {
@@ -66,12 +69,31 @@ public class SpansTableController {
 				}
 			}, projects);
 			this.updateHandler = updateHandler;
+			this.name = itemProperty().flatMap(FxProject::name);
+			this.name.addListener((obs, oldName, newName) -> updateText());
+		}
+
+		@Override
+		public void startEdit() {
+			super.startEdit();
+			updateText();
 		}
 
 		@Override
 		public void commitEdit(FxProject newValue) {
 			super.commitEdit(newValue);
 			updateHandler.run();
+		}
+
+		@Override
+		public void updateItem(FxProject item, boolean empty) {
+			super.updateItem(item, empty);
+			updateText();
+			updateHandler.run();
+		}
+
+		private void updateText() {
+			setText(isEditing() ? null : name.getValue());
 		}
 	}
 

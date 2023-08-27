@@ -10,13 +10,15 @@ import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
 
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class ObservableData {
 
 	private final FxProject fxProjectTree;
-	private final ObservableList<FxProject> projectList = FXCollections.observableArrayList();
+	private final ObservableList<FxProject> projectList = FXCollections
+			.observableArrayList(p -> new Observable[] { p.name() });
 
 	private final ObservableList<FxSpan> spans = FXCollections.observableArrayList();
 

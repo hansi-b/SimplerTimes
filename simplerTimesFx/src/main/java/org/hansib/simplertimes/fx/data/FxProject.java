@@ -7,6 +7,10 @@ import java.util.List;
 import org.hansib.simplertimes.fx.tree.TextFieldTreeNode;
 import org.hansib.simplertimes.projects.Project;
 
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  * Maintains a 1-to-1 mapping with a {@link Project}
  */
@@ -17,11 +21,17 @@ public class FxProject implements TextFieldTreeNode<FxProject> {
 
 	private final Project project;
 
+	private final StringProperty name;
+
 	private final FxProject parent;
 	private final List<FxProject> children;
 
 	private FxProject(FxProject parent, Project project) {
 		this.project = project;
+
+		this.name = new SimpleStringProperty(project.name());
+		this.name.addListener((observable, oldValue, newValue) -> project.setName(newValue));
+
 		this.parent = parent;
 		this.children = new ArrayList<>();
 	}
@@ -47,13 +57,17 @@ public class FxProject implements TextFieldTreeNode<FxProject> {
 		return accu;
 	}
 
-	public Project project() {
+	Project project() {
 		return project;
 	}
 
 	@Override
 	public String text() {
 		return project.name();
+	}
+
+	public ReadOnlyStringProperty name() {
+		return name;
 	}
 
 	public String fullName() {
@@ -70,7 +84,7 @@ public class FxProject implements TextFieldTreeNode<FxProject> {
 
 	@Override
 	public void setText(String newText) {
-		project.setName(newText);
+		name.set(newText);
 	}
 
 	@Override
