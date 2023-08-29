@@ -49,15 +49,15 @@ public class SpansStatsController {
 	private TableView<StatsRow> spansStats;
 
 	@FXML
-	Button monthBack;
+	private Button monthBack;
 	@FXML
-	Button weekBack;
+	private Button weekBack;
 	@FXML
-	Button today;
+	private Button today;
 	@FXML
-	Button weekForward;
+	private Button weekForward;
 	@FXML
-	Button monthForward;
+	private Button monthForward;
 
 	private StatsCalculator calc;
 
