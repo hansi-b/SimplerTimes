@@ -28,6 +28,7 @@ import org.hansib.simplertimes.fx.Icons;
 import org.hansib.simplertimes.fx.data.FxSpan;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
+import org.hansib.sundries.fx.table.TableColumnBuilder;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
@@ -67,9 +68,8 @@ public class SpansStatsController {
 	void initialize() {
 		log.info("Initialising spans stats");
 
-		TableColumn<StatsRow, String> projectColumn = new TableColumn<>("Project");
-		projectColumn.setCellValueFactory(data -> data.getValue().project());
-		spansStats.getColumns().add(projectColumn);
+		spansStats.getColumns()
+				.add(new TableColumnBuilder<StatsRow, String>("Project").value(StatsRow::project).build());
 
 		selectedDate = new SimpleObjectProperty<>(LocalDate.now());
 		datesShown = selectedDate.map(Utils::daysOfWeek);
@@ -107,22 +107,16 @@ public class SpansStatsController {
 
 	public void updateStats() {
 		updateDateColumns();
-		fillStats();
+		spansStats.setItems(calc.calcItems(datesShown.getValue()));
 	}
 
 	private void updateDateColumns() {
-		SortedSet<LocalDate> dates = datesShown.getValue();
-		if (spansStats.getColumns().size() > 1)
-			spansStats.getColumns().remove(1, spansStats.getColumns().size());
+		ObservableList<TableColumn<StatsRow, ?>> columns = spansStats.getColumns();
+		if (columns.size() > 1)
+			columns.remove(1, columns.size());
 
-		for (LocalDate dt : dates) {
-			TableColumn<StatsRow, String> odtColumn = new TableColumn<>(dt.toString());
-			odtColumn.setCellValueFactory(data -> data.getValue().ldStr(dt));
-			spansStats.getColumns().add(odtColumn);
+		for (LocalDate dt : datesShown.getValue()) {
+			columns.add(new TableColumnBuilder<StatsRow, String>(dt.toString()).value(d -> d.ldStr(dt)).build());
 		}
-	}
-
-	private void fillStats() {
-		spansStats.setItems(calc.calcItems(datesShown.getValue()));
 	}
 }
