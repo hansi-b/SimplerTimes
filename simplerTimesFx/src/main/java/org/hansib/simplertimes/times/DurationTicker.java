@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.hansib.sundries.Errors;
+import org.hansib.sundries.testing.VisibleForTesting;
 
 public class DurationTicker {
 	private static class DaemonFactory implements ThreadFactory {
@@ -43,30 +44,37 @@ public class DurationTicker {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0, new DaemonFactory());
 	private ScheduledFuture<?> scheduleAtFixedRate;
 
-	private final Consumer<Duration> durationReceiver;
+	private final DateTimeSource dtSource;
+	private final Consumer<Duration> tickReceiver;
 
 	private ZonedDateTime startedAt;
 
 	public DurationTicker(Consumer<Duration> tickReceiver) {
-		this.durationReceiver = Objects.requireNonNull(tickReceiver);
+		this(tickReceiver, new DateTimeSource.SystemDateTime());
+	}
+
+	@VisibleForTesting
+	DurationTicker(Consumer<Duration> tickReceiver, DateTimeSource dateTimeSource) {
+		this.tickReceiver = Objects.requireNonNull(tickReceiver);
+		this.dtSource = dateTimeSource;
 	}
 
 	public synchronized void start() {
 		if (startedAt != null)
 			throw Errors.illegalState("Ticker was already started");
-		startedAt = ZonedDateTime.now();
+		startedAt = dtSource.now();
 		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateTime, 0, 40, TimeUnit.MILLISECONDS);
 	}
 
 	private void updateTime() {
-		durationReceiver.accept(Duration.between(startedAt, ZonedDateTime.now()));
+		tickReceiver.accept(Duration.between(startedAt, dtSource.now()));
 	}
 
 	public synchronized Interval stopAndGet() {
 		if (scheduleAtFixedRate == null || startedAt == null)
 			throw Errors.illegalState("Ticker was not started");
 		scheduleAtFixedRate.cancel(true);
-		Interval result = new Interval(startedAt, ZonedDateTime.now());
+		Interval result = new Interval(startedAt, dtSource.now());
 		startedAt = null;
 		scheduleAtFixedRate = null;
 		return result;
