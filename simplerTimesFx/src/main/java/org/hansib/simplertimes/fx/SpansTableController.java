@@ -59,8 +59,8 @@ public class SpansTableController {
 
 			super(new StringConverter<FxProject>() {
 				@Override
-				public String toString(FxProject object) {
-					return object == null ? null : object.text();
+				public String toString(FxProject project) {
+					return project == null ? null : project.text();
 				}
 
 				@Override

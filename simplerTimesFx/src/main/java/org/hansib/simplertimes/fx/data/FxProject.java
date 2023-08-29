@@ -63,7 +63,7 @@ public class FxProject implements TextFieldTreeNode<FxProject> {
 
 	@Override
 	public String text() {
-		return project.name();
+		return name.get();
 	}
 
 	public ReadOnlyStringProperty name() {
