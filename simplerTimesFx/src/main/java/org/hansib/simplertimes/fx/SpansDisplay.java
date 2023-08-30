@@ -34,34 +34,24 @@ class SpansDisplay {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private Stage spansStage;
-	private SpansInfoController spansInfoController;
-
 	private final Supplier<ObservableData> lazyData;
 
 	SpansDisplay(Button showSpansButton, Supplier<ObservableData> lazyData) {
 
 		this.lazyData = lazyData;
+
+		StageToggle stageToggle = new StageToggle(this::initStage);
 		new ButtonBuilder(showSpansButton) //
-				.graphic(Icons.showSpans()).onAction(event -> showSpansInfo()).build();
+				.graphic(Icons.showSpans()).onAction(event -> stageToggle.toggle()) //
+				.build();
 	}
 
-	private void showSpansInfo() {
-		if (spansStage == null) {
-			initStage();
-		}
-		if (!spansStage.isShowing())
-			spansStage.show();
-		else
-			spansStage.hide();
-	}
-
-	private void initStage() {
-		spansStage = new Stage();
+	private Stage initStage() {
+		Stage spansStage = new Stage();
 		spansStage.setTitle("Spans");
 
 		FxResourceLoader fxLoader = new FxResourceLoader();
-		spansInfoController = fxLoader.loadFxmlToStage("spansInfo.fxml", spansStage);
+		SpansInfoController spansInfoController = fxLoader.loadFxmlToStage("spansInfo.fxml", spansStage);
 		spansInfoController.setData(lazyData.get());
 
 		Image logo = fxLoader.loadImage("logo.png");
@@ -69,5 +59,6 @@ class SpansDisplay {
 			log.warn("Could not load application icon");
 		else
 			spansStage.getIcons().add(logo);
+		return spansStage;
 	}
 }
