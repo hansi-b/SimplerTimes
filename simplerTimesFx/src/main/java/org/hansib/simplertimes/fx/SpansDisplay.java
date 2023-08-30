@@ -50,17 +50,19 @@ class SpansDisplay {
 		if (spansStage == null) {
 			initStage();
 		}
-
-		spansInfoController.setData(lazyData.get());
-		spansStage.show();
+		if (!spansStage.isShowing())
+			spansStage.show();
+		else
+			spansStage.hide();
 	}
 
 	private void initStage() {
 		spansStage = new Stage();
+		spansStage.setTitle("Spans");
 
 		FxResourceLoader fxLoader = new FxResourceLoader();
 		spansInfoController = fxLoader.loadFxmlToStage("spansInfo.fxml", spansStage);
-		spansStage.setTitle("Spans");
+		spansInfoController.setData(lazyData.get());
 
 		Image logo = fxLoader.loadImage("logo.png");
 		if (logo == null)
