@@ -29,28 +29,37 @@ import org.hansib.sundries.fx.FxResourceLoader;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private final TreeItem<T> rootItem;
+	private final TreeView<T> treeView;
+
 	private final Runnable updateHandler;
 
+	private ContextMenu contextMenu;
+
 	public TreeViewWindow(Supplier<T> rootSupplier, Runnable updateHandler) {
-		this.rootItem = linkToTreeItem(rootSupplier.get());
+		TreeItem<T> rootItem = linkToTreeItem(rootSupplier.get());
+		rootItem.setExpanded(true);
+		this.treeView = initTreeView(rootItem);
+
+		this.contextMenu = new ContextMenuBuilder() //
+				.item(MenuItems.NewProject.fmt(), t -> addItem(treeView, treeView.getRoot())) //
+				.build();
+
 		this.updateHandler = updateHandler;
 	}
 
-	private TreeItem<T> linkToTreeItem(T treeNode) {
+	private static <T extends TextFieldTreeNode<T>> TreeItem<T> linkToTreeItem(T treeNode) {
 		TreeItem<T> treeItem = new TreeItem<>(treeNode);
 		treeNode.children().forEach(c -> {
 			TreeItem<T> i = linkToTreeItem(c);
@@ -59,19 +68,21 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 		return treeItem;
 	}
 
-	public void show(Node parent) {
-
-		rootItem.setExpanded(true);
-
+	private static <T extends TextFieldTreeNode<T>> TreeView<T> initTreeView(TreeItem<T> rootItem) {
 		TreeView<T> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		tree.setShowRoot(false);
 		tree.setCellFactory(p -> new TextFieldTreeCellImpl<>(tree));
+		return tree;
+	}
+
+	public void show(Node parent) {
 
 		StackPane treeLayout = new StackPane();
-		treeLayout.getChildren().add(tree);
+		treeLayout.getChildren().add(treeView);
 
-		treeLayout.setOnContextMenuRequested(e -> showMenu(e, treeLayout.getScene().getWindow(), tree));
+		treeLayout.setOnContextMenuRequested(
+				e -> contextMenu.show(treeLayout.getScene().getWindow(), e.getScreenX(), e.getScreenY()));
 
 		Scene secondScene = new Scene(treeLayout, 250, 250);
 
@@ -92,12 +103,6 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 
 		window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> updateHandler.run());
 		window.show();
-	}
-
-	private void showMenu(ContextMenuEvent e, Window owner, TreeView<T> tree) {
-		new ContextMenuBuilder() //
-				.item(MenuItems.NewProject.fmt(), t -> addItem(tree, tree.getRoot())) //
-				.build().show(owner, e.getScreenX(), e.getScreenY());
 	}
 
 	static <T extends TextFieldTreeNode<T>> void addItem(TreeView<T> treeview, TreeItem<T> parent) {
