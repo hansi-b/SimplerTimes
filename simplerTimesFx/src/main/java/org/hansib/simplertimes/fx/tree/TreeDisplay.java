@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import org.hansib.simplertimes.fx.Icons;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
+import org.hansib.sundries.fx.ButtonBuilder;
 
 import javafx.scene.control.Button;
 
@@ -31,15 +32,14 @@ public class TreeDisplay {
 	private TreeViewWindow<FxProject> treeViewWindow;
 
 	public TreeDisplay(Button editTreeButton, Supplier<ObservableData> lazyData) {
-
-		editTreeButton.setGraphic(Icons.editTree());
-		editTreeButton.setOnAction(event -> showWindow(editTreeButton, lazyData));
+		new ButtonBuilder(editTreeButton).graphic(Icons.editTree()).onAction(event -> showWindow(lazyData)).build();
 	}
 
-	private void showWindow(Button editTreeButton, Supplier<ObservableData> lazyData) {
-		if (treeViewWindow == null)
-			treeViewWindow = new TreeViewWindow<>(() -> lazyData.get().fxProjectTree(),
-					lazyData.get()::updateProjectList);
-		treeViewWindow.show(editTreeButton);
+	private void showWindow(Supplier<ObservableData> lazyData) {
+		if (treeViewWindow == null) {
+			ObservableData data = lazyData.get();
+			treeViewWindow = new TreeViewWindow<>(data.fxProjectTree(), data::updateProjectList);
+		}
+		treeViewWindow.show();
 	}
 }

@@ -18,16 +18,12 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
-import java.util.function.Supplier;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.sundries.fx.ContextMenuBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
 
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
@@ -45,18 +41,12 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 
 	private final Runnable updateHandler;
 
-	private final ContextMenu contextMenu;
-
 	private Stage stage;
 
-	TreeViewWindow(Supplier<T> rootSupplier, Runnable updateHandler) {
-		TreeItem<T> rootItem = linkToTreeItem(rootSupplier.get());
+	TreeViewWindow(T root, Runnable updateHandler) {
+		TreeItem<T> rootItem = linkToTreeItem(root);
 		rootItem.setExpanded(true);
 		this.treeView = initTreeView(rootItem);
-
-		this.contextMenu = new ContextMenuBuilder() //
-				.item(MenuItems.NewProject.fmt(), t -> addItem(treeView, treeView.getRoot())) //
-				.build();
 
 		this.updateHandler = updateHandler;
 	}
@@ -75,9 +65,9 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 		return tree;
 	}
 
-	void show(Node parent) {
+	void show() {
 		if (stage == null)
-			stage = initStage(parent, initTreeScene());
+			stage = initStage();
 
 		if (stage.isShowing())
 			stage.hide();
@@ -85,32 +75,31 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 			stage.show();
 	}
 
-	private Stage initStage(Node parent, Scene secondScene) {
-		Stage stage = new Stage();
-		stage.setTitle("Projects");
+	private Stage initStage() {
+		Stage treeStage = new Stage();
+		treeStage.setTitle("Projects");
 
 		Image logo = new FxResourceLoader().loadImage("logo.png");
 		if (logo == null)
 			log.warn("Could not load application icon");
 		else
-			stage.getIcons().add(logo);
+			treeStage.getIcons().add(logo);
 
-		stage.setScene(secondScene);
+		treeStage.setScene(initTreePaneScene());
+		treeStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> updateHandler.run());
 
-		Bounds boundsInScene = parent.localToScreen(parent.getBoundsInLocal());
-		stage.setX(boundsInScene.getMinX());
-		stage.setY(boundsInScene.getMinY());
-
-		stage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> updateHandler.run());
-		return stage;
+		return treeStage;
 	}
 
-	private Scene initTreeScene() {
+	private Scene initTreePaneScene() {
 		StackPane treePane = new StackPane();
-		treePane.getChildren().add(treeView);
+		ContextMenu contextMenu = new ContextMenuBuilder() //
+				.item(MenuItems.NewProject.fmt(), t -> addItem(treeView, treeView.getRoot())) //
+				.build();
 		treePane.setOnContextMenuRequested(
 				e -> contextMenu.show(treePane.getScene().getWindow(), e.getScreenX(), e.getScreenY()));
 
+		treePane.getChildren().add(treeView);
 		return new Scene(treePane, 250, 250);
 	}
 
