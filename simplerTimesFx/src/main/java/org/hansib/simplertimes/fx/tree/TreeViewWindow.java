@@ -45,9 +45,11 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 
 	private final Runnable updateHandler;
 
-	private ContextMenu contextMenu;
+	private final ContextMenu contextMenu;
 
-	public TreeViewWindow(Supplier<T> rootSupplier, Runnable updateHandler) {
+	private Stage stage;
+
+	TreeViewWindow(Supplier<T> rootSupplier, Runnable updateHandler) {
 		TreeItem<T> rootItem = linkToTreeItem(rootSupplier.get());
 		rootItem.setExpanded(true);
 		this.treeView = initTreeView(rootItem);
@@ -61,10 +63,7 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 
 	private static <T extends TextFieldTreeNode<T>> TreeItem<T> linkToTreeItem(T treeNode) {
 		TreeItem<T> treeItem = new TreeItem<>(treeNode);
-		treeNode.children().forEach(c -> {
-			TreeItem<T> i = linkToTreeItem(c);
-			treeItem.getChildren().add(i);
-		});
+		treeNode.children().forEach(c -> treeItem.getChildren().add(linkToTreeItem(c)));
 		return treeItem;
 	}
 
@@ -76,33 +75,43 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 		return tree;
 	}
 
-	public void show(Node parent) {
+	void show(Node parent) {
+		if (stage == null)
+			stage = initStage(parent, initTreeScene());
 
-		StackPane treeLayout = new StackPane();
-		treeLayout.getChildren().add(treeView);
+		if (stage.isShowing())
+			stage.hide();
+		else
+			stage.show();
+	}
 
-		treeLayout.setOnContextMenuRequested(
-				e -> contextMenu.show(treeLayout.getScene().getWindow(), e.getScreenX(), e.getScreenY()));
-
-		Scene secondScene = new Scene(treeLayout, 250, 250);
-
-		Stage window = new Stage();
-		window.setTitle("Projects");
+	private Stage initStage(Node parent, Scene secondScene) {
+		Stage stage = new Stage();
+		stage.setTitle("Projects");
 
 		Image logo = new FxResourceLoader().loadImage("logo.png");
 		if (logo == null)
 			log.warn("Could not load application icon");
 		else
-			window.getIcons().add(logo);
+			stage.getIcons().add(logo);
 
-		window.setScene(secondScene);
+		stage.setScene(secondScene);
 
 		Bounds boundsInScene = parent.localToScreen(parent.getBoundsInLocal());
-		window.setX(boundsInScene.getMinX());
-		window.setY(boundsInScene.getMinY());
+		stage.setX(boundsInScene.getMinX());
+		stage.setY(boundsInScene.getMinY());
 
-		window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> updateHandler.run());
-		window.show();
+		stage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> updateHandler.run());
+		return stage;
+	}
+
+	private Scene initTreeScene() {
+		StackPane treePane = new StackPane();
+		treePane.getChildren().add(treeView);
+		treePane.setOnContextMenuRequested(
+				e -> contextMenu.show(treePane.getScene().getWindow(), e.getScreenX(), e.getScreenY()));
+
+		return new Scene(treePane, 250, 250);
 	}
 
 	static <T extends TextFieldTreeNode<T>> void addItem(TreeView<T> treeview, TreeItem<T> parent) {
