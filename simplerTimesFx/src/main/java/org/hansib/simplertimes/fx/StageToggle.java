@@ -17,8 +17,15 @@ public class StageToggle {
 	 * Initialises stage on first call, toggles visibility afterwards.
 	 */
 	public void toggle() {
-		if (stage == null)
+		if (stage == null) {
 			stage = stageInit.get();
+			stage.setOnShown(e -> {
+				stage.setX(stage.getX());
+				stage.setY(stage.getY());
+				stage.setWidth(stage.getWidth());
+				stage.setHeight(stage.getHeight());
+			});
+		}
 		if (stage.isShowing())
 			stage.hide();
 		else
