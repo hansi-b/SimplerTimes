@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
+import org.hansib.sundries.fx.StageToggle;
 
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
