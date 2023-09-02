@@ -39,16 +39,10 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 
 	private final TreeView<T> treeView;
 
-	private final Runnable updateHandler;
-
-	private Stage stage;
-
-	TreeViewWindow(T root, Runnable updateHandler) {
+	TreeViewWindow(T root) {
 		TreeItem<T> rootItem = linkToTreeItem(root);
 		rootItem.setExpanded(true);
 		this.treeView = initTreeView(rootItem);
-
-		this.updateHandler = updateHandler;
 	}
 
 	private static <T extends TextFieldTreeNode<T>> TreeItem<T> linkToTreeItem(T treeNode) {
@@ -65,17 +59,7 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 		return tree;
 	}
 
-	void show() {
-		if (stage == null)
-			stage = initStage();
-
-		if (stage.isShowing())
-			stage.hide();
-		else
-			stage.show();
-	}
-
-	private Stage initStage() {
+	Stage initStage(Runnable updateHandler) {
 		Stage treeStage = new Stage();
 		treeStage.setTitle("Projects");
 

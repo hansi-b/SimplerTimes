@@ -21,6 +21,7 @@ package org.hansib.simplertimes.fx.tree;
 import java.util.function.Supplier;
 
 import org.hansib.simplertimes.fx.Icons;
+import org.hansib.simplertimes.fx.StageToggle;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.sundries.fx.ButtonBuilder;
@@ -29,17 +30,18 @@ import javafx.scene.control.Button;
 
 public class TreeDisplay {
 
-	private TreeViewWindow<FxProject> treeViewWindow;
+	private StageToggle stageToggle;
 
 	public TreeDisplay(Button editTreeButton, Supplier<ObservableData> lazyData) {
 		new ButtonBuilder(editTreeButton).graphic(Icons.editTree()).onAction(event -> showWindow(lazyData)).build();
 	}
 
 	private void showWindow(Supplier<ObservableData> lazyData) {
-		if (treeViewWindow == null) {
+		if (stageToggle == null) {
 			ObservableData data = lazyData.get();
-			treeViewWindow = new TreeViewWindow<>(data.fxProjectTree(), data::updateProjectList);
+			TreeViewWindow<FxProject> treeViewWindow = new TreeViewWindow<>(data.fxProjectTree());
+			stageToggle = new StageToggle(() -> treeViewWindow.initStage(data::updateProjectList));
 		}
-		treeViewWindow.show();
+		stageToggle.toggle();
 	}
 }
