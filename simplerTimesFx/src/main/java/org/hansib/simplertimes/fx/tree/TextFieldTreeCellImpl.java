@@ -70,6 +70,7 @@ class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> 
 	@Override
 	public void updateItem(T item, boolean empty) {
 		super.updateItem(item, empty);
+		setContextMenu(null);
 
 		if (empty) {
 			setText(null);
