@@ -78,7 +78,7 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 	private Scene initTreePaneScene() {
 		StackPane treePane = new StackPane();
 		ContextMenu contextMenu = new ContextMenuBuilder() //
-				.item(MenuItems.NewProject.fmt(), t -> addItem(treeView, treeView.getRoot())) //
+				.item(MenuItems.NewProject.fmt(), t -> newTreeItem(treeView, treeView.getRoot())) //
 				.build();
 		treePane.setOnContextMenuRequested(
 				e -> contextMenu.show(treePane.getScene().getWindow(), e.getScreenX(), e.getScreenY()));
@@ -87,11 +87,10 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 		return new Scene(treePane, 250, 250);
 	}
 
-	static <T extends TextFieldTreeNode<T>> void addItem(TreeView<T> treeview, TreeItem<T> parent) {
-		TreeItem<T> current = parent != null ? parent : treeview.getRoot();
-		T nodeChild = current.getValue().addChild(MenuItems.NewProject.fmt());
+	static <T extends TextFieldTreeNode<T>> void newTreeItem(TreeView<T> treeview, TreeItem<T> parent) {
+		T nodeChild = parent.getValue().addChild(MenuItems.NewProject.fmt());
 		TreeItem<T> newItem = new TreeItem<>(nodeChild);
-		current.getChildren().add(newItem);
+		parent.getChildren().add(newItem);
 		treeview.getSelectionModel().select(newItem);
 		treeview.edit(newItem);
 	}

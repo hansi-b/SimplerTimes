@@ -36,7 +36,7 @@ class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> 
 
 	public TextFieldTreeCellImpl(TreeView<T> treeview) {
 		contextMenu = new ContextMenuBuilder() //
-				.item(MenuItems.NewSubproject.fmt(), e -> TreeViewWindow.addItem(treeview, getTreeItem())) //
+				.item(MenuItems.NewSubproject.fmt(), e -> TreeViewWindow.newTreeItem(treeview, getTreeItem())) //
 				.item(MenuItems.RemoveSubproject.fmt(), e -> removeItem()) //
 				.build();
 	}
