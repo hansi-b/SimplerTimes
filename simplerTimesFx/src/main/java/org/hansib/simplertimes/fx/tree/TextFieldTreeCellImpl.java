@@ -26,7 +26,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 
 class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> { // NOSONAR
@@ -34,9 +33,9 @@ class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> 
 	private TextField textField;
 	private final ContextMenu contextMenu;
 
-	public TextFieldTreeCellImpl(TreeView<T> treeview) {
+	public TextFieldTreeCellImpl() {
 		contextMenu = new ContextMenuBuilder() //
-				.item(MenuItems.NewSubproject.fmt(), e -> TreeViewWindow.newTreeItem(treeview, getTreeItem())) //
+				.item(MenuItems.NewSubproject.fmt(), e -> TreeViewWindow.newTreeItem(getTreeView(), getTreeItem())) //
 				.item(MenuItems.RemoveSubproject.fmt(), e -> removeItem()) //
 				.build();
 	}

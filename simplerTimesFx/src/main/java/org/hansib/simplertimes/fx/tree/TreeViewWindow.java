@@ -55,7 +55,7 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 		TreeView<T> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		tree.setShowRoot(false);
-		tree.setCellFactory(p -> new TextFieldTreeCellImpl<>(tree));
+		tree.setCellFactory(p -> new TextFieldTreeCellImpl<>());
 		return tree;
 	}
 
