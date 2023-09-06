@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hansib.simplertimes.fx.tree.TextFieldTreeNode;
 import org.hansib.simplertimes.projects.Project;
+import org.hansib.sundries.Strings;
 
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -98,5 +99,10 @@ public class FxProject implements TextFieldTreeNode<FxProject> {
 		FxProject child = new FxProject(this, project.add(childText));
 		children.add(child);
 		return child;
+	}
+
+	@Override
+	public String toString() {
+		return Strings.idStr(this, name.get());
 	}
 }
