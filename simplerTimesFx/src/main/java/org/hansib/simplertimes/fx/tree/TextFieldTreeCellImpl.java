@@ -34,6 +34,7 @@ class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> 
 	private final ContextMenu contextMenu;
 
 	public TextFieldTreeCellImpl() {
+		super();
 		contextMenu = new ContextMenuBuilder() //
 				.item(MenuItems.NewSubproject.fmt(), e -> TreeViewWindow.newTreeItem(getTreeView(), getTreeItem())) //
 				.item(MenuItems.RemoveSubproject.fmt(), e -> removeItem()) //
