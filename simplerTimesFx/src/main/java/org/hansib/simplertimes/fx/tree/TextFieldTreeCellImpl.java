@@ -18,8 +18,7 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
-import org.hansib.simplertimes.fx.l10n.MenuItems;
-import org.hansib.sundries.fx.ContextMenuBuilder;
+import java.util.function.Function;
 
 import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
@@ -31,17 +30,19 @@ import javafx.scene.input.KeyCode;
 class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> { // NOSONAR
 
 	private TextField textField;
-	private final ContextMenu contextMenu;
+	private Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction;
 
 	public TextFieldTreeCellImpl() {
 		super();
-		contextMenu = new ContextMenuBuilder() //
-				.item(MenuItems.NewSubproject.fmt(), e -> TreeViewWindow.newTreeItem(getTreeView(), getTreeItem())) //
-				.item(MenuItems.RemoveSubproject.fmt(), e -> removeItem()) //
-				.build();
 	}
 
-	private void removeItem() {
+	public TextFieldTreeCellImpl<T> withContextMenu(
+			Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction) {
+		this.cellContextMenuFunction = cellContextMenuFunction;
+		return this;
+	}
+
+	public void removeItem() {
 		TreeItem<T> current = getTreeItem();
 		current.getValue().remove();
 		current.getParent().getChildren().remove(current);
@@ -84,8 +85,8 @@ class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> 
 		} else {
 			setText(itemText());
 			setGraphic(getTreeItem().getGraphic());
-			if (getTreeItem().getParent() != null) {
-				setContextMenu(contextMenu);
+			if (cellContextMenuFunction != null) {
+				setContextMenu(cellContextMenuFunction.apply(this));
 			}
 		}
 	}

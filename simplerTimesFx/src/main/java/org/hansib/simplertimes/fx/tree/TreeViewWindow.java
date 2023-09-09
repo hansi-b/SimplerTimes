@@ -51,12 +51,22 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 		return treeItem;
 	}
 
-	private static <T extends TextFieldTreeNode<T>> TreeView<T> initTreeView(TreeItem<T> rootItem) {
+	private TreeView<T> initTreeView(TreeItem<T> rootItem) {
 		TreeView<T> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		tree.setShowRoot(false);
-		tree.setCellFactory(p -> new TextFieldTreeCellImpl<>());
+
+		tree.setCellFactory(p -> new TextFieldTreeCellImpl<T>().withContextMenu(this::createContextMenu));
 		return tree;
+	}
+
+	private ContextMenu createContextMenu(TextFieldTreeCellImpl<T> cell) {
+		if (cell.getTreeItem().getParent() == null)
+			return null;
+		return new ContextMenuBuilder() //
+				.item(MenuItems.NewSubproject.fmt(), e -> newTreeItem(cell.getTreeView(), cell.getTreeItem())) //
+				.item(MenuItems.RemoveSubproject.fmt(), e -> cell.removeItem()) //
+				.build();
 	}
 
 	Stage initStage(Runnable updateHandler) {
@@ -87,11 +97,16 @@ public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
 		return new Scene(treePane, 250, 250);
 	}
 
-	static <T extends TextFieldTreeNode<T>> void newTreeItem(TreeView<T> treeview, TreeItem<T> parent) {
-		T nodeChild = parent.getValue().addChild(MenuItems.NewProject.fmt());
-		TreeItem<T> newItem = new TreeItem<>(nodeChild);
-		parent.getChildren().add(newItem);
+	void newTreeItem(TreeView<T> treeview, TreeItem<T> parent) {
+		TreeItem<T> newItem = addChild(parent, MenuItems.NewProject.fmt());
 		treeview.getSelectionModel().select(newItem);
 		treeview.edit(newItem);
+	}
+
+	public TreeItem<T> addChild(TreeItem<T> parent, String newChildString) {
+		T nodeChild = parent.getValue().addChild(newChildString);
+		TreeItem<T> newItem = new TreeItem<>(nodeChild);
+		parent.getChildren().add(newItem);
+		return newItem;
 	}
 }
