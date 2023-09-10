@@ -24,7 +24,6 @@ import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 
 class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> { // NOSONAR
@@ -40,12 +39,6 @@ class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> 
 			Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction) {
 		this.cellContextMenuFunction = cellContextMenuFunction;
 		return this;
-	}
-
-	public void removeItem() {
-		TreeItem<T> current = getTreeItem();
-		current.getValue().remove();
-		current.getParent().getChildren().remove(current);
 	}
 
 	@Override
