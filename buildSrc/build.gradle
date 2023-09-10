@@ -9,8 +9,8 @@ repositories {
 
 dependencies {
 	implementation 'com.palantir.gradle.gitversion:gradle-git-version:3.0.0'
-	implementation 'com.github.ben-manes:gradle-versions-plugin:0.47.0'
+	implementation 'com.github.ben-manes:gradle-versions-plugin:0.48.0'
 	implementation 'org.beryx:badass-runtime-plugin:1.13.0'
 	implementation 'gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin:0.16.1'
-	implementation 'org.openjfx:javafx-plugin:0.0.13'
+	implementation 'org.openjfx:javafx-plugin:0.1.0'
 }
