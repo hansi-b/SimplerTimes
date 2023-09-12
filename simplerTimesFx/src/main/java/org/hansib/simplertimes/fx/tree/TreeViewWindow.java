@@ -33,25 +33,19 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class TreeViewWindow<T extends TextFieldTreeNode<T>> {
+public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
 
 	private static final Logger log = LogManager.getLogger();
 
 	private final TreeView<T> treeView;
 
 	TreeViewWindow(T root) {
-		TreeItem<T> rootItem = linkToTreeItem(root);
-		rootItem.setExpanded(true);
-		this.treeView = initTreeView(rootItem);
-	}
-
-	private static <T extends TextFieldTreeNode<T>> TreeItem<T> linkToTreeItem(T treeNode) {
-		TreeItem<T> treeItem = new TreeItem<>(treeNode);
-		treeNode.children().forEach(c -> treeItem.getChildren().add(linkToTreeItem(c)));
-		return treeItem;
+		this.treeView = initTreeView(TreeItemNode.linkTree(root));
 	}
 
 	private TreeView<T> initTreeView(TreeItem<T> rootItem) {
+		rootItem.setExpanded(true);
+
 		TreeView<T> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		tree.setShowRoot(false);

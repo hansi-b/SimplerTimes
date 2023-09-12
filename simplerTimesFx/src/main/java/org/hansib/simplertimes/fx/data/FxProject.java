@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.hansib.simplertimes.fx.tree.TextFieldTreeNode;
+import org.hansib.simplertimes.fx.tree.TreeItemNode;
+import org.hansib.simplertimes.fx.tree.TextNode;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.Strings;
 
@@ -15,7 +16,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Maintains a 1-to-1 mapping with a {@link Project}
  */
-public class FxProject implements TextFieldTreeNode<FxProject> {
+public class FxProject implements TreeItemNode<FxProject>, TextNode {
 
 	public static final Comparator<FxProject> nameComparator = (FxProject o1, FxProject o2) -> Project.nameComparator
 			.compare(o1.project, o2.project);

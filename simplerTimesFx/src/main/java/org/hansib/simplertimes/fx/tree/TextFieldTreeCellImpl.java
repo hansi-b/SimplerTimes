@@ -26,7 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.KeyCode;
 
-class TextFieldTreeCellImpl<T extends TextFieldTreeNode<T>> extends TreeCell<T> { // NOSONAR
+class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 
 	private TextField textField;
 	private Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction;
