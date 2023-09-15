@@ -49,11 +49,9 @@ class StatsCalculator {
 	private Map<FxProject, Map<LocalDate, Duration>> aggregateStats(SortedSet<LocalDate> dates) {
 		Map<FxProject, Map<LocalDate, Duration>> durationsByProject = new HashMap<>();
 		spans.stream().filter(s -> dates.contains(s.start().get().toLocalDate())) //
-				.forEach(s -> {
-					durationsByProject.computeIfAbsent(s.fxProject().get(), x -> new HashMap<>()).compute(
-							s.start().get().toLocalDate(),
-							(k, oldV) -> s.duration().get().plus(oldV == null ? Duration.ZERO : oldV));
-				});
+				.forEach(s -> durationsByProject.computeIfAbsent(s.fxProject().get(), x -> new HashMap<>()).compute(
+						s.start().get().toLocalDate(),
+						(k, oldV) -> s.duration().get().plus(oldV == null ? Duration.ZERO : oldV)));
 		return durationsByProject;
 	}
 }
