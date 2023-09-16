@@ -34,7 +34,6 @@ import org.hansib.sundries.fx.table.CellFactoryBuilder;
 import org.hansib.sundries.fx.table.EditingCell;
 import org.hansib.sundries.fx.table.TableColumnBuilder;
 
-import impl.org.controlsfx.skin.SearchableComboBoxSkin;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -42,7 +41,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -75,18 +73,9 @@ public class SpansTableController {
 			this.name.addListener((obs, oldName, newName) -> updateText());
 		}
 
-		private boolean firstEdit = true;
-
 		@Override
 		public void startEdit() {
-
 			super.startEdit();
-			if (firstEdit) {
-				@SuppressWarnings("unchecked")
-				ComboBox<FxProject> cb = (ComboBox<FxProject>) getGraphic();
-				cb.setSkin(new SearchableComboBoxSkin<>(cb));
-				firstEdit = false;
-			}
 			updateText();
 		}
 
