@@ -19,7 +19,7 @@ public class FxSpan {
 	private final SimpleObjectProperty<OffsetDateTime> end;
 	private final ReadOnlyObjectWrapper<Duration> duration;
 
-	FxSpan(FxProject project, OffsetDateTime start, OffsetDateTime end) {
+	public FxSpan(FxProject project, OffsetDateTime start, OffsetDateTime end) {
 		this.fxProject = new SimpleObjectProperty<>(project);
 
 		this.start = new SimpleObjectProperty<>(start);

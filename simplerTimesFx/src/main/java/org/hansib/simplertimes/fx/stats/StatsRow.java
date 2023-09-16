@@ -22,4 +22,16 @@ record StatsRow(ObjectProperty<String> project, Map<LocalDate, ObjectProperty<St
 	ObjectProperty<String> ldStr(LocalDate odt) {
 		return durations.get(odt);
 	}
+
+	public boolean equalsByValues(StatsRow other) {
+		if (this == other)
+			return true;
+		return other != null && //
+				project.get().equals(other.project.get()) && //
+				durations.size() == other.durations.size() && //
+				durations.entrySet().stream().allMatch(e -> {
+					ObjectProperty<String> otherProp = other.durations.get(e.getKey());
+					return otherProp != null && otherProp.get().equals(e.getValue().get());
+				});
+	}
 }
