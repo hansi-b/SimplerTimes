@@ -167,8 +167,6 @@ public class SpansTableController {
 				.comparator(FxProject.nameComparator) //
 				.build();
 
-		projectCol.setEditable(true);
-
 		new TableColumnBuilder<>(durationCol).headerText("Duration") //
 				.value(FxSpan::duration) //
 				.cellFactory(new CellFactoryBuilder<>(durationCol).format(Utils::toHmsString).build()) //
