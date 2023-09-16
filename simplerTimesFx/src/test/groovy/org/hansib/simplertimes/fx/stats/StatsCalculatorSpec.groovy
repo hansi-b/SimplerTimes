@@ -9,6 +9,7 @@ import java.time.ZoneOffset
 import org.hansib.simplertimes.fx.data.FxProject
 import org.hansib.simplertimes.fx.data.FxSpan
 
+import javafx.beans.property.ReadOnlyStringWrapper
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import spock.lang.Shared
@@ -18,8 +19,8 @@ public class StatsCalculatorSpec extends Specification {
 
 	@Shared ZoneOffset zoneOffset = ZoneOffset.ofHours(2)
 
-	@Shared FxProject pro_A = Mock()
-	@Shared FxProject pro_B = Mock()
+	@Shared FxProject proj_A = Mock()
+	@Shared FxProject proj_B = Mock()
 
 	@Shared LocalDate ld_07_20 = ld(2023, 7, 20)
 	@Shared LocalDate ld_07_21 = ld(2023, 7, 21)
@@ -29,8 +30,10 @@ public class StatsCalculatorSpec extends Specification {
 	private StatsCalculator calc
 
 	def setupSpec() {
-		pro_A.text() >> 'project A'
-		pro_B.text() >> 'project B'
+		ReadOnlyStringWrapper proj_A_name = new ReadOnlyStringWrapper('project A')
+		proj_A.name() >> proj_A_name
+		ReadOnlyStringWrapper proj_B_name = new ReadOnlyStringWrapper('project B')
+		proj_B.name() >> proj_B_name
 	}
 
 	def 'can calculate stats' () {
@@ -39,8 +42,8 @@ public class StatsCalculatorSpec extends Specification {
 		def dura_1 = Duration.ofMinutes(5).plusSeconds(30)
 		def dura_2 = Duration.ofMinutes(6).plusSeconds(40)
 
-		spans.add(fxSpan(pro_A, odt(ld_07_20, lt(10, 40)), dura_1))
-		spans.add(fxSpan(pro_A, odt(ld_07_20, lt(20, 00)), dura_2))
+		spans.add(fxSpan(proj_A, odt(ld_07_20, lt(10, 40)), dura_1))
+		spans.add(fxSpan(proj_A, odt(ld_07_20, lt(20, 00)), dura_2))
 		calc = new StatsCalculator(spans)
 
 		when:
@@ -49,7 +52,7 @@ public class StatsCalculatorSpec extends Specification {
 
 		then:
 		rows.size() == 1
-		rows.get(0).equalsByValues(StatsRow.of(pro_A, [(ld_07_20) : dura_1.plus(dura_2)]))
+		rows.get(0).equalsByValues(StatsRow.of(proj_A, [(ld_07_20) : dura_1.plus(dura_2)]))
 	}
 
 	private OffsetDateTime odt(LocalDate ld, LocalTime lt) {
