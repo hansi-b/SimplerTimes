@@ -23,6 +23,7 @@ import org.hansib.sundries.l10n.FormatKey;
 public enum MenuItems implements FormatKey {
 	NewProject, //
 	NewSubproject, //
+	RemoveProject, //
 	RemoveSubproject, //
 	Exit
 }

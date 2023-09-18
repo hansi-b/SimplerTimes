@@ -57,9 +57,12 @@ public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
 	private ContextMenu createContextMenu(TextFieldTreeCellImpl<T> cell) {
 		if (cell.getTreeItem().getParent() == null)
 			return null;
+		boolean isTopLevel = cell.getTreeItem().getParent() == treeView.getRoot();
+		MenuItems menuItemRemove = isTopLevel ? MenuItems.RemoveProject : MenuItems.RemoveSubproject;
+
 		return new ContextMenuBuilder() //
 				.item(MenuItems.NewSubproject.fmt(), e -> newTreeItem(cell.getTreeView(), cell.getTreeItem())) //
-				.item(MenuItems.RemoveSubproject.fmt(), e -> removeItem(cell.getTreeItem())) //
+				.item(menuItemRemove.fmt(), e -> removeItem(cell.getTreeItem())) //
 				.build();
 	}
 
