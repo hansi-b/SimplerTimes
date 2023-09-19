@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.hansib.simplertimes.fx.tree.TreeItemNode;
 import org.hansib.simplertimes.fx.tree.TextNode;
+import org.hansib.simplertimes.fx.tree.TreeItemNode;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.Strings;
 

@@ -69,4 +69,8 @@ public class ObservableData {
 		Span temp = new Span(project.project(), start, end);
 		spans.add(new FxSpan(project, temp.start(), temp.end()));
 	}
+
+	public FxProjectRemovalCallback fxProjectRemovalCallback() {
+		return new FxProjectRemovalCallback(spans);
+	}
 }

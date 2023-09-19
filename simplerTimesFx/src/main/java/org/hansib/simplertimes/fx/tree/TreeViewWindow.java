@@ -21,6 +21,7 @@ package org.hansib.simplertimes.fx.tree;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
+import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
 import org.hansib.sundries.fx.ContextMenuBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
 
@@ -39,8 +40,14 @@ public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
 
 	private final TreeView<T> treeView;
 
+	private PreRemovalCallback<T> removalChecker;
+
 	TreeViewWindow(T root) {
 		this.treeView = initTreeView(TreeItemNode.linkTree(root));
+	}
+
+	public void setPreRemovalChecker(PreRemovalCallback<T> preRemovalCallback) {
+		this.removalChecker = preRemovalCallback;
 	}
 
 	private TreeView<T> initTreeView(TreeItem<T> rootItem) {
@@ -95,7 +102,13 @@ public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
 	}
 
 	void removeItem(TreeItem<T> item) {
-		item.getValue().remove();
+		T node = item.getValue();
+
+		boolean removalAccepted = removalChecker == null || removalChecker.removalAccepted(node);
+		if (!removalAccepted)
+			return;
+
+		node.remove();
 		item.getParent().getChildren().remove(item);
 	}
 
