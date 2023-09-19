@@ -4,6 +4,6 @@ L10nKeys:
 MenuItems:
    NewProject: New Project
    NewSubproject: New Subproject
-   RemoveProject: Remove Project
-   RemoveSubproject: Remove Subproject
+   DeleteProject: Delete Project
+   DeleteSubproject: Delete Subproject
    Exit: Exit
