@@ -19,17 +19,15 @@
 package org.hansib.simplertimes.fx;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.sundries.ResourceLoader;
+import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.prefs.PrimitiveBooleanPref;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Priority;
@@ -63,44 +61,29 @@ class DisclaimerChecker {
 			return false;
 
 		final String frage = "Do you accept this agreement?\n(\"Cancel\" quits the program.)";
-		final Alert disclaimerConf = new Alert(AlertType.CONFIRMATION, "", ButtonType.OK, ButtonType.CANCEL);
-		Button rejectButton = (Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.CANCEL);
-		rejectButton.setText("Cancel");
-		rejectButton.setDefaultButton(true);
-		Button accecptButton = (Button) disclaimerConf.getDialogPane().lookupButton(ButtonType.OK);
-		accecptButton.setText("OK");
-		accecptButton.setDefaultButton(false);
-
-		disclaimerConf.setHeaderText("SimplerTimes - Disclaimer");
-		disclaimerConf.setTitle("SimplerTimes - Disclaimer");
-
-		TextArea textArea = new TextArea(String.format("%s%n%s", disclaimer, frage));
+		TextArea textArea = new TextArea("%s%n%s".formatted(disclaimer, frage));
 		textArea.setEditable(false);
 		textArea.setWrapText(true);
 		textArea.setPrefHeight(300);
-
 		VBox.setVgrow(textArea, Priority.ALWAYS);
 
-		VBox pane = new VBox();
-		pane.getChildren().add(textArea);
-
-		disclaimerConf.getDialogPane().setContent(pane);
-		disclaimerConf.setResizable(true);
-
-		final Optional<ButtonType> answer = disclaimerConf.showAndWait();
-		return answer.isPresent() && answer.get().equals(ButtonType.OK);
+		return new AlertBuilder(AlertType.CONFIRMATION, new VBox(textArea)) //
+				.withTitle("SimplerTimes - Disclaimer") //
+				.withHeaderText("SimplerTimes - Disclaimer") //
+				.withDefaultButton(ButtonType.CANCEL, "Cancel") //
+				.withButton(ButtonType.OK, "OK") //
+				.resizable(true) //
+				.showAndWaitFor(ButtonType.OK);
 	}
 
 	private String loadDisclaimer() {
 		try {
 			return resourceLoader.getResourceAsString("disclaimer.txt");
-
 		} catch (final RuntimeException | IOException e) {
 			log.error("Could not load disclaimer", e);
-			final Alert alert = new Alert(AlertType.ERROR,
-					String.format("The disclaimer could not be loaded: %s", e.getMessage()));
-			alert.setTitle("Internal error while loading the disclaimer");
-			alert.showAndWait();
+			new AlertBuilder(AlertType.ERROR, "The disclaimer could not be loaded: %s".formatted(e.getMessage()))
+					.withTitle("Internal error while loading the disclaimer") //
+					.showAndWait();
 			return null;
 		}
 	}
