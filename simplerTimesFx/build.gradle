@@ -30,7 +30,7 @@ dependencies {
 }
 
 application {
-	mainClass = 'org.hansib.simplertimes.fx.SimplerTimesFx'
+	mainClass = 'org.hansib.simplertimes.SimplerTimesLauncher'
 }
 
 def currentOs = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem.name.toLowerCase()
