@@ -57,6 +57,6 @@ public class Icons {
 	}
 
 	public static final Node today() {
-		return new FontIcon("unil-bullseye");
+		return new FontIcon("unil-circle");
 	}
 }
