@@ -26,10 +26,7 @@ import org.hansib.simplertimes.AppPrefs;
 import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
-import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.sundries.fx.FxResourceLoader;
-
-import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -69,7 +66,8 @@ public class SimplerTimesFx extends Application {
 				(Parent root) -> primaryStage.setScene(new Scene(root)));
 
 		dataStore = new DataStore();
-		timesMainController.setData(ObservableData.load(dataStore));
+		ObservableData data = ObservableData.load(dataStore);
+		timesMainController.setData(data);
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
 		Image logo = fxLoader.loadImage("logo.png");
@@ -84,11 +82,7 @@ public class SimplerTimesFx extends Application {
 		});
 
 		if (canShowTrayIcon(logo)) {
-			log.info("Showing FXTrayIcon ...");
-			new FXTrayIcon.Builder(primaryStage, logo) //
-					.addTitleItem(true) //
-					.addExitMenuItem(MenuItems.Exit.fmt()) //
-					.show().build();
+			new TrayIconMenu(data).build(primaryStage, logo);
 		} else {
 			primaryStage.setOnCloseRequest(event -> Platform.exit());
 		}
