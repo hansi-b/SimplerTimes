@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-	testImplementation 'net.bytebuddy:byte-buddy:1.14.7'
+	testImplementation 'net.bytebuddy:byte-buddy:1.14.9'
 	testImplementation 'org.objenesis:objenesis:3.3'
 	testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-4.0'
 }
@@ -16,7 +16,7 @@ dependencies {
 testing {
 	suites {
 		test {
-			useJUnitJupiter('5.9.2')
+			useJUnitJupiter('5.10.0')
 		}
 	}
 }
