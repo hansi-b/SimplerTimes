@@ -17,7 +17,6 @@ abstract public class AbstractAppSpec extends ApplicationSpec {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.stage = FxToolkit.registerPrimaryStage()
-		log.info "Initializing $stage ..."
 		FxToolkit.setupScene(() -> createScene())
 		FxToolkit.showStage()
 	}
