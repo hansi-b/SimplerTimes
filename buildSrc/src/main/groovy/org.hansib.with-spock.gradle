@@ -1,6 +1,6 @@
 plugins {
 	id 'groovy'
-	id 'org.hansib.with-log4j'
+	id 'jacoco'
 }
 
 repositories {
@@ -24,4 +24,15 @@ testing {
 test {
 	testLogging.showStandardStreams = true
 	jvmArgs '-Dlog4j.configurationFile=log4j2_test.yaml'
+}
+
+jacoco {
+	toolVersion = "0.8.10"
+}
+
+jacocoTestReport {
+	reports {
+		xml.required=true
+		html.required=false
+	}
 }
