@@ -14,4 +14,7 @@ Simple desktop timer written in JavaFX.
 Release Log
 ----
 
-0.1.0 ...
+0.3.0 - 2023-10-16: First (barely) usable release
+~~~~
+
+* User can manage a project tree and record and manage time spans.
