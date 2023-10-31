@@ -33,9 +33,9 @@ application {
 	mainClass = 'org.hansib.simplertimes.SimplerTimesLauncher'
 }
 
-def currentOs = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem.name.toLowerCase()
-def isWin = currentOs.contains('win')
-assert isWin || currentOs.contains('linux'): "Cannot handle OS \"$currentOs\""
+def currentOs = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem.name
+def isWin = currentOs.toLowerCase().contains('win')
+assert isWin || currentOs.toLowerCase().contains('linux'): "Cannot handle OS \"$currentOs\""
 
 
 runtime {
@@ -44,9 +44,9 @@ runtime {
 	additive = true // add to suggested modules
 
 	options = [
+		'--include-locales', 'en',
 		'--strip-debug',
-		'--compress',
-		'2',
+		'--compress', '2',
 		'--no-header-files',
 		'--no-man-pages'
 	]
@@ -61,25 +61,23 @@ runtime {
 	jpackage {
 
 		appVersion = "${project.version}".split('-')[0]
-		installerType = isWin ? "msi" : "deb"
+		installerType = isWin ? 'msi' : 'deb'
 
 		def iconExt = isWin ? 'ico' : 'png'
 		imageOptions += [
-			"--icon",
+			'--icon',
 			"src/main/resources/logo.$iconExt"
 		]
 
 		installerOptions += [
-			"--resource-dir",
-			"src/main/resources",
-			"--file-associations",
-			"src/main/resources/file_assoc_aba.properties"
+			'--resource-dir',
+			'src/main/resources'
 		]
 		if (isWin) {
 			installerOptions += [
-				"--win-menu",
-				"--win-shortcut",
-				"--win-per-user-install"
+				'--win-menu',
+				'--win-shortcut',
+				'--win-per-user-install'
 			]
 		}
 	}
