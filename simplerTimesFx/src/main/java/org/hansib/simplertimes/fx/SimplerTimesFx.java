@@ -32,7 +32,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -70,19 +69,15 @@ public class SimplerTimesFx extends Application {
 		timesMainController.setData(data);
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
-		Image logo = fxLoader.loadImage("logo.png");
-		if (logo == null)
-			log.warn("Could not load application icon");
-		else
-			primaryStage.getIcons().add(logo);
+		new Resources().loadLogo(logo -> primaryStage.getIcons().add(logo));
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
 			if (ev.getCode() == KeyCode.Q && ev.isControlDown())
 				fireCloseRequest();
 		});
 
-		if (canShowTrayIcon(logo)) {
-			new TrayIconMenu(data).build(primaryStage, logo);
+		if (isWindows()) {
+			TrayIconMenu.create(primaryStage);
 		} else {
 			primaryStage.setOnCloseRequest(event -> Platform.exit());
 		}
@@ -95,10 +90,10 @@ public class SimplerTimesFx extends Application {
 	}
 
 	/**
-	 * @return true iff we are on Windows and have a non-null logo
+	 * @return true iff we are on Windows
 	 */
-	private static boolean canShowTrayIcon(Image appLogo) {
-		return System.getProperty("os.name").toLowerCase().contains("win") && appLogo != null;
+	private static boolean isWindows() {
+		return System.getProperty("os.name").toLowerCase().contains("win");
 	}
 
 	@Override

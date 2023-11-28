@@ -20,20 +20,15 @@ package org.hansib.simplertimes.fx;
 
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
 import org.hansib.sundries.fx.StageToggle;
 
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 class SpansDisplay {
-
-	private static final Logger log = LogManager.getLogger();
 
 	private final Supplier<ObservableData> lazyData;
 
@@ -55,11 +50,7 @@ class SpansDisplay {
 		SpansInfoController spansInfoController = fxLoader.loadFxmlToStage("spansInfo.fxml", spansStage);
 		spansInfoController.setData(lazyData.get());
 
-		Image logo = fxLoader.loadImage("logo.png");
-		if (logo == null)
-			log.warn("Could not load application icon");
-		else
-			spansStage.getIcons().add(logo);
+		new Resources().loadLogo(logo -> spansStage.getIcons().add(logo));
 		return spansStage;
 	}
 }

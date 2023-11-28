@@ -18,25 +18,20 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.fx.Resources;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
 import org.hansib.sundries.fx.ContextMenuBuilder;
-import org.hansib.sundries.fx.FxResourceLoader;
 
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
-
-	private static final Logger log = LogManager.getLogger();
 
 	private final TreeView<T> treeView;
 
@@ -78,11 +73,7 @@ public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
 		Stage treeStage = new Stage();
 		treeStage.setTitle("Projects");
 
-		Image logo = new FxResourceLoader().loadImage("logo.png");
-		if (logo == null)
-			log.warn("Could not load application icon");
-		else
-			treeStage.getIcons().add(logo);
+		new Resources().loadLogo(logo -> treeStage.getIcons().add(logo));
 
 		treeStage.setScene(initTreePaneScene());
 		treeStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> updateHandler.run());
