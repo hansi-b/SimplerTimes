@@ -8,11 +8,12 @@ dependencies {
 	testImplementation 'org.testfx:testfx-core:4.0.17'
 	testImplementation 'org.testfx:testfx-spock:4.0.17'
 
-	testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
+	//testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-12.0.1+2'
+	testRuntimeOnly 'one.jpro:openjfx-monocle:jfx-21'
 }
 
 javafx {
-	version = '19'
+	version = '21'
 }
 
 test {
