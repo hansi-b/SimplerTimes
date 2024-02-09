@@ -20,6 +20,6 @@ package org.hansib.simplertimes.fx.l10n;
 
 import org.hansib.sundries.l10n.FormatKey;
 
-public enum L10nKeys implements FormatKey {
+public enum General implements FormatKey {
 	AppNameWindowTitle
 }

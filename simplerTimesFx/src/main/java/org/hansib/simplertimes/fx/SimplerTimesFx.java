@@ -18,7 +18,7 @@
  */
 package org.hansib.simplertimes.fx;
 
-import static org.hansib.simplertimes.fx.l10n.L10nKeys.AppNameWindowTitle;
+import static org.hansib.simplertimes.fx.l10n.General.AppNameWindowTitle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

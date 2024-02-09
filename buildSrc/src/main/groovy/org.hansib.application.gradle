@@ -11,6 +11,8 @@ def versionedProjectName = "${rootProject.name}-${project.version}"
 license {
 	header project.file('LICENSE.HEADER')
 	ext.year = Calendar.getInstance().get(Calendar.YEAR)
+	
+	skipExistingHeaders = true
 
 	include '**/*.java'
 }

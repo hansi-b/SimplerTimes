@@ -1,8 +1,8 @@
 package org.hansib.simplertimes.fx.l10n;
 
 import org.hansib.sundries.l10n.L10nChecker
+import org.hansib.sundries.l10n.L10nChecker.MissingKeys
 import org.hansib.sundries.l10n.L10nChecker.MissingKeysHandleMode
-import org.hansib.sundries.l10n.MissingKeys
 import org.hansib.sundries.l10n.yaml.errors.L10nFormatError
 
 import spock.lang.Specification
