@@ -133,13 +133,11 @@ public class Project {
 
 	public Project remove(Project child) {
 
-		int i = children.indexOf(child);
-		if (i < 0)
-			throw new IllegalArgumentException(
-					String.format("Unknown child %s for %s (have %s)", child, this, children));
-		Project removed = children.remove(i);
-		removed.parent = null;
-		return removed;
+		boolean removed = children.remove(child);
+		if (!removed)
+			throw Errors.illegalArg("Unknown child %s for %s (have %s)", child, this, children);
+		child.parent = null;
+		return child;
 	}
 
 	public long id() {
@@ -207,6 +205,6 @@ public class Project {
 
 	@Override
 	public String toString() {
-		return Strings.idStr(this, String.format("%s(%d)", name, id));
+		return Strings.idStr(this, "%s(%d)".formatted(name, id));
 	}
 }

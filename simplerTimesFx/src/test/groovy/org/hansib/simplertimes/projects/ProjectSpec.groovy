@@ -20,13 +20,13 @@ public class ProjectSpec extends Specification {
 		def n = Project.root()
 
 		when:
-		def m = addProject(n, 'hello')
+		def m = n.add('hello')
 
 		then:
 		n.children() == [m]
 
 		when:
-		def o = addProject(n, 'world')
+		def o = n.add('world')
 
 		then:
 		n.children() == [m, o]
@@ -36,8 +36,8 @@ public class ProjectSpec extends Specification {
 
 		given:
 		def n = Project.root()
-		def m = addProject(n, 'hello')
-		def o = addProject(n, 'world')
+		def m = n.add('hello')
+		def o = n.add('world')
 
 		when:
 		def m2 = n.remove(m)
@@ -51,8 +51,8 @@ public class ProjectSpec extends Specification {
 
 		when:
 		def n = Project.root()
-		def m = addProject(n, 'hello')
-		def o = addProject(m, 'world')
+		def m = n.add('hello')
+		def o = m.add('world')
 
 		then:
 		o.nameWords() == ['hello', 'world']
@@ -62,7 +62,7 @@ public class ProjectSpec extends Specification {
 
 		given:
 		def n = Project.root()
-		def m = addProject(n, 'hello')
+		def m = n.add('hello')
 		def o = Project.root()
 
 		when:
@@ -77,13 +77,13 @@ public class ProjectSpec extends Specification {
 		given:
 		def r = Project.root()
 		// depth 1
-		def m = addProject(r, 'hello')
-		def n = addProject(r, 'world')
+		def m = r.add('hello')
+		def n = r.add('world')
 		// depth 2
-		addProject(m, 'x')
-		addProject(m, 'y')
+		m.add('x')
+		m.add('y')
 
-		addProject(n, 'a')
+		n.add('a')
 
 		when:
 		def s = r.dfStream().map(c -> c.name()).toList()
@@ -103,11 +103,11 @@ public class ProjectSpec extends Specification {
 
 		when:
 		def r = Project.root()
-		def m = addProject(r, 'hello')
-		def a = addProject(m, 'a')
-		addProject(m, 'b')
-		def x = addProject(a, 'x')
-		def w = addProject(r, 'world')
+		def m = r.add('hello')
+		def a = m.add('a')
+		m.add('b')
+		def x = a.add('x')
+		def w = r.add('world')
 
 		then:
 		x == r.findById(x.id())
@@ -119,8 +119,8 @@ public class ProjectSpec extends Specification {
 
 		given:
 		def r = Project.root()
-		addProject(r, 'hello world')
-		addProject(r, 'hello mars')
+		r.add('hello world')
+		r.add('hello mars')
 
 		when:
 		def s = r.filter(['he', 'wo'] as Set).map(c -> c.name()).toList()
@@ -133,10 +133,10 @@ public class ProjectSpec extends Specification {
 
 		given:
 		def r = Project.root()
-		def hello = addProject(r, 'hello')
+		def hello = r.add('hello')
 
-		addProject(hello, 'world')
-		addProject(hello, 'mars')
+		hello.add('world')
+		hello.add('mars')
 
 		when:
 		def s = r.filter(['he', 'wo'] as Set).map(c -> c.name()).toList()
@@ -149,12 +149,12 @@ public class ProjectSpec extends Specification {
 
 		given:
 		def r = Project.root()
-		def m = addProject(r, 'hello')
-		def a = addProject(m, 'a')
-		addProject(a, 'z')
-		addProject(m, 'b')
+		def m = r.add('hello')
+		def a = m.add('a')
+		a.add('z')
+		m.add('b')
 
-		addProject(r, 'world')
+		r.add('world')
 
 		when:
 		def s = r.filter(['hello'] as Set).map(c -> c.name()).toList()
@@ -208,9 +208,5 @@ public class ProjectSpec extends Specification {
 		then:
 		def ex = thrown IllegalArgumentException
 		ex.message == "Duplicate id 7: New name 'child2', old 'parent'"
-	}
-
-	private def addProject(node, name) {
-		return node.add(name)
 	}
 }
