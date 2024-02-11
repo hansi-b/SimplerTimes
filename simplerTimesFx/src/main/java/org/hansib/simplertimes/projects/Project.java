@@ -140,6 +140,39 @@ public class Project {
 		return child;
 	}
 
+	/**
+	 * Checks the preconditions for moving this node to become a child of the
+	 * argument parent node:
+	 * <ol>
+	 * <li>Both must be in the same project tree (have the same id generator).
+	 * <li>Both must not be the same node.
+	 * <li>The argument must not already be the parent or a descendant of this node.
+	 * </ol>
+	 * 
+	 * @param newParent the project to check as a new parent
+	 * @return true if this project can moved to become a child of the argument node
+	 */
+	public boolean canMoveTo(Project newParent) {
+		if (idGenerator != newParent.idGenerator)
+			return false;
+		if (newParent == this.parent)
+			return false;
+		return dfStream().noneMatch(p -> p == newParent);
+	}
+
+	/**
+	 * Makes this project a child of the argument project
+	 * 
+	 * @param newParent the new parent for this project
+	 */
+	public void moveTo(Project newParent) {
+		if (!canMoveTo(newParent))
+			throw Errors.illegalArg("Cannot make %s a child of %s", this, newParent);
+		parent.children.remove(this);
+		parent = newParent;
+		parent.children.add(this);
+	}
+
 	public long id() {
 		return id;
 	}

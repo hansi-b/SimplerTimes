@@ -47,6 +47,77 @@ public class ProjectSpec extends Specification {
 		n.children() == [o]
 	}
 
+	def "removing non-child throws exception"() {
+
+		given:
+		def r = Project.root()
+		def m = r.add('hello')
+		def o = r.add('world')
+
+		when:
+		m.remove(o)
+
+		then:
+		thrown IllegalArgumentException
+	}
+
+	def "move check: root cannot be moved"() {
+
+		given:
+		def root = Project.root()
+		def c1 = root.add('c1')
+		def c2 = root.add('c2')
+
+		expect:
+		!root.canMoveTo(root)
+		!root.canMoveTo(c1)
+	}
+
+	def "can move node to a sibling" () {
+
+		given:
+		def r = Project.root()
+		def c1 = r.add('c1')
+		def c2 = r.add('c2')
+
+		when:
+		c1.moveTo(c2)
+		then:
+		r.children() == [c2]
+		c1.parent() == c2
+		c2.children() == [c1]
+	}
+
+	def "can move node to an ancestor" () {
+
+		given:
+		def r = Project.root()
+		def c1 = r.add('c1')
+		def c2 = c1.add('c2')
+		def c3 = c2.add('c3')
+
+		when:
+		c3.moveTo(c1)
+		then:
+		c1.children() == [c2, c3]
+		c3.parent() == c1
+		c2.children() == []
+	}
+
+	def "move check: child cannot be moved to parent or itself or child"() {
+
+		given:
+		def root = Project.root()
+		def c1 = root.add('c1')
+		def c2 = c1.add('c2')
+		def c3 = c2.add('c3')
+
+		expect:
+		!c2.canMoveTo(c1)
+		!c2.canMoveTo(c2)
+		!c2.canMoveTo(c3)
+	}
+
 	def "getFullName"() {
 
 		when:
