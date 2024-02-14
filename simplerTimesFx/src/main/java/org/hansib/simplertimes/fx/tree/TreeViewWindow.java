@@ -18,6 +18,8 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.hansib.simplertimes.fx.Resources;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
@@ -52,7 +54,12 @@ public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
 		tree.setEditable(true);
 		tree.setShowRoot(false);
 
-		tree.setCellFactory(p -> new TextFieldTreeCellImpl<T>().withContextMenu(this::createContextMenu));
+		final AtomicReference<TreeItem<T>> draggedItemHolder = new AtomicReference<>(null);
+		tree.setCellFactory(p -> {
+			return new TextFieldTreeCellImpl<T>() //
+					.withContextMenu(this::createContextMenu) //
+					.withDragAndDrop(draggedItemHolder);
+		});
 		return tree;
 	}
 

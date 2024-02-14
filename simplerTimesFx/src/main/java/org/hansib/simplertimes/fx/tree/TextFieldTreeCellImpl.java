@@ -18,13 +18,20 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+
+import org.hansib.simplertimes.fx.data.FxProject;
 
 import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.TransferMode;
 
 class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 
@@ -33,6 +40,58 @@ class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 
 	public TextFieldTreeCellImpl() {
 		super();
+	}
+
+	TextFieldTreeCellImpl<T> withDragAndDrop(AtomicReference<TreeItem<T>> draggedItemHolder) {
+		setOnDragDetected(event -> {
+			handleDragDetected(draggedItemHolder);
+			event.consume();
+		});
+		setOnDragOver(event -> {
+			event.acceptTransferModes(TransferMode.MOVE);
+			event.consume();
+		});
+		setOnDragDropped(event -> {
+			handleDragDropped(draggedItemHolder);
+			event.consume();
+		});
+
+		return this;
+	}
+
+	private void handleDragDetected(AtomicReference<TreeItem<T>> draggedItemHolder) {
+		TreeItem<T> draggedItem = getTreeItem();
+		if (draggedItem == null)
+			return;
+
+		draggedItemHolder.set(draggedItem);
+
+		ClipboardContent content = new ClipboardContent();
+		content.putString(getTreeItem().getValue().text());
+
+		Dragboard dragboard = getTreeView().startDragAndDrop(TransferMode.MOVE);
+		dragboard.setContent(content);
+	}
+
+	private void handleDragDropped(AtomicReference<TreeItem<T>> draggedItemHolder) {
+		TreeItem<T> draggedItem = draggedItemHolder.get();
+		if (draggedItem == null || !(draggedItem.getValue() instanceof FxProject sourceProject))
+			return;
+
+		TreeItem<T> targetItem = getTreeItem();
+		T value;
+		if (targetItem == null) {
+			targetItem = draggedItem;
+			while (targetItem.getParent() != null)
+				targetItem = targetItem.getParent();
+		}
+		value = targetItem.getValue();
+		if (value instanceof FxProject targetProject && sourceProject.canMoveTo(targetProject)) {
+			sourceProject.moveTo(targetProject);
+			draggedItem.getParent().getChildren().remove(draggedItem);
+			targetItem.getChildren().add(draggedItem);
+		}
+		draggedItemHolder.set(null);
 	}
 
 	public TextFieldTreeCellImpl<T> withContextMenu(
