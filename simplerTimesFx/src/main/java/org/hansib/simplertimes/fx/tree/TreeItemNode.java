@@ -45,6 +45,10 @@ public interface TreeItemNode<T extends TreeItemNode<T>> {
 
 	Iterable<T> children();
 
+	boolean canMoveTo(T newParent);
+
+	void moveTo(T newParent);
+
 	public static <T extends TreeItemNode<T>> TreeItem<T> linkTree(T node) {
 		TreeItem<T> treeItem = new TreeItem<>(node);
 		node.children().forEach(c -> treeItem.getChildren().add(linkTree(c)));

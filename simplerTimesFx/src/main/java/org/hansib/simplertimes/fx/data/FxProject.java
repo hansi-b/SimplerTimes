@@ -43,7 +43,7 @@ public class FxProject implements TreeItemNode<FxProject>, TextNode {
 
 	private final StringProperty name;
 
-	private final FxProject parent;
+	private FxProject parent;
 	private final List<FxProject> children;
 
 	private FxProject(FxProject parent, Project project) {
@@ -111,6 +111,7 @@ public class FxProject implements TreeItemNode<FxProject>, TextNode {
 	public void remove() {
 		project.parent().remove(project);
 		parent.children.remove(this);
+		parent = null;
 	}
 
 	@Override
@@ -118,6 +119,19 @@ public class FxProject implements TreeItemNode<FxProject>, TextNode {
 		FxProject child = new FxProject(this, project.add(childText));
 		children.add(child);
 		return child;
+	}
+
+	@Override
+	public boolean canMoveTo(FxProject newParent) {
+		return project.canMoveTo(newParent.project);
+	}
+
+	@Override
+	public void moveTo(FxProject newParent) {
+		project.moveTo(newParent.project);
+		parent.children.remove(this);
+		newParent.children.add(this);
+		parent = newParent;
 	}
 
 	@Override
