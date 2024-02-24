@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import org.hansib.simplertimes.fx.data.FxProject;
+import org.hansib.sundries.fx.Styler;
 
 import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
@@ -38,17 +39,28 @@ class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 	private TextField textField;
 	private Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction;
 
+	private final Styler styler;
+
 	public TextFieldTreeCellImpl() {
 		super();
+		this.styler = new Styler(this);
 	}
 
 	TextFieldTreeCellImpl<T> withDragAndDrop(AtomicReference<TreeItem<T>> draggedItemHolder) {
 		setOnDragDetected(event -> {
 			handleDragDetected(draggedItemHolder);
+			getTreeView().getSelectionModel().select(getTreeItem());
 			event.consume();
 		});
 		setOnDragOver(event -> {
+			styler.add("can-move-to");
+			event.getSource();
 			event.acceptTransferModes(TransferMode.MOVE);
+			event.consume();
+		});
+		setOnDragExited(event -> {
+			styler.remove("can-move-to");
+			getStyleableNode();
 			event.consume();
 		});
 		setOnDragDropped(event -> {
@@ -91,6 +103,8 @@ class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 			draggedItem.getParent().getChildren().remove(draggedItem);
 			targetItem.getChildren().add(draggedItem);
 		}
+		getTreeView().getSelectionModel().select(draggedItem);
+
 		draggedItemHolder.set(null);
 	}
 

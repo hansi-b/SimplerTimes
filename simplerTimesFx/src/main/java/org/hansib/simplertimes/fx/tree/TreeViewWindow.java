@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.hansib.simplertimes.fx.Resources;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
+import org.hansib.sundries.ResourceLoader;
 import org.hansib.sundries.fx.ContextMenuBuilder;
 
 import javafx.scene.Scene;
@@ -41,6 +42,7 @@ public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
 
 	TreeViewWindow(T root) {
 		this.treeView = initTreeView(TreeItemNode.linkTree(root));
+		this.treeView.getStylesheets().add(new ResourceLoader().getResourceUrl("fxml/app.css").toString());
 	}
 
 	public void setPreRemovalChecker(PreRemovalCallback<T> preRemovalCallback) {
