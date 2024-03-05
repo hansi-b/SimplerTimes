@@ -122,13 +122,13 @@ public class FxProject implements TreeItemNode<FxProject>, TextNode {
 	}
 
 	@Override
-	public boolean canMoveTo(FxProject newParent) {
-		return project.canMoveTo(newParent.project);
+	public boolean canMoveTo(FxProject newParent, int newIndex) {
+		return project.canMoveTo(newParent.project, newIndex);
 	}
 
 	@Override
-	public void moveTo(FxProject newParent) {
-		project.moveTo(newParent.project);
+	public void moveTo(FxProject newParent, int newIndex) {
+		project.moveTo(newParent.project, newIndex);
 		parent.children.remove(this);
 		newParent.children.add(this);
 		parent = newParent;

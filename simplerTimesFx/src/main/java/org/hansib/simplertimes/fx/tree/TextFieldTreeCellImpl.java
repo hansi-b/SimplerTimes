@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import org.hansib.simplertimes.fx.data.FxProject;
+import org.hansib.sundries.Errors;
 import org.hansib.sundries.fx.Styler;
 
 import javafx.application.Platform;
@@ -36,6 +37,8 @@ import javafx.scene.input.TransferMode;
 
 class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 
+	private static final String CSS_CAN_MOVE_TO = "can-move-to";
+
 	private TextField textField;
 	private Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction;
 
@@ -46,6 +49,26 @@ class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 		this.styler = new Styler(this);
 	}
 
+	private enum Region {
+		LOW(.75), MIDDLE(.25), HIGH(.0);
+
+		private final double threshold;
+
+		private Region(double threshold) {
+			this.threshold = threshold;
+		}
+
+		static Region of(double yFraction) {
+			if (yFraction > 1.)
+				throw Errors.illegalArg("yFraction must not larger than, is %f", yFraction);
+			if (yFraction >= LOW.threshold)
+				return LOW;
+			if (yFraction >= MIDDLE.threshold)
+				return MIDDLE;
+			return HIGH;
+		}
+	}
+
 	TextFieldTreeCellImpl<T> withDragAndDrop(AtomicReference<TreeItem<T>> draggedItemHolder) {
 		setOnDragDetected(event -> {
 			handleDragDetected(draggedItemHolder);
@@ -53,13 +76,16 @@ class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 			event.consume();
 		});
 		setOnDragOver(event -> {
-			styler.add("can-move-to");
-			event.getSource();
+			if (canDragToThis(draggedItemHolder)) {
+				styler.add(CSS_CAN_MOVE_TO);
+
+//				System.out.println("region %s".formatted(Region.of(event.getY() / getBoundsInLocal().getHeight())));
+			}
 			event.acceptTransferModes(TransferMode.MOVE);
 			event.consume();
 		});
 		setOnDragExited(event -> {
-			styler.remove("can-move-to");
+			styler.remove(CSS_CAN_MOVE_TO);
 			getStyleableNode();
 			event.consume();
 		});
@@ -91,21 +117,35 @@ class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 			return;
 
 		TreeItem<T> targetItem = getTreeItem();
-		T value;
 		if (targetItem == null) {
 			targetItem = draggedItem;
 			while (targetItem.getParent() != null)
 				targetItem = targetItem.getParent();
 		}
-		value = targetItem.getValue();
-		if (value instanceof FxProject targetProject && sourceProject.canMoveTo(targetProject)) {
-			sourceProject.moveTo(targetProject);
+		T value = targetItem.getValue();
+		if (value instanceof FxProject targetProject && sourceProject.canMoveTo(targetProject, 0)) {
+			sourceProject.moveTo(targetProject, 0);
 			draggedItem.getParent().getChildren().remove(draggedItem);
-			targetItem.getChildren().add(draggedItem);
+			targetItem.getChildren().add(0, draggedItem);
 		}
 		getTreeView().getSelectionModel().select(draggedItem);
 
 		draggedItemHolder.set(null);
+	}
+
+	private boolean canDragToThis(AtomicReference<TreeItem<T>> draggedItemHolder) {
+		TreeItem<T> draggedItem = draggedItemHolder.get();
+		if (draggedItem == null || !(draggedItem.getValue() instanceof FxProject sourceProject))
+			return false;
+
+		TreeItem<T> targetItem = getTreeItem();
+		if (targetItem == null) {
+			targetItem = draggedItem;
+			while (targetItem.getParent() != null)
+				targetItem = targetItem.getParent();
+		}
+		T value = targetItem.getValue();
+		return value instanceof FxProject targetProject && sourceProject.canMoveTo(targetProject, 0);
 	}
 
 	public TextFieldTreeCellImpl<T> withContextMenu(

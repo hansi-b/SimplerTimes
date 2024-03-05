@@ -45,9 +45,35 @@ public interface TreeItemNode<T extends TreeItemNode<T>> {
 
 	Iterable<T> children();
 
-	boolean canMoveTo(T newParent);
+	/**
+	 * Checks the preconditions for moving this project to the argument parent
+	 * project at the argument child list index.
+	 * <ol>
+	 * <li>Both projects must be in the same project tree (have the same id
+	 * generator).
+	 * <li>The new parent must not be the same as or a descendant of this project.
+	 * <li>If the new parent is the current parent, the argument index must not be
+	 * this project's index in the children list.
+	 * </ol>
+	 * 
+	 * @param newParent the project which would become the new parent
+	 * @param newIndex  the new index in the new parent's children list
+	 * @return true if this project can moved to become a child of the argument node
+	 */
+	boolean canMoveTo(T newParent, int newIndex);
 
-	void moveTo(T newParent);
+	/**
+	 * Makes this project to the argument parent project at the argument child list
+	 * index.
+	 * 
+	 * @param newParent the new parent for this project
+	 * @param index     the target index in the new parent's child list; if this
+	 *                  item is already in that list, then the index is interpreted
+	 *                  as the index in the list with the current item first removed
+	 *                  from the list
+	 * 
+	 */
+	void moveTo(T newParent, int newIndex);
 
 	public static <T extends TreeItemNode<T>> TreeItem<T> linkTree(T node) {
 		TreeItem<T> treeItem = new TreeItem<>(node);

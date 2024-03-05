@@ -69,8 +69,7 @@ public class ProjectSpec extends Specification {
 		def c2 = root.add('c2')
 
 		expect:
-		!root.canMoveTo(root)
-		!root.canMoveTo(c1)
+		!root.canMoveTo(c1, 0)
 	}
 
 	def "can move node to a sibling" () {
@@ -81,7 +80,7 @@ public class ProjectSpec extends Specification {
 		def c2 = r.add('c2')
 
 		when:
-		c1.moveTo(c2)
+		c1.moveTo(c2, 0)
 		then:
 		r.children() == [c2]
 		c1.parent() == c2
@@ -97,14 +96,14 @@ public class ProjectSpec extends Specification {
 		def c3 = c2.add('c3')
 
 		when:
-		c3.moveTo(c1)
+		c3.moveTo(c1, 1)
 		then:
 		c1.children() == [c2, c3]
 		c3.parent() == c1
 		c2.children() == []
 	}
 
-	def "move check: child cannot be moved to parent or itself or child"() {
+	def "move check: child cannot be moved to itself or child or its current position"() {
 
 		given:
 		def root = Project.root()
@@ -113,9 +112,27 @@ public class ProjectSpec extends Specification {
 		def c3 = c2.add('c3')
 
 		expect:
-		!c2.canMoveTo(c1)
-		!c2.canMoveTo(c2)
-		!c2.canMoveTo(c3)
+		!c2.canMoveTo(c1, 0)
+		!c2.canMoveTo(c2, 0)
+		!c2.canMoveTo(c3, 0)
+	}
+
+	def "can move node to different position" () {
+
+		given:
+		def r = Project.root()
+		def c1 = r.add('c1')
+		def c2 = r.add('c2')
+		def c3 = r.add('c3')
+
+		when:
+		c1.moveTo(r, 2)
+		then:
+		r.children() == [c2, c3, c1]
+		when:
+		c1.moveTo(r, 1)
+		then:
+		r.children() == [c2, c1, c3]
 	}
 
 	def "getFullName"() {

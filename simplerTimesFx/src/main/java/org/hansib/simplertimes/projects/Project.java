@@ -141,36 +141,48 @@ public class Project {
 	}
 
 	/**
-	 * Checks the preconditions for moving this node to become a child of the
-	 * argument parent node:
+	 * Checks the preconditions for moving this project to the argument parent
+	 * project at the argument child list index.
 	 * <ol>
-	 * <li>Both must be in the same project tree (have the same id generator).
-	 * <li>Both must not be the same node.
-	 * <li>The argument must not already be the parent or a descendant of this node.
+	 * <li>Both projects must be in the same project tree (have the same id
+	 * generator).
+	 * <li>The new parent must not be the same as or a descendant of this project.
+	 * <li>If the new parent is the current parent, the argument index must not be
+	 * this project's index in the children list.
 	 * </ol>
 	 * 
-	 * @param newParent the project to check as a new parent
+	 * @param newParent the project which would become the new parent
+	 * @param newIndex  the new index in the new parent's children list
 	 * @return true if this project can moved to become a child of the argument node
 	 */
-	public boolean canMoveTo(Project newParent) {
+	public boolean canMoveTo(Project newParent, int newIndex) {
 		if (idGenerator != newParent.idGenerator)
 			return false;
 		if (newParent == this.parent)
-			return false;
-		return dfStream().noneMatch(p -> p == newParent);
+			return newIndex != parent.children.indexOf(this);
+		return dfStream().noneMatch(c -> c == newParent);
 	}
 
 	/**
-	 * Makes this project a child of the argument project
+	 * Makes this project to the argument parent project at the argument child list
+	 * index.
 	 * 
 	 * @param newParent the new parent for this project
+	 * @param index     the target index in the new parent's child list; if this
+	 *                  item is already in that list, then the index is interpreted
+	 *                  as the index in the list with the current item first removed
+	 *                  from the list
+	 * @throws IllegalArgumentException if the preconditions defined by
+	 *                                  {@link #canMoveTo(Project, int)} are not
+	 *                                  fullfilled
+	 * 
 	 */
-	public void moveTo(Project newParent) {
-		if (!canMoveTo(newParent))
+	public void moveTo(Project newParent, int newIndex) {
+		if (!canMoveTo(newParent, newIndex))
 			throw Errors.illegalArg("Cannot make %s a child of %s", this, newParent);
 		parent.children.remove(this);
 		parent = newParent;
-		parent.children.add(this);
+		parent.children.add(newIndex, this);
 	}
 
 	public long id() {
