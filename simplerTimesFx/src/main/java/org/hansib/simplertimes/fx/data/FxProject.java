@@ -20,7 +20,9 @@ package org.hansib.simplertimes.fx.data;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hansib.simplertimes.fx.tree.TextNode;
 import org.hansib.simplertimes.fx.tree.TreeItemNode;
@@ -39,31 +41,28 @@ public class FxProject implements TreeItemNode<FxProject>, TextNode {
 	public static final Comparator<FxProject> nameComparator = (FxProject o1, FxProject o2) -> Project.nameComparator
 			.compare(o1.project, o2.project);
 
-	private final Project project;
+	private final Map<Project, FxProject> fxByProject;
 
+	private final Project project;
 	private final StringProperty name;
 
-	private FxProject parent;
-	private final List<FxProject> children;
-
-	private FxProject(FxProject parent, Project project) {
+	private FxProject(Map<Project, FxProject> fxByProject, Project project) {
+		this.fxByProject = fxByProject;
 		this.project = project;
 
 		this.name = new SimpleStringProperty(project.name());
 		this.name.addListener((observable, oldValue, newValue) -> project.setName(newValue));
-
-		this.parent = parent;
-		this.children = new ArrayList<>();
 	}
 
-	static FxProject root(Project root) {
-		return link(null, root);
+	static FxProject root(Project project) {
+		return link(new HashMap<>(), project);
 	}
 
-	private static FxProject link(FxProject fxParent, Project project) {
-		FxProject fxBase = new FxProject(fxParent, project);
-		project.children().forEach(c -> fxBase.children.add(link(fxBase, c)));
-		return fxBase;
+	private static FxProject link(Map<Project, FxProject> fxByProject, Project project) {
+		FxProject fxProject = new FxProject(fxByProject, project);
+		fxByProject.put(project, fxProject);
+		project.children().forEach(c -> link(fxByProject, c));
+		return fxProject;
 	}
 
 	List<FxProject> flatList() {
@@ -73,7 +72,7 @@ public class FxProject implements TreeItemNode<FxProject>, TextNode {
 	private List<FxProject> flatList(List<FxProject> accu) {
 		if (text() != null)
 			accu.add(this);
-		children.forEach(c -> c.flatList(accu));
+		children().forEach(c -> c.flatList(accu));
 		return accu;
 	}
 
@@ -99,7 +98,7 @@ public class FxProject implements TreeItemNode<FxProject>, TextNode {
 
 	@Override
 	public Iterable<FxProject> children() {
-		return children;
+		return project.children().stream().map(fxByProject::get).toList();
 	}
 
 	@Override
@@ -110,15 +109,12 @@ public class FxProject implements TreeItemNode<FxProject>, TextNode {
 	@Override
 	public void remove() {
 		project.parent().remove(project);
-		parent.children.remove(this);
-		parent = null;
+		fxByProject.remove(project);
 	}
 
 	@Override
 	public FxProject addChild(String childText) {
-		FxProject child = new FxProject(this, project.add(childText));
-		children.add(child);
-		return child;
+		return link(fxByProject, project.add(childText));
 	}
 
 	@Override
@@ -129,9 +125,6 @@ public class FxProject implements TreeItemNode<FxProject>, TextNode {
 	@Override
 	public void moveTo(FxProject newParent, int newIndex) {
 		project.moveTo(newParent.project, newIndex);
-		parent.children.remove(this);
-		newParent.children.add(this);
-		parent = newParent;
 	}
 
 	@Override
