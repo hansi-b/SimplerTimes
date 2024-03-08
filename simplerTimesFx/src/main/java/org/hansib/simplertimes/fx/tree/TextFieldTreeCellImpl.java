@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import org.hansib.simplertimes.fx.data.FxProject;
-import org.hansib.sundries.Errors;
 import org.hansib.sundries.fx.Styler;
 
 import javafx.application.Platform;
@@ -59,8 +58,6 @@ class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 		}
 
 		static Region of(double yFraction) {
-			if (yFraction > 1.)
-				throw Errors.illegalArg("yFraction must not larger than, is %f", yFraction);
 			if (yFraction >= LOW.threshold)
 				return LOW;
 			if (yFraction >= MIDDLE.threshold)
@@ -78,8 +75,6 @@ class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 		setOnDragOver(event -> {
 			if (canDragToThis(draggedItemHolder)) {
 				styler.add(CSS_CAN_MOVE_TO);
-
-//				System.out.println("region %s".formatted(Region.of(event.getY() / getBoundsInLocal().getHeight())));
 			}
 			event.acceptTransferModes(TransferMode.MOVE);
 			event.consume();
