@@ -18,129 +18,21 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-
-import org.hansib.simplertimes.fx.data.FxProject;
-import org.hansib.sundries.fx.Styler;
 
 import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.TransferMode;
 
 class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
-
-	private static final String CSS_CAN_MOVE_TO = "can-move-to";
 
 	private TextField textField;
 	private Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction;
 
-	private final Styler styler;
-
 	public TextFieldTreeCellImpl() {
 		super();
-		this.styler = new Styler(this);
-	}
-
-	private enum Region {
-		LOW(.75), MIDDLE(.25), HIGH(.0);
-
-		private final double threshold;
-
-		private Region(double threshold) {
-			this.threshold = threshold;
-		}
-
-		static Region of(double yFraction) {
-			if (yFraction >= LOW.threshold)
-				return LOW;
-			if (yFraction >= MIDDLE.threshold)
-				return MIDDLE;
-			return HIGH;
-		}
-	}
-
-	TextFieldTreeCellImpl<T> withDragAndDrop(AtomicReference<TreeItem<T>> draggedItemHolder) {
-		setOnDragDetected(event -> {
-			handleDragDetected(draggedItemHolder);
-			getTreeView().getSelectionModel().select(getTreeItem());
-			event.consume();
-		});
-		setOnDragOver(event -> {
-			if (canDragToThis(draggedItemHolder)) {
-				styler.add(CSS_CAN_MOVE_TO);
-			}
-			event.acceptTransferModes(TransferMode.MOVE);
-			event.consume();
-		});
-		setOnDragExited(event -> {
-			styler.remove(CSS_CAN_MOVE_TO);
-			getStyleableNode();
-			event.consume();
-		});
-		setOnDragDropped(event -> {
-			handleDragDropped(draggedItemHolder);
-			event.consume();
-		});
-
-		return this;
-	}
-
-	private void handleDragDetected(AtomicReference<TreeItem<T>> draggedItemHolder) {
-		TreeItem<T> draggedItem = getTreeItem();
-		if (draggedItem == null)
-			return;
-
-		draggedItemHolder.set(draggedItem);
-
-		ClipboardContent content = new ClipboardContent();
-		content.putString(getTreeItem().getValue().text());
-
-		Dragboard dragboard = getTreeView().startDragAndDrop(TransferMode.MOVE);
-		dragboard.setContent(content);
-	}
-
-	private void handleDragDropped(AtomicReference<TreeItem<T>> draggedItemHolder) {
-		TreeItem<T> draggedItem = draggedItemHolder.get();
-		if (draggedItem == null || !(draggedItem.getValue() instanceof FxProject sourceProject))
-			return;
-
-		TreeItem<T> targetItem = getTreeItem();
-		if (targetItem == null) {
-			targetItem = draggedItem;
-			while (targetItem.getParent() != null)
-				targetItem = targetItem.getParent();
-		}
-		T value = targetItem.getValue();
-		if (value instanceof FxProject targetProject && sourceProject.canMoveTo(targetProject, 0)) {
-			sourceProject.moveTo(targetProject, 0);
-			draggedItem.getParent().getChildren().remove(draggedItem);
-			targetItem.getChildren().add(0, draggedItem);
-		}
-		getTreeView().getSelectionModel().select(draggedItem);
-
-		draggedItemHolder.set(null);
-	}
-
-	private boolean canDragToThis(AtomicReference<TreeItem<T>> draggedItemHolder) {
-		TreeItem<T> draggedItem = draggedItemHolder.get();
-		if (draggedItem == null || !(draggedItem.getValue() instanceof FxProject sourceProject))
-			return false;
-
-		TreeItem<T> targetItem = getTreeItem();
-		if (targetItem == null) {
-			targetItem = draggedItem;
-			while (targetItem.getParent() != null)
-				targetItem = targetItem.getParent();
-		}
-		T value = targetItem.getValue();
-		return value instanceof FxProject targetProject && sourceProject.canMoveTo(targetProject, 0);
 	}
 
 	public TextFieldTreeCellImpl<T> withContextMenu(
