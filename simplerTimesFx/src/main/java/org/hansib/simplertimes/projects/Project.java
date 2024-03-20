@@ -231,6 +231,10 @@ public class Project {
 		return Collections.unmodifiableList(children);
 	}
 
+	public void sortChildren(Comparator<Project> comparator) {
+		children.sort(comparator);
+	}
+
 	/**
 	 * @return a depth-first stream of this project and its descendants.
 	 */

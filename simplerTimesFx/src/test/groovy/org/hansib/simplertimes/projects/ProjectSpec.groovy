@@ -32,6 +32,23 @@ public class ProjectSpec extends Specification {
 		n.children() == [m, o]
 	}
 
+	def "can sort children"() {
+
+		given:
+		def r = Project.root()
+
+		def x = r.add('xyz')
+		def a = r.add('abc')
+		def k = r.add('klm')
+		def g = r.add('ghi')
+
+		when:
+		r.sortChildren((p1, p2) -> p1.name.compareTo(p2.name))
+
+		then:
+		r.children() == [a, g, k, x]
+	}
+
 	def "can remove child"() {
 
 		given:
