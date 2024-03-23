@@ -2,10 +2,8 @@ NewProject:
    en: New Project
 NewSubproject:
    en: New Subproject
-DeleteProject:
-   en: Delete Project
-DeleteSubproject:
-   en: Delete Subproject
+Delete:
+   en: Delete
 SortChildren:
    en: Sort Children
 Exit:

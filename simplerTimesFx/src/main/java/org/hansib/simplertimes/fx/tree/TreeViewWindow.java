@@ -64,12 +64,9 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 		if (cell.getTreeItem().getParent() == null)
 			return null;
 
-		boolean isTopLevel = cell.getTreeItem().getParent() == treeView.getRoot();
-		MenuItems menuItemDelete = isTopLevel ? MenuItems.DeleteProject : MenuItems.DeleteSubproject;
-
 		return new ContextMenuBuilder() //
 				.item(MenuItems.NewSubproject.fmt(), e -> newTreeItem(cell.getTreeView(), cell.getTreeItem())) //
-				.item(menuItemDelete.fmt(), e -> removeItem(cell.getTreeItem())) //
+				.item(MenuItems.Delete.fmt(), e -> removeItem(cell.getTreeItem())) //
 				.item(MenuItems.SortChildren.fmt(), e -> sortChildren(cell.getTreeItem())) //
 				.build();
 	}
