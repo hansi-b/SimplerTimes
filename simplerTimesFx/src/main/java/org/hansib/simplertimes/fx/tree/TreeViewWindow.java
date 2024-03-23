@@ -24,6 +24,7 @@ import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
 import org.hansib.sundries.ResourceLoader;
 import org.hansib.sundries.fx.ContextMenuBuilder;
 
+import javafx.beans.binding.Bindings;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
@@ -67,7 +68,13 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 		return new ContextMenuBuilder() //
 				.item(MenuItems.NewSubproject.fmt(), e -> newTreeItem(cell.getTreeView(), cell.getTreeItem())) //
 				.item(MenuItems.Delete.fmt(), e -> removeItem(cell.getTreeItem())) //
-				.item(MenuItems.SortChildren.fmt(), e -> sortChildren(cell.getTreeItem())) //
+				.item(MenuItems.SortChildren.fmt(), e -> sortChildren(cell.getTreeItem()),
+						/*
+						 * FIXME: Strangely, "greaterThan" seems to work like "greaterThanOrEqual" here,
+						 * and vice versa. Could not reproduce independently, unclear where it comes
+						 * from.
+						 */
+						Bindings.greaterThan(2, Bindings.size(cell.getTreeItem().getChildren()))) //
 				.build();
 	}
 
