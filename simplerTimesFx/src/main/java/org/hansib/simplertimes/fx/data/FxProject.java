@@ -51,6 +51,8 @@ public class FxProject implements TreeItemNode<FxProject> {
 
 		this.name = new SimpleStringProperty(project.name());
 		this.name.addListener((observable, oldValue, newValue) -> project.setName(newValue));
+
+		fxByProject.put(project, this);
 	}
 
 	static FxProject root(Project project) {
@@ -59,7 +61,6 @@ public class FxProject implements TreeItemNode<FxProject> {
 
 	private static FxProject link(Map<Project, FxProject> fxByProject, Project project) {
 		FxProject fxProject = new FxProject(fxByProject, project);
-		fxByProject.put(project, fxProject);
 		project.children().forEach(c -> link(fxByProject, c));
 		return fxProject;
 	}
@@ -118,7 +119,7 @@ public class FxProject implements TreeItemNode<FxProject> {
 
 	@Override
 	public FxProject addChild(String childText) {
-		return link(fxByProject, project.add(childText));
+		return new FxProject(fxByProject, project.add(childText));
 	}
 
 	@Override
