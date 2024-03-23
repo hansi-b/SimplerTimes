@@ -18,9 +18,11 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
+import java.util.Comparator;
+
 import javafx.scene.control.TreeItem;
 
-public interface TreeItemNode<T extends TreeItemNode<T>> {
+public interface TreeItemNode<T extends TreeItemNode<T>> extends TextNode {
 
 	interface PreRemovalCallback<T> {
 
@@ -44,6 +46,12 @@ public interface TreeItemNode<T extends TreeItemNode<T>> {
 	T addChild(String childText);
 
 	Iterable<T> children();
+
+	/**
+	 * Sorts the children of this node by their texts according to the argument
+	 * comparator.
+	 */
+	void sortChildren(Comparator<String> comparator);
 
 	/**
 	 * Checks the preconditions for moving this project to the argument parent

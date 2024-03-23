@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hansib.simplertimes.fx.tree.TextNode;
 import org.hansib.simplertimes.fx.tree.TreeItemNode;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.Strings;
@@ -36,7 +35,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Maintains a 1-to-1 mapping with a {@link Project}
  */
-public class FxProject implements TreeItemNode<FxProject>, TextNode {
+public class FxProject implements TreeItemNode<FxProject> {
 
 	public static final Comparator<FxProject> nameComparator = (FxProject o1, FxProject o2) -> Project.nameComparator
 			.compare(o1.project, o2.project);
@@ -99,6 +98,11 @@ public class FxProject implements TreeItemNode<FxProject>, TextNode {
 	@Override
 	public Iterable<FxProject> children() {
 		return project.children().stream().map(fxByProject::get).toList();
+	}
+
+	@Override
+	public void sortChildren(Comparator<String> comparator) {
+		project.sortChildren((o1, o2) -> comparator.compare(o1.name(), o2.name()));
 	}
 
 	@Override

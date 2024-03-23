@@ -6,5 +6,7 @@ DeleteProject:
    en: Delete Project
 DeleteSubproject:
    en: Delete Subproject
+SortChildren:
+   en: Sort Children
 Exit:
    en: Exit

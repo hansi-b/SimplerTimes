@@ -32,7 +32,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
+public class TreeViewWindow<T extends TreeItemNode<T>> {
 
 	private final TreeView<T> treeView;
 
@@ -70,6 +70,7 @@ public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
 		return new ContextMenuBuilder() //
 				.item(MenuItems.NewSubproject.fmt(), e -> newTreeItem(cell.getTreeView(), cell.getTreeItem())) //
 				.item(menuItemDelete.fmt(), e -> removeItem(cell.getTreeItem())) //
+				.item(MenuItems.SortChildren.fmt(), e -> sortChildren(cell.getTreeItem())) //
 				.build();
 	}
 
@@ -106,6 +107,11 @@ public class TreeViewWindow<T extends TreeItemNode<T> & TextNode> {
 
 		node.remove();
 		item.getParent().getChildren().remove(item);
+	}
+
+	private void sortChildren(TreeItem<T> item) {
+		item.getChildren().sort((o1, o2) -> o1.getValue().text().compareTo(o2.getValue().text()));
+		item.getValue().sortChildren(String::compareTo);
 	}
 
 	private void newTreeItem(TreeView<T> treeview, TreeItem<T> parent) {
