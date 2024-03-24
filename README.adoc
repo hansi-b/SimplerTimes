@@ -1,0 +1,17 @@
+= SimplerTimes
+
+Simple desktop timer written in JavaFX.
+
+image:https://github.com/hansi-b/SimplerTimes/actions/workflows/gradle.yml/badge.svg[link="https://github.com/hansi-b/SimplerTimes/actions/workflows/gradle.yml"]
+image:https://codecov.io/gh/hansi-b/SimplerTimes/branch/main/graph/badge.svg[link="https://codecov.io/gh/hansi-b/SimplerTimes"]
+
+== Release Log
+
+=== 0.3.1 - 2024-03-24: Better project tree handling
+
+* User can drag and drop projects in the project tree
+* User can sort sub-projects alphabetically
+
+=== 0.3.0 - 2023-10-16: First (barely) usable release
+
+* User can manage a project tree and record and manage time spans.
