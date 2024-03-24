@@ -31,4 +31,8 @@ abstract public class AbstractAppSpec extends ApplicationSpec {
 	void stop() throws Exception {
 		FxToolkit.cleanupStages()
 	}
+
+	boolean isHeadless() {
+		Boolean.valueOf(System.properties['testfx.headless'])
+	}
 }

@@ -25,6 +25,7 @@ import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.tree.TreeDisplay;
 import org.hansib.simplertimes.times.Utils;
+import org.hansib.sundries.testing.VisibleForTesting;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -74,7 +75,8 @@ public class TimesMainController {
 		Platform.runLater(() -> elapsedTime.setText(Utils.toHmsString(duration)));
 	}
 
-	void setData(ObservableData data) {
+	@VisibleForTesting
+	public void setData(ObservableData data) {
 		observableData = data;
 		projectSelection.setItems(observableData.projects());
 	}
