@@ -11,6 +11,7 @@ import org.hansib.sundries.fx.FxResourceLoader
 import org.testfx.util.WaitForAsyncUtils
 
 import javafx.scene.Scene
+import javafx.scene.control.MenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseButton
 
@@ -47,7 +48,20 @@ public class TimesMainControllerSpec extends AbstractAppSpec {
 		controller.setData(ObservableData.load(dataStore))
 	}
 
-	def 'can edit project tree'() {
+	def 'can rename project'() {
+
+		when:
+		clickOn '#editTreeButton'
+		doubleClickOn 'New Project'
+		write 'First'
+		type KeyCode.ENTER
+
+		then:
+		projects.children.size() == 1
+		projects.children[0].name == 'First'
+	}
+
+	def 'can add subproject'() {
 
 		when:
 		clickOn '#editTreeButton'
@@ -78,8 +92,28 @@ public class TimesMainControllerSpec extends AbstractAppSpec {
 		then:
 		projects.children.size() == 1
 		def child = projects.children[0]
-		child.name == 'First'
 		child.children.size() == 1
 		assert child.children[0].name == 'Second' : "Got $child with ${child.children}"
+	}
+
+
+	def 'cannot delete only project'() {
+
+		when:
+		clickOn '#editTreeButton'
+
+		def node = lookup('New Project').query()
+		clickOn node, MouseButton.SECONDARY
+		if (isHeadless()) {
+			/*
+			 * hack from
+			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
+			 */
+			WaitForAsyncUtils.asyncFx { node.contextMenu.show(stage.scene.window) }.get()
+		}
+
+		then:
+		MenuItem item = lookup('Delete').query().getLabelFor().item
+		item.isDisable() == true
 	}
 }

@@ -26,6 +26,8 @@ import org.hansib.sundries.fx.ContextMenuBuilder;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
@@ -68,9 +70,16 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 
 		return new ContextMenuBuilder() //
 				.item(MenuItems.NewSubproject.fmt(), e -> newTreeItem(cell.getTreeView(), cell.getTreeItem())) //
-				.item(MenuItems.Delete.fmt(), e -> removeItem(cell.getTreeItem())) //
+				.item(MenuItems.Delete.fmt(), e -> removeItem(cell.getTreeItem()), isLastProject(cell)) //
 				.item(MenuItems.SortChildren.fmt(), e -> sortChildren(cell.getTreeItem()), hasFewerThan2Children(cell)) //
 				.build();
+	}
+
+	private ObservableValue<Boolean> isLastProject(TextFieldTreeCellImpl<T> cell) {
+		ReadOnlyObjectProperty<TreeItem<T>> parentProp = cell.getTreeItem().parentProperty();
+
+		return Bindings.isNull(parentProp.get().parentProperty())
+				.and(Bindings.equal(Bindings.size(parentProp.get().getChildren()), 1));
 	}
 
 	private BooleanBinding hasFewerThan2Children(TextFieldTreeCellImpl<T> cell) {
