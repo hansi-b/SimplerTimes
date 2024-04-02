@@ -1,4 +1,4 @@
-package org.hansib.simplertimes.integration
+package org.hansib.simplertimes.fx.integration
 
 import org.hansib.simplertimes.DataStore
 import org.hansib.simplertimes.fx.AbstractAppSpec
