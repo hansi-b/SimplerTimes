@@ -38,6 +38,8 @@ import javafx.stage.WindowEvent;
 
 public class TreeViewWindow<T extends TreeItemNode<T>> {
 
+	public  static final String PROJECT_PANE_FX_ID = "ProjectTreePane";
+
 	private final TreeView<T> treeView;
 
 	private PreRemovalCallback<T> removalChecker;
@@ -100,6 +102,8 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 
 	private Scene initTreePaneScene() {
 		StackPane treePane = new StackPane();
+
+		treePane.setId(PROJECT_PANE_FX_ID);
 		ContextMenu contextMenu = new ContextMenuBuilder() //
 				.item(MenuItems.NewProject.fmt(), t -> newTreeItem(treeView, treeView.getRoot())) //
 				.build();

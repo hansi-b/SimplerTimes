@@ -5,6 +5,7 @@ import org.hansib.simplertimes.fx.AbstractAppSpec
 import org.hansib.simplertimes.fx.TimesMainController
 import org.hansib.simplertimes.fx.data.ObservableData
 import org.hansib.simplertimes.fx.l10n.L10nSetup
+import org.hansib.simplertimes.fx.tree.TreeViewWindow
 import org.hansib.simplertimes.projects.Project
 import org.hansib.simplertimes.spans.SpansCollection
 import org.hansib.sundries.fx.FxResourceLoader
@@ -14,11 +15,13 @@ import javafx.scene.Scene
 import javafx.scene.control.MenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseButton
+import javafx.scene.input.MouseEvent
+import spock.lang.IgnoreIf
 
 public class TimesMainControllerSpec extends AbstractAppSpec {
 
 	SpansCollection spans
-	Project projects
+	Project root
 
 	DataStore dataStore = Mock()
 
@@ -37,12 +40,12 @@ public class TimesMainControllerSpec extends AbstractAppSpec {
 
 	def 'setup'() {
 
-		projects = Project.root()
-		projects.add("New Project")
+		root = Project.root()
+		root.add('First')
 
 		spans = new SpansCollection()
 
-		dataStore.loadProjectTree() >> projects
+		dataStore.loadProjectTree() >> root
 		dataStore.loadSpans(_) >> spans
 
 		controller.setData(ObservableData.load(dataStore))
@@ -52,22 +55,57 @@ public class TimesMainControllerSpec extends AbstractAppSpec {
 
 		when:
 		clickOn '#editTreeButton'
-		doubleClickOn 'New Project'
-		write 'First'
+		doubleClickOn 'First'
+		write 'Modified'
 		type KeyCode.ENTER
 
 		then:
-		projects.children.size() == 1
-		projects.children[0].name == 'First'
+		root.children.size() == 1
+		root.children[0].name == 'Modified'
+	}
+
+	/*
+	 * Ignored in headless mode because on the pane of the tree view,
+	 * we cannot apply the hack to show the context menu. 
+	 */
+	@IgnoreIf({ Boolean.valueOf(System.properties['testfx.headless']) })
+	def 'can add second project'() {
+
+		when:
+		clickOn '#editTreeButton'
+
+		def node = lookup("#${TreeViewWindow.PROJECT_PANE_FX_ID}").query()
+		clickOn node, MouseButton.SECONDARY
+		if (isHeadless()) {
+			/*
+			 * hack from
+			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
+			 */
+			WaitForAsyncUtils.asyncFx {
+				// unclear how to get the context menu visible on the pane
+			}.get()
+		}
+
+		clickOn lookup('New Project').query()
+		/* auto-selection of new node does not work in headless mode */
+		if (isHeadless()) {
+			clickOn MouseButton.PRIMARY
+			push(KeyCode.CONTROL, KeyCode.A)
+		}
+
+		write 'Second'
+		type KeyCode.ENTER
+
+		then:
+		root.children.size() == 2
+		root.children[0].name == 'First'
+		root.children[1].name == 'Second'
 	}
 
 	def 'can add subproject'() {
 
 		when:
 		clickOn '#editTreeButton'
-		doubleClickOn 'New Project'
-		write 'First'
-		type KeyCode.ENTER
 
 		def node = lookup('First').query()
 		clickOn node, MouseButton.SECONDARY
@@ -76,10 +114,12 @@ public class TimesMainControllerSpec extends AbstractAppSpec {
 			 * hack from
 			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
 			 */
-			WaitForAsyncUtils.asyncFx { node.contextMenu.show(stage.scene.window) }.get()
+			WaitForAsyncUtils.asyncFx {
+				node.contextMenu.show(stage.scene.window)
+			}.get()
 		}
-		clickOn 'New Subproject'
 
+		clickOn 'New Subproject'
 		/* auto-selection of new node does not work in headless mode */
 		if (isHeadless()) {
 			clickOn lookup('New Project').query()
@@ -90,26 +130,58 @@ public class TimesMainControllerSpec extends AbstractAppSpec {
 		type KeyCode.ENTER
 
 		then:
-		projects.children.size() == 1
-		def child = projects.children[0]
+		root.children.size() == 1
+		def child = root.children[0]
 		child.children.size() == 1
 		assert child.children[0].name == 'Second' : "Got $child with ${child.children}"
 	}
 
+	def 'can delete project with warning'() {
 
-	def 'cannot delete only project'() {
+		given:
+		root.add('Second Project')
+		controller.setData(ObservableData.load(dataStore))
 
 		when:
 		clickOn '#editTreeButton'
 
-		def node = lookup('New Project').query()
+		def node = lookup('First').query()
 		clickOn node, MouseButton.SECONDARY
 		if (isHeadless()) {
 			/*
 			 * hack from
 			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
 			 */
-			WaitForAsyncUtils.asyncFx { node.contextMenu.show(stage.scene.window) }.get()
+			WaitForAsyncUtils.asyncFx {
+				node.contextMenu.show(stage.scene.window)
+			}.get()
+		}
+		// in context menu:
+		clickOn 'Delete'
+
+		// repeat on alert dialogue:
+		clickOn 'Delete'
+
+		then:
+		root.children.size() == 1
+		root.children[0].name == 'Second Project'
+	}
+
+	def 'cannot delete only project'() {
+
+		when:
+		clickOn '#editTreeButton'
+
+		def node = lookup('First').query()
+		clickOn node, MouseButton.SECONDARY
+		if (isHeadless()) {
+			/*
+			 * hack from
+			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
+			 */
+			WaitForAsyncUtils.asyncFx {
+				node.contextMenu.show(stage.scene.window)
+			}.get()
 		}
 
 		then:
