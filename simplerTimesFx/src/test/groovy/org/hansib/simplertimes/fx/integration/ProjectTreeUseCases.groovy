@@ -1,5 +1,7 @@
 package org.hansib.simplertimes.fx.integration
 
+import java.util.concurrent.TimeUnit
+
 import org.hansib.simplertimes.DataStore
 import org.hansib.simplertimes.fx.AbstractAppSpec
 import org.hansib.simplertimes.fx.TimesMainController
@@ -15,17 +17,15 @@ import javafx.scene.Scene
 import javafx.scene.control.MenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseButton
-import javafx.scene.input.MouseEvent
 import spock.lang.IgnoreIf
 
-public class TimesMainControllerSpec extends AbstractAppSpec {
+public class ProjectTreeUseCases extends AbstractAppSpec {
 
 	SpansCollection spans
 	Project root
 
 	DataStore dataStore = Mock()
 
-	// object under test
 	TimesMainController controller
 
 	@Override
@@ -75,12 +75,8 @@ public class TimesMainControllerSpec extends AbstractAppSpec {
 		clickOn '#editTreeButton'
 
 		def node = lookup("#${TreeViewWindow.PROJECT_PANE_FX_ID}").query()
-		clickOn node, MouseButton.SECONDARY
+		rightClickOn node
 		if (isHeadless()) {
-			/*
-			 * hack from
-			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
-			 */
 			WaitForAsyncUtils.asyncFx {
 				// unclear how to get the context menu visible on the pane
 			}.get()
@@ -107,17 +103,7 @@ public class TimesMainControllerSpec extends AbstractAppSpec {
 		when:
 		clickOn '#editTreeButton'
 
-		def node = lookup('First').query()
-		clickOn node, MouseButton.SECONDARY
-		if (isHeadless()) {
-			/*
-			 * hack from
-			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
-			 */
-			WaitForAsyncUtils.asyncFx {
-				node.contextMenu.show(stage.scene.window)
-			}.get()
-		}
+		rightClick lookup('First')
 
 		clickOn 'New Subproject'
 		/* auto-selection of new node does not work in headless mode */
@@ -145,17 +131,8 @@ public class TimesMainControllerSpec extends AbstractAppSpec {
 		when:
 		clickOn '#editTreeButton'
 
-		def node = lookup('First').query()
-		clickOn node, MouseButton.SECONDARY
-		if (isHeadless()) {
-			/*
-			 * hack from
-			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
-			 */
-			WaitForAsyncUtils.asyncFx {
-				node.contextMenu.show(stage.scene.window)
-			}.get()
-		}
+		rightClick lookup('First')
+
 		// in context menu:
 		clickOn 'Delete'
 
@@ -172,20 +149,31 @@ public class TimesMainControllerSpec extends AbstractAppSpec {
 		when:
 		clickOn '#editTreeButton'
 
-		def node = lookup('First').query()
-		clickOn node, MouseButton.SECONDARY
-		if (isHeadless()) {
-			/*
-			 * hack from
-			 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874
-			 */
-			WaitForAsyncUtils.asyncFx {
-				node.contextMenu.show(stage.scene.window)
-			}.get()
-		}
+		rightClick lookup('First')
 
 		then:
 		MenuItem item = lookup('Delete').query().getLabelFor().item
 		item.isDisable() == true
+	}
+
+	/**
+	 * Right-click on the argument element; adds a hack from
+	 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874 for headless mode.
+	 * 
+	 * NB: Does not work in headless mode for elements that can be right-clicked but
+	 * don't have a contextMenu getter (e.g., a pane).
+	 * 
+	 * @param lookup the element to query
+	 * @return the element which was right-clicked
+	 */
+	def rightClick(lookup) {
+		def node = lookup.query()
+		rightClickOn node
+		if (isHeadless()) {
+			WaitForAsyncUtils.asyncFx {
+				node.contextMenu.show(stage.scene.window)
+			}.get()
+		}
+		return node
 	}
 }
