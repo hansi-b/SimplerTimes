@@ -31,7 +31,6 @@ import org.hansib.simplertimes.times.DurationTicker;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
-import org.hansib.sundries.fx.Converters;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -72,11 +71,7 @@ class SpanRecorder {
 		stopButton.disableProperty().bind(isRecording.not());
 		projectSelection.disableProperty().bind(isRecording);
 
-		projectSelection.setConverter( //
-				new Converters().stringConverter( //
-						proj -> proj == null ? "" : proj.fullName(), //
-						projName -> projName == null || projName.isBlank() ? null
-								: projectSelection.getSelectionModel().getSelectedItem()));
+		FxConverters.setComboBoxProjectConverter(projectSelection);
 		projectSelection.showingProperty()
 				.addListener((observable, oldValue, newValue) -> tickReceiver.accept(Duration.ZERO));
 		projectSelection.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
