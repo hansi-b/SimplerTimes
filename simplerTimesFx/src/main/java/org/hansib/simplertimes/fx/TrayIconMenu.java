@@ -64,7 +64,7 @@ class TrayIconMenu {
 	private static Image getResized(Image logo) {
 
 		if (!SystemTray.isSupported() || GraphicsEnvironment.isHeadless()) {
-			log.warn("Cannot resize logo (System tray not supported, or headless graphics headless).");
+			log.warn("Cannot resize logo (System tray not supported, or using headless graphics).");
 			return logo;
 		}
 
