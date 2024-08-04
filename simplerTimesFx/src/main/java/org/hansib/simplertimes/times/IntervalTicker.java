@@ -25,6 +25,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import org.hansib.sundries.Errors;
@@ -47,6 +48,7 @@ public class IntervalTicker {
 	private final Consumer<Interval> tickReceiver;
 
 	private ZonedDateTime startedAt;
+	private final AtomicReference<Interval> lastUpdate;
 
 	public IntervalTicker(Consumer<Interval> tickReceiver) {
 		this(tickReceiver, new DateTimeSource.SystemDateTime());
@@ -56,19 +58,37 @@ public class IntervalTicker {
 	IntervalTicker(Consumer<Interval> tickReceiver, DateTimeSource dateTimeSource) {
 		this.tickReceiver = Objects.requireNonNull(tickReceiver);
 		this.dtSource = dateTimeSource;
+		this.lastUpdate = new AtomicReference<>();
 	}
 
 	public synchronized void start() {
 		if (startedAt != null)
 			throw Errors.illegalState("Ticker was already started");
 		startedAt = dtSource.now();
-		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateTime, 0, 40, TimeUnit.MILLISECONDS);
+		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateInterval, 0, 40, TimeUnit.MILLISECONDS);
 	}
 
-	private void updateTime() {
-		tickReceiver.accept(new Interval(startedAt, dtSource.now()));
+	private void updateInterval() {
+		Interval i = new Interval(startedAt, dtSource.now());
+		lastUpdate.set(i);
+		tickReceiver.accept(i);
 	}
 
+	/**
+	 * @return the interval from this ticker's last start to the last time the
+	 *         elapsed interval was updated
+	 */
+	public synchronized Interval lastUpdate() {
+		return lastUpdate.get();
+	}
+
+	/**
+	 * Stops this ticker and returns the interval up to the moment the ticker was
+	 * stopped. (Which may be longer than the last update due to the update rate.)
+	 * 
+	 * @return the interval from the last start up to the moment this method was
+	 *         called
+	 */
 	public synchronized Interval stopAndGet() {
 		if (scheduleAtFixedRate == null || startedAt == null)
 			throw Errors.illegalState("Ticker was not started");

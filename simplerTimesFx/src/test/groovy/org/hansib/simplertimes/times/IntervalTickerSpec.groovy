@@ -10,7 +10,7 @@ public class IntervalTickerSpec extends Specification {
 
 	def manualClock = new DateTimeSource.ManualDateTime(2000)
 
-	def 'tick receiver receives tick'() {
+	def 'tick receiver receives tick and last update is set'() {
 
 		given:
 		def interval = null
@@ -27,9 +27,11 @@ public class IntervalTickerSpec extends Specification {
 		await().pollDelay(Duration.ofMillis(20)).timeout(Duration.ofMillis(200)).until(() -> interval != null)
 		interval.start == start
 		interval.end == end
+
+		timer.lastUpdate() == interval
 	}
 
-	def 'when stopping, span is returned'() {
+	def 'when stopping, span is returned, and last update remains zero interval'() {
 
 		given:
 		def timer = new IntervalTicker(i->{}, manualClock)
@@ -43,6 +45,8 @@ public class IntervalTickerSpec extends Specification {
 		then:
 		interval.start == start
 		interval.end == end
+
+		timer.lastUpdate() == new Interval(start, start)
 	}
 
 	def 'starting a started ticker throws exception'() {
