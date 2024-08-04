@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
-import org.hansib.simplertimes.times.DurationTicker;
+import org.hansib.simplertimes.times.IntervalTicker;
 import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
@@ -48,7 +48,7 @@ class SpanRecorder {
 
 	private final SearchableComboBox<FxProject> projectSelection;
 
-	private final DurationTicker durationTicker;
+	private final IntervalTicker intervalTicker;
 	private final Supplier<ObservableData> lazySpanReceiver;
 
 	private final BooleanProperty isRecording = new SimpleBooleanProperty(false);
@@ -58,7 +58,7 @@ class SpanRecorder {
 
 		this.projectSelection = projectSelection;
 
-		this.durationTicker = new DurationTicker(i -> elapsedTimeDisplay.accept(Duration.between(i.start(), i.end())));
+		this.intervalTicker = new IntervalTicker(i -> elapsedTimeDisplay.accept(Duration.between(i.start(), i.end())));
 		this.lazySpanReceiver = lazySpanReceiver;
 
 		new ButtonBuilder(startButton) //
@@ -87,13 +87,13 @@ class SpanRecorder {
 
 	private void startRecording() {
 		isRecording.set(true);
-		durationTicker.start();
+		intervalTicker.start();
 	}
 
 	private void stopRecording() {
 		isRecording.set(false);
 
-		Interval t = durationTicker.stopAndGet();
+		Interval t = intervalTicker.stopAndGet();
 		FxProject project = projectSelection.getValue();
 
 		if (Duration.between(t.start(), t.end()).compareTo(minimumSpanDuration) > 0) {

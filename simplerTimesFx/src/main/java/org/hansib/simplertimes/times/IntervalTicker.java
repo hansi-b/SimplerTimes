@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 import org.hansib.sundries.Errors;
 import org.hansib.sundries.testing.VisibleForTesting;
 
-public class DurationTicker {
+public class IntervalTicker {
 	private static class DaemonFactory implements ThreadFactory {
 		@Override
 		public Thread newThread(Runnable r) {
@@ -50,12 +50,12 @@ public class DurationTicker {
 
 	private ZonedDateTime startedAt;
 
-	public DurationTicker(Consumer<Interval> tickReceiver) {
+	public IntervalTicker(Consumer<Interval> tickReceiver) {
 		this(tickReceiver, new DateTimeSource.SystemDateTime());
 	}
 
 	@VisibleForTesting
-	DurationTicker(Consumer<Interval> tickReceiver, DateTimeSource dateTimeSource) {
+	IntervalTicker(Consumer<Interval> tickReceiver, DateTimeSource dateTimeSource) {
 		this.tickReceiver = Objects.requireNonNull(tickReceiver);
 		this.dtSource = dateTimeSource;
 	}

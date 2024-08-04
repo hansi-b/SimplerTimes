@@ -6,7 +6,7 @@ import java.time.Duration
 
 import spock.lang.Specification
 
-public class DurationTickerSpec extends Specification {
+public class IntervalTickerSpec extends Specification {
 
 	def manualClock = new DateTimeSource.ManualDateTime(2000)
 
@@ -14,7 +14,7 @@ public class DurationTickerSpec extends Specification {
 
 		given:
 		def interval = null
-		def timer = new DurationTicker(i -> {
+		def timer = new IntervalTicker(i -> {
 			interval = i
 		}, manualClock)
 
@@ -32,7 +32,7 @@ public class DurationTickerSpec extends Specification {
 	def 'when stopping, span is returned'() {
 
 		given:
-		def timer = new DurationTicker(i->{}, manualClock)
+		def timer = new IntervalTicker(i->{}, manualClock)
 
 		when:
 		def start = manualClock.now()
@@ -48,7 +48,7 @@ public class DurationTickerSpec extends Specification {
 	def 'starting a started ticker throws exception'() {
 
 		given:
-		def timer = new DurationTicker(i->{})
+		def timer = new IntervalTicker(i->{})
 
 		when:
 		timer.start()
