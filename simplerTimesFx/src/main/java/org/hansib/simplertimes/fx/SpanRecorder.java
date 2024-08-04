@@ -27,8 +27,9 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
-import org.hansib.simplertimes.times.IntervalTicker;
+import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.times.Interval;
+import org.hansib.simplertimes.times.IntervalTicker;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
 
@@ -58,7 +59,7 @@ class SpanRecorder {
 
 		this.projectSelection = projectSelection;
 
-		this.intervalTicker = new IntervalTicker(i -> elapsedTimeDisplay.accept(Duration.between(i.start(), i.end())));
+		this.intervalTicker = new IntervalTicker(i -> elapsedTimeDisplay.accept(Span.effectiveDuration(i.start(), i.end())));
 		this.lazySpanReceiver = lazySpanReceiver;
 
 		new ButtonBuilder(startButton) //
@@ -92,9 +93,10 @@ class SpanRecorder {
 
 	private void stopRecording() {
 		isRecording.set(false);
+		intervalTicker.stopAndGet();
 
-		Interval t = intervalTicker.stopAndGet();
 		FxProject project = projectSelection.getValue();
+		Interval t = intervalTicker.lastUpdate();
 
 		if (Duration.between(t.start(), t.end()).compareTo(minimumSpanDuration) > 0) {
 			log.info("Registering {} during {}", project, t);

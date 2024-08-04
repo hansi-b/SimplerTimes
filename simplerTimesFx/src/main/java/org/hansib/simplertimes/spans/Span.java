@@ -18,6 +18,7 @@
  */
 package org.hansib.simplertimes.spans;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -58,5 +59,13 @@ public record Span(Project project, OffsetDateTime start, OffsetDateTime end) {
 
 	private static OffsetDateTime truncate(ZonedDateTime ldt) {
 		return ldt.truncatedTo(ChronoUnit.SECONDS).toOffsetDateTime();
+	}
+
+	/**
+	 * @return the duration a span between the argument start and end would have
+	 *         given precision and rounding
+	 */
+	public static Duration effectiveDuration(ZonedDateTime start, ZonedDateTime end) {
+		return Duration.between(truncate(start), truncate(end));
 	}
 }
