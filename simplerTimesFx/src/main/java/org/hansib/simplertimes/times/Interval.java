@@ -29,7 +29,7 @@ public record Interval(ZonedDateTime start, ZonedDateTime end) {
 		Objects.requireNonNull(start);
 		Objects.requireNonNull(end);
 
-		if (start.compareTo(end) >= 0)
-			throw Errors.illegalArg("End (%s) must be after start (%s)", end, start);
+		if (start.compareTo(end) > 0)
+			throw Errors.illegalArg("End (%s) must not be before start (%s)", end, start);
 	}
 }

@@ -40,8 +40,6 @@ public class IntervalTicker {
 		}
 	}
 
-	private static final int UPDATE_RATE_MSECS = 40;
-
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0, new DaemonFactory());
 	private ScheduledFuture<?> scheduleAtFixedRate;
 
@@ -64,8 +62,7 @@ public class IntervalTicker {
 		if (startedAt != null)
 			throw Errors.illegalState("Ticker was already started");
 		startedAt = dtSource.now();
-		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateTime, UPDATE_RATE_MSECS, UPDATE_RATE_MSECS,
-				TimeUnit.MILLISECONDS);
+		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateTime, 0, 40, TimeUnit.MILLISECONDS);
 	}
 
 	private void updateTime() {

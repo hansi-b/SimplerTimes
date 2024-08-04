@@ -17,6 +17,17 @@ public class IntervalSpec extends Specification {
 		thrown IllegalArgumentException
 	}
 
+	def "zero length interval is allowed"() {
+		given:
+		def start = ZonedDateTime.now()
+
+		when:
+		def i = new Interval(start, start)
+
+		then:
+		i.start == i.end
+	}
+
 	def "ensure equals"() {
 		given:
 		def s1 = ZonedDateTime.now()
