@@ -18,7 +18,6 @@
  */
 package org.hansib.simplertimes.times;
 
-import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -41,20 +40,22 @@ public class DurationTicker {
 		}
 	}
 
+	private static final int UPDATE_RATE_MSECS = 40;
+
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0, new DaemonFactory());
 	private ScheduledFuture<?> scheduleAtFixedRate;
 
 	private final DateTimeSource dtSource;
-	private final Consumer<Duration> tickReceiver;
+	private final Consumer<Interval> tickReceiver;
 
 	private ZonedDateTime startedAt;
 
-	public DurationTicker(Consumer<Duration> tickReceiver) {
+	public DurationTicker(Consumer<Interval> tickReceiver) {
 		this(tickReceiver, new DateTimeSource.SystemDateTime());
 	}
 
 	@VisibleForTesting
-	DurationTicker(Consumer<Duration> tickReceiver, DateTimeSource dateTimeSource) {
+	DurationTicker(Consumer<Interval> tickReceiver, DateTimeSource dateTimeSource) {
 		this.tickReceiver = Objects.requireNonNull(tickReceiver);
 		this.dtSource = dateTimeSource;
 	}
@@ -63,11 +64,12 @@ public class DurationTicker {
 		if (startedAt != null)
 			throw Errors.illegalState("Ticker was already started");
 		startedAt = dtSource.now();
-		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateTime, 0, 40, TimeUnit.MILLISECONDS);
+		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateTime, UPDATE_RATE_MSECS, UPDATE_RATE_MSECS,
+				TimeUnit.MILLISECONDS);
 	}
 
 	private void updateTime() {
-		tickReceiver.accept(Duration.between(startedAt, dtSource.now()));
+		tickReceiver.accept(new Interval(startedAt, dtSource.now()));
 	}
 
 	public synchronized Interval stopAndGet() {

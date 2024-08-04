@@ -1,35 +1,38 @@
 package org.hansib.simplertimes.times
 
+import static org.awaitility.Awaitility.await
+
 import java.time.Duration
 
 import spock.lang.Specification
 
 public class DurationTickerSpec extends Specification {
 
-	def manualClock = new DateTimeSource.ManualDateTime()
+	def manualClock = new DateTimeSource.ManualDateTime(2000)
 
 	def 'tick receiver receives tick'() {
 
 		given:
-		def duration = null
-		def timer = new DurationTicker(d -> {
-			duration = d
+		def interval = null
+		def timer = new DurationTicker(i -> {
+			interval = i
 		}, manualClock)
 
 		when:
+		def start = manualClock.now()
 		timer.start()
-		manualClock.turnForward(Duration.ofSeconds(10))
-		System.sleep(60)
-		timer.stopAndGet()
+		def end = manualClock.turnForward(Duration.ofSeconds(10))
 
 		then:
-		duration == Duration.ofSeconds(10)
+		await().pollDelay(Duration.ofMillis(20)).timeout(Duration.ofMillis(200)).until(() -> interval != null)
+		interval.start == start
+		interval.end == end
 	}
 
 	def 'when stopping, span is returned'() {
 
 		given:
-		def timer = new DurationTicker(d->{}, manualClock)
+		def timer = new DurationTicker(i->{}, manualClock)
 
 		when:
 		def start = manualClock.now()
@@ -45,7 +48,7 @@ public class DurationTickerSpec extends Specification {
 	def 'starting a started ticker throws exception'() {
 
 		given:
-		def timer = new DurationTicker(d->{})
+		def timer = new DurationTicker(i->{})
 
 		when:
 		timer.start()

@@ -13,6 +13,8 @@ dependencies {
 	testImplementation 'net.bytebuddy:byte-buddy:1.14.18'
 	testImplementation 'org.objenesis:objenesis:3.4'
 	testImplementation 'org.spockframework:spock-core:2.4-M4-groovy-4.0'
+	
+	testImplementation 'org.awaitility:awaitility:4.2.1'
 }
 
 testing {

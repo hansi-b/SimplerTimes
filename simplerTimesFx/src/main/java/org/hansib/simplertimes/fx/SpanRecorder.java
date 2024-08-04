@@ -54,11 +54,11 @@ class SpanRecorder {
 	private final BooleanProperty isRecording = new SimpleBooleanProperty(false);
 
 	SpanRecorder(SearchableComboBox<FxProject> projectSelection, Button startButton, Button stopButton,
-			Consumer<Duration> tickReceiver, Supplier<ObservableData> lazySpanReceiver) {
+			Consumer<Duration> elapsedTimeDisplay, Supplier<ObservableData> lazySpanReceiver) {
 
 		this.projectSelection = projectSelection;
 
-		this.durationTicker = new DurationTicker(tickReceiver);
+		this.durationTicker = new DurationTicker(i -> elapsedTimeDisplay.accept(Duration.between(i.start(), i.end())));
 		this.lazySpanReceiver = lazySpanReceiver;
 
 		new ButtonBuilder(startButton) //
@@ -73,7 +73,7 @@ class SpanRecorder {
 
 		FxConverters.setComboBoxProjectConverter(projectSelection);
 		projectSelection.showingProperty()
-				.addListener((observable, oldValue, newValue) -> tickReceiver.accept(Duration.ZERO));
+				.addListener((observable, oldValue, newValue) -> elapsedTimeDisplay.accept(Duration.ZERO));
 		projectSelection.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				Platform.runLater(startButton::requestFocus);

@@ -18,11 +18,16 @@
  */
 package org.hansib.simplertimes.times;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAmount;
 
 interface DateTimeSource {
 
+	/**
+	 * @return the current time of this date time source
+	 */
 	ZonedDateTime now();
 
 	static class SystemDateTime implements DateTimeSource {
@@ -33,23 +38,22 @@ interface DateTimeSource {
 	}
 
 	/**
-	 * A "manual" clock which has to be set programmatically - used for tests.
+	 * A "manual" clock which has to be set programmatically. Used for tests.
 	 */
 	static class ManualDateTime implements DateTimeSource {
 
 		private ZonedDateTime now;
 
 		ManualDateTime() {
-			setToNow();
+			now = ZonedDateTime.now();
+		}
+
+		ManualDateTime(int seconds) {
+			now = ZonedDateTime.ofInstant(Instant.ofEpochSecond(seconds), ZoneId.systemDefault());
 		}
 
 		@Override
 		public ZonedDateTime now() {
-			return now;
-		}
-
-		ZonedDateTime setToNow() {
-			now = ZonedDateTime.now();
 			return now;
 		}
 
