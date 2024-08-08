@@ -57,7 +57,7 @@ public class SpansCollection {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(spans.hashCode());
+		return Objects.hash(spans);
 	}
 
 	@Override
