@@ -9,6 +9,9 @@ import org.testfx.util.WaitForAsyncUtils
 import javafx.scene.Scene
 import javafx.stage.Stage
 
+/**
+ * This is a copy of the AppSpecWithScene in SundriesFx. Will want to unify that at some point.
+ */
 abstract public class AbstractAppSpec extends ApplicationSpec {
 	static final Logger log = LogManager.getLogger(AbstractAppSpec)
 
@@ -32,7 +35,28 @@ abstract public class AbstractAppSpec extends ApplicationSpec {
 		FxToolkit.cleanupStages()
 	}
 
-	boolean isHeadless() {
+	static boolean isHeadless() {
 		Boolean.valueOf(System.properties['testfx.headless'])
+	}
+
+	/**
+	 * Right-click on the argument element; adds a hack from
+	 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874 for headless mode.
+	 *
+	 * NB: Does not work in headless mode for elements that can be right-clicked but
+	 * don't have a contextMenu getter (e.g., a pane).
+	 *
+	 * @param lookup the element to query
+	 * @return the element which was right-clicked
+	 */
+	def rightClick(lookup) {
+		def node = lookup.query()
+		rightClickOn node
+		if (isHeadless()) {
+			WaitForAsyncUtils.asyncFx {
+				node.contextMenu.show(stage.scene.window)
+			}.get()
+		}
+		return node
 	}
 }

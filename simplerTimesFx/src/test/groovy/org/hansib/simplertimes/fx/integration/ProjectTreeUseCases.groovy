@@ -1,7 +1,5 @@
 package org.hansib.simplertimes.fx.integration
 
-import java.util.concurrent.TimeUnit
-
 import org.hansib.simplertimes.DataStore
 import org.hansib.simplertimes.fx.AbstractAppSpec
 import org.hansib.simplertimes.fx.TimesMainController
@@ -68,7 +66,7 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 	 * Ignored in headless mode because on the pane of the tree view,
 	 * we cannot apply the hack to show the context menu. 
 	 */
-	@IgnoreIf({ Boolean.valueOf(System.properties['testfx.headless']) })
+	@IgnoreIf({ isHeadless() })
 	def 'can add second project'() {
 
 		when:
@@ -154,26 +152,5 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 		then:
 		MenuItem item = lookup('Delete').query().getLabelFor().item
 		item.isDisable() == true
-	}
-
-	/**
-	 * Right-click on the argument element; adds a hack from
-	 * https://github.com/TestFX/Monocle/issues/12#issuecomment-341795874 for headless mode.
-	 * 
-	 * NB: Does not work in headless mode for elements that can be right-clicked but
-	 * don't have a contextMenu getter (e.g., a pane).
-	 * 
-	 * @param lookup the element to query
-	 * @return the element which was right-clicked
-	 */
-	def rightClick(lookup) {
-		def node = lookup.query()
-		rightClickOn node
-		if (isHeadless()) {
-			WaitForAsyncUtils.asyncFx {
-				node.contextMenu.show(stage.scene.window)
-			}.get()
-		}
-		return node
 	}
 }
