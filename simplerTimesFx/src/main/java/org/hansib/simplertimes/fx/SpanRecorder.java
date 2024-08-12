@@ -32,6 +32,7 @@ import org.hansib.simplertimes.times.Interval;
 import org.hansib.simplertimes.times.IntervalTicker;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
+import org.hansib.sundries.testing.VisibleForTesting;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -49,7 +50,7 @@ class SpanRecorder {
 
 	private final SearchableComboBox<FxProject> projectSelection;
 
-	private final IntervalTicker intervalTicker;
+	private IntervalTicker intervalTicker;
 	private final Supplier<ObservableData> lazySpanReceiver;
 
 	private final BooleanProperty isRecording = new SimpleBooleanProperty(false);
@@ -57,9 +58,18 @@ class SpanRecorder {
 	SpanRecorder(SearchableComboBox<FxProject> projectSelection, Button startButton, Button stopButton,
 			Consumer<Duration> elapsedTimeDisplay, Supplier<ObservableData> lazySpanReceiver) {
 
+		this(projectSelection, startButton, stopButton, elapsedTimeDisplay, lazySpanReceiver,
+				new IntervalTicker(i -> elapsedTimeDisplay.accept(Span.effectiveDuration(i.start(), i.end()))));
+	}
+
+	@VisibleForTesting
+	SpanRecorder(SearchableComboBox<FxProject> projectSelection, Button startButton, Button stopButton,
+			Consumer<Duration> elapsedTimeDisplay, Supplier<ObservableData> lazySpanReceiver,
+			IntervalTicker intervalTicker) {
+
 		this.projectSelection = projectSelection;
 
-		this.intervalTicker = new IntervalTicker(i -> elapsedTimeDisplay.accept(Span.effectiveDuration(i.start(), i.end())));
+		this.intervalTicker = intervalTicker;
 		this.lazySpanReceiver = lazySpanReceiver;
 
 		new ButtonBuilder(startButton) //

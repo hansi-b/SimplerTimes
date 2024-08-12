@@ -8,6 +8,8 @@ import org.controlsfx.control.SearchableComboBox
 import org.hansib.simplertimes.fx.data.FxProject
 import org.hansib.simplertimes.fx.data.ObservableData
 import org.hansib.simplertimes.projects.Project
+import org.hansib.simplertimes.times.Interval
+import org.hansib.simplertimes.times.IntervalTicker
 
 import javafx.scene.Scene
 import javafx.scene.control.Button
@@ -22,6 +24,8 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 	FxProject beta = root.addChild('Beta')
 
 	SearchableComboBox<FxProject> projectSelection
+
+	IntervalTicker intervalTicker = Mock()
 
 	Button startButton
 	Button stopButton
@@ -42,7 +46,7 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 		startButton = new Button("start")
 		stopButton = new Button("stop")
 
-		recorder = new SpanRecorder(projectSelection, startButton, stopButton, tickReceiver, () -> observableData)
+		recorder = new SpanRecorder(projectSelection, startButton, stopButton, tickReceiver, () -> observableData, intervalTicker)
 
 		return new Scene(new VBox(projectSelection, startButton, stopButton))
 	}
@@ -89,27 +93,20 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 	def 'having started recording, enter registers span'() {
 
 		given:
-		def startTime = null
-		def endTime = null
-		def actualProject = null
-		def actualStart = null
-		def actualEnd = null
+
+		def startTime = ZonedDateTime.now().minusMinutes(2)
+		def endTime = ZonedDateTime.now()
+		intervalTicker.lastUpdate() >> new Interval(startTime, endTime)
 
 		when:
 		selectProjectA()
-		startTime = ZonedDateTime.now().minusSeconds(1)
 		// start
 		type(KeyCode.ENTER)
-		// ... recording ...
-		Thread.sleep(1000)
 		// stop
 		type(KeyCode.ENTER)
-		endTime = ZonedDateTime.now().plusSeconds(1)
 
 		then:
-		1 * observableData.addSpan(alpha, _, _ ) >> { actualStart = it[1]; actualEnd = it[2] }
-		actualStart >= startTime
-		actualEnd <= endTime
+		1 * observableData.addSpan(alpha, startTime, endTime )
 
 		isEnabled projectSelection
 		isEnabled startButton
