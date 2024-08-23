@@ -26,6 +26,15 @@ repositories {
 	}
 }
 
+def isStable = {
+	!(it =~ /(?i)\b(alpha|beta)[0-9]*\b/)
+}
+
+tasks.named('dependencyUpdates').configure {
+  rejectVersionIf {
+    !isStable(it.candidate.version)
+  }
+}
 
 group 'org.hansib'
 version gitVersion().replace(".dirty", ".modified")

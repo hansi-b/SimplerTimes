@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
 
-	testImplementation 'org.hamcrest:hamcrest-core:3.0'
 	testImplementation 'org.testfx:testfx-core:4.0.18'
 	testImplementation 'org.testfx:testfx-spock:4.0.18'
 
