@@ -20,15 +20,21 @@ package org.hansib.simplertimes.fx;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.SystemTray;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
+import com.dustinredmond.fxtrayicon.FXTrayIcon.Builder;
 
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -41,24 +47,54 @@ class TrayIconMenu {
 	private FXTrayIcon iconWithMenu;
 	private ObservableData data;
 
-	TrayIconMenu() {// ObservableData data) {
-//		this.data = data;
+	TrayIconMenu(ObservableData data) {
+		this.data = data;
 //		data.projects().addListener((InvalidationListener) observable -> log.info("invalidated = {}", observable));
 //		data.projects().addListener((ListChangeListener<FxProject>) c -> log.info("onChanged = {}", c));
 	}
 
-	static TrayIconMenu create(Stage primaryStage) {
+	static TrayIconMenu create(Stage primaryStage, ObservableData data) {
 		log.info("Showing FXTrayIcon ...");
 		Image logo = new Resources().loadLogo();
 		logo = getResized(logo);
 
-		TrayIconMenu tim = new TrayIconMenu();
+		TrayIconMenu tim = new TrayIconMenu(data);
 
-		tim.iconWithMenu = new FXTrayIcon.Builder(primaryStage, logo) //
+		Builder menuBuilder = new FXTrayIcon.Builder(primaryStage, logo) //
 				.addTitleItem(true) //
-				.addExitMenuItem(MenuItems.Exit.fmt()) //
+				.separator();
+
+		for (MenuItem p : createProjectMenus(data))
+			menuBuilder.menuItem(p);
+
+		tim.iconWithMenu = menuBuilder //
+				.separator().addExitMenuItem(MenuItems.Exit.fmt()) //
 				.show().build();
 		return tim;
+	}
+
+	private static List<MenuItem> createProjectMenus(ObservableData data) {
+		FxProject projectTree = data.fxProjectTree();
+
+		List<MenuItem> menus = new ArrayList<>();
+		for (FxProject project : projectTree.children()) {
+			menus.add(createMenu(project));
+		}
+		return menus;
+	}
+
+	/*
+	 * Create menu items of all project leaves in this project.
+	 */
+	private static MenuItem createMenu(FxProject project) {
+
+		if (!project.hasChildren())
+			return new MenuItem(project.text());
+
+		Menu projectMenu = new Menu(project.text());
+		var children = projectMenu.getItems();
+		project.leafChildren().forEach(c -> children.add(new MenuItem(c.formatName(project, " · "))));
+		return projectMenu;
 	}
 
 	private static Image getResized(Image logo) {
@@ -75,7 +111,7 @@ class TrayIconMenu {
 		params.setFill(Color.TRANSPARENT);
 		double height = SystemTray.getSystemTray().getTrayIconSize().getHeight();
 		resized.setFitHeight(height);
-		log.debug("Resizing logo to height %d", height);
+		log.debug("Resizing logo to height {}", height);
 		return resized.snapshot(params, null);
 	}
 }

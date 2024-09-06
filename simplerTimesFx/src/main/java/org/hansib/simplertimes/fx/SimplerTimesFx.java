@@ -77,7 +77,7 @@ public class SimplerTimesFx extends Application {
 		});
 
 		if (isWindows()) {
-			TrayIconMenu.create(primaryStage);
+			TrayIconMenu.create(primaryStage, data);
 		} else {
 			primaryStage.setOnCloseRequest(event -> Platform.exit());
 		}
