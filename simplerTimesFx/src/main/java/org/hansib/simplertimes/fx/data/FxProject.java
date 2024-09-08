@@ -106,8 +106,8 @@ public class FxProject implements TreeItemNode<FxProject> {
 	}
 
 	@Override
-	public Iterable<FxProject> children() {
-		return project.children().stream().map(fxByProject::get).toList();
+	public Stream<FxProject> children() {
+		return project.children().stream().map(fxByProject::get);
 	}
 
 	/**

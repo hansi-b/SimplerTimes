@@ -19,6 +19,7 @@
 package org.hansib.simplertimes.fx.tree;
 
 import java.util.Comparator;
+import java.util.stream.Stream;
 
 import javafx.scene.control.TreeItem;
 
@@ -45,7 +46,7 @@ public interface TreeItemNode<T extends TreeItemNode<T>> extends TextNode {
 
 	T addChild(String childText);
 
-	Iterable<T> children();
+	Stream<T> children();
 
 	/**
 	 * Sorts the children of this node by their texts according to the argument

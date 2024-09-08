@@ -59,8 +59,8 @@ public class FxProjectSpec extends Specification {
 
 		when:
 		def fx = FxProject.root(root)
-		def pFx = fx.children()[0]
-		def s2Fx = pFx.children()[0].children()[0]
+		def pFx = children(fx)[0]
+		def s2Fx = children(children(pFx)[0])[0]
 		
 		then:
 		s2Fx.formatName(pFx, " - ") == "hello - world"
@@ -77,11 +77,11 @@ public class FxProjectSpec extends Specification {
 		def fx = FxProject.root(root)
 
 		then:
-		def children = fx.children()
+		def c = children(fx)
 		fx.flatList() == [
-			children[0],
-			children[0].children()[0],
-			children[1]
+			c[0],
+			children(c[0])[0],
+			c[1]
 		]
 	}
 
@@ -90,16 +90,16 @@ public class FxProjectSpec extends Specification {
 		given:
 		def c1 = root.add('1')
 		c1.add('1b')
-		root.add('2')
+		root.add('2x')
 
 		when:
 		def fx = FxProject.root(root)
 
 		then:
-		def children = fx.children()
+		def c = children(fx)
 		fx.leafChildren().toList() == [
-			children[0].children()[0],
-			children[1]
+			children(c[0])[0], // 1b
+			c[1] // 2x
 		]
 	}
 
@@ -112,7 +112,10 @@ public class FxProjectSpec extends Specification {
 		def fx = FxProject.root(root)
 
 		then:
-		def children = fx.children()
-		children[0].leafChildren().toList() == []
+		children(fx)[0].leafChildren().toList() == []
+	}
+	
+	static List<FxProject> children(FxProject p) {
+		p.children().toList()
 	}
 }

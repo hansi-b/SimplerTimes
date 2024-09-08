@@ -20,8 +20,6 @@ package org.hansib.simplertimes.fx;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.SystemTray;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,23 +62,12 @@ class TrayIconMenu {
 				.addTitleItem(true) //
 				.separator();
 
-		for (MenuItem p : createProjectMenus(data))
-			menuBuilder.menuItem(p);
+		data.fxProjectTree().children().map(project -> createMenu(project)).forEach(menuBuilder::menuItem);
 
 		tim.iconWithMenu = menuBuilder //
 				.separator().addExitMenuItem(MenuItems.Exit.fmt()) //
 				.show().build();
 		return tim;
-	}
-
-	private static List<MenuItem> createProjectMenus(ObservableData data) {
-		FxProject projectTree = data.fxProjectTree();
-
-		List<MenuItem> menus = new ArrayList<>();
-		for (FxProject project : projectTree.children()) {
-			menus.add(createMenu(project));
-		}
-		return menus;
 	}
 
 	/*
