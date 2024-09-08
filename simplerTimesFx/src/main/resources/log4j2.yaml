@@ -1,15 +1,16 @@
 Configuration:
   status: info
-  name: YAMLConfigTest
+  name: YAMLConfigDev
+
   Appenders:
     Console:
-      name: Screen
+      name: Console_Appender
       target: SYSTEM_OUT
       PatternLayout:
         pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss} %msg%n"
-        #pattern: "%c{1}: %msg%n"
+
   Loggers:
     Root:
       level: debug
       AppenderRef:
-        ref: Screen
+        ref: Console_Appender

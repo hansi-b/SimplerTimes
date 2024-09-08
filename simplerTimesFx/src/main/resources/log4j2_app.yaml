@@ -1,0 +1,23 @@
+Configuration:
+  status: info
+  name: YAMLConfigProd
+
+  Appenders:
+
+    RollingFile:
+      - name: RollingFile_Appender
+        fileName: logs/SimplerTimes.log
+        filePattern: "logs/SimplerTimes.%d{yyyy-MM-dd-hh-mm}.log.gz"
+        PatternLayout:
+          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss} %msg%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: 1 MB
+        DefaultRollOverStrategy:
+          max: 20
+
+  Loggers:
+    Root:
+      level: debug
+      AppenderRef:
+        ref: RollingFile_Appender
