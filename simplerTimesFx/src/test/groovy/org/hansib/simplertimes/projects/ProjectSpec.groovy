@@ -152,7 +152,7 @@ public class ProjectSpec extends Specification {
 		r.children() == [c2, c1, c3]
 	}
 
-	def "getFullName"() {
+	def "getFullNamesList"() {
 
 		when:
 		def n = Project.root()
@@ -160,7 +160,19 @@ public class ProjectSpec extends Specification {
 		def o = m.add('world')
 
 		then:
-		o.nameWords() == ['hello', 'world']
+		o.namesList() == ['hello', 'world']
+	}
+
+	def "getRelativeNamesList"() {
+
+		when:
+		def n = Project.root()
+		def m = n.add('hello')
+		def o = m.add('middle')
+		def x = o.add('world')
+
+		then:
+		x.namesList(m) == ['middle', 'world']
 	}
 
 	def "unknown child throws exception"() {

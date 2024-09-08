@@ -93,7 +93,7 @@ public class FxProject implements TreeItemNode<FxProject> {
 		/*
 		 * other options: · • › » ▹ ▷ | – #
 		 */
-		return String.join(" › ", project.nameWords());
+		return String.join(" › ", project.namesList());
 	}
 
 	@Override

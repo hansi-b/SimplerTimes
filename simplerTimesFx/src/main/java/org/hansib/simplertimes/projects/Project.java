@@ -211,16 +211,29 @@ public class Project {
 	}
 
 	/**
-	 * @return the ordered list of non-null names, beginning with the root down to
-	 *         this project
+	 * @param relativeTo an ancestor of this project below with to begin collecting
+	 *                   the words; if it is null or not an ancestor, all names up
+	 *                   to the root are returned
+	 * @return the ordered list of non-null names, beginning beneath the
+	 *         <code>relativeTo</code> argument down to this project
 	 */
-	public List<String> nameWords() {
+	public List<String> namesList(Project relativeTo) {
 		LinkedList<String> words = new LinkedList<>();
-		for (Project current = this; current.parent != null; current = current.parent) {
+		for (Project current = this; current != relativeTo && current.parent != null; current = current.parent) {
 			if (current.name != null)
 				words.addFirst(current.name);
 		}
 		return words;
+	}
+
+	/**
+	 * The same as {@link #namesList(Project)} with a null argument
+	 * 
+	 * @return the ordered list of non-null names, beginning with the root down to
+	 *         this project
+	 */
+	public List<String> namesList() {
+		return namesList(null);
 	}
 
 	public Project parent() {
