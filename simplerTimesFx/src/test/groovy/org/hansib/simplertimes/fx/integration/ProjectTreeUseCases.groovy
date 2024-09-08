@@ -120,6 +120,7 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 		assert child.children[0].name == 'Second' : "Got $child with ${child.children}"
 	}
 
+	@IgnoreIf({ isHeadless() })
 	def 'can delete project with warning'() {
 
 		given:
