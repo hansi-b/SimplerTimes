@@ -49,13 +49,29 @@ public class FxProjectSpec extends Specification {
 		fx.children() as List == []
 		root.children().isEmpty()
 	}
+	
+	def 'can format name'() {
+
+		given:
+		def p = root.add('project')
+		def s1 = p.add('hello')
+		def s2 = s1.add('world')
+
+		when:
+		def fx = FxProject.root(root)
+		def pFx = fx.children()[0]
+		def s2Fx = pFx.children()[0].children()[0]
+		
+		then:
+		s2Fx.formatName(pFx, " - ") == "hello - world"
+	}
 
 	def 'can get flat list'() {
 
 		given:
 		def c1 = root.add('1')
+		c1.add('1b')
 		root.add('2')
-		def c3 = c1.add('1b')
 
 		when:
 		def fx = FxProject.root(root)
@@ -67,5 +83,36 @@ public class FxProjectSpec extends Specification {
 			children[0].children()[0],
 			children[1]
 		]
+	}
+
+	def 'can get leaves'() {
+
+		given:
+		def c1 = root.add('1')
+		c1.add('1b')
+		root.add('2')
+
+		when:
+		def fx = FxProject.root(root)
+
+		then:
+		def children = fx.children()
+		fx.leafChildren().toList() == [
+			children[0].children()[0],
+			children[1]
+		]
+	}
+
+	def 'leaves() w/o children returns empty list'() {
+
+		given:
+		root.add('1')
+
+		when:
+		def fx = FxProject.root(root)
+
+		then:
+		def children = fx.children()
+		children[0].leafChildren().toList() == []
 	}
 }

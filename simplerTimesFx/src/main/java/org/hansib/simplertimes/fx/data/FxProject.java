@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.hansib.simplertimes.fx.tree.TreeItemNode;
 import org.hansib.simplertimes.projects.Project;
@@ -96,9 +97,25 @@ public class FxProject implements TreeItemNode<FxProject> {
 		return String.join(" › ", project.namesList());
 	}
 
+	public String formatName(FxProject relativeTo, String delimiter) {
+		return String.join(delimiter, project.namesList(relativeTo.project));
+	}
+	
+	public boolean hasChildren() {
+		return project.hasChildren();
+	}
+
 	@Override
 	public Iterable<FxProject> children() {
 		return project.children().stream().map(fxByProject::get).toList();
+	}
+
+	/**
+	 * @return all children that do not have children (if this project has no
+	 *         children, then an empty stream)
+	 */
+	public Stream<FxProject> leafChildren() {
+		return project.dfStream().filter(c -> c != project && c.children().isEmpty()).map(fxByProject::get);
 	}
 
 	@Override

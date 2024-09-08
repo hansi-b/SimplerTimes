@@ -239,6 +239,10 @@ public class Project {
 	public Project parent() {
 		return parent;
 	}
+	
+	public boolean hasChildren() {
+		return !children.isEmpty();
+	}
 
 	public List<Project> children() {
 		return Collections.unmodifiableList(children);
