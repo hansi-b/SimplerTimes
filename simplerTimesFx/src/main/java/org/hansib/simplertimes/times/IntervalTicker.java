@@ -32,6 +32,7 @@ import org.hansib.sundries.Errors;
 import org.hansib.sundries.testing.VisibleForTesting;
 
 public class IntervalTicker {
+
 	private static class DaemonFactory implements ThreadFactory {
 		@Override
 		public Thread newThread(Runnable r) {
@@ -65,13 +66,18 @@ public class IntervalTicker {
 		if (startedAt != null)
 			throw Errors.illegalState("Ticker was already started");
 		startedAt = dtSource.now();
-		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateInterval, 0, 40, TimeUnit.MILLISECONDS);
+		updateInterval();
+		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateInterval, 40, 40, TimeUnit.MILLISECONDS);
 	}
 
-	private void updateInterval() {
+	private synchronized void updateInterval() {
 		Interval i = new Interval(startedAt, dtSource.now());
 		lastUpdate.set(i);
 		tickReceiver.accept(i);
+	}
+
+	public synchronized boolean isStarted() {
+		return startedAt != null;
 	}
 
 	/**

@@ -61,4 +61,26 @@ public class IntervalTickerSpec extends Specification {
 		then:
 		IllegalStateException ex = thrown()
 	}
+
+	def 'can determine if ticker is started'() {
+
+		when:
+		def timer = new IntervalTicker(i->{})
+
+		then:
+		!timer.isStarted()
+		
+		when:
+		timer.start()
+
+		then:
+		timer.isStarted()
+		
+		when:
+		timer.stopAndGet()
+		
+		then:
+		!timer.isStarted()
+
+	}
 }
