@@ -18,87 +18,110 @@
  */
 package org.hansib.simplertimes.fx;
 
+import java.awt.AWTException;
 import java.awt.GraphicsEnvironment;
+import java.awt.Menu;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.SystemTray;
+import java.awt.TrayIcon;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
-import org.hansib.simplertimes.fx.l10n.MenuItems;
 
-import com.dustinredmond.fxtrayicon.FXTrayIcon;
-import com.dustinredmond.fxtrayicon.FXTrayIcon.Builder;
-
-import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
+import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.collections.ListChangeListener;
 import javafx.stage.Stage;
 
 class TrayIconMenu {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private FXTrayIcon iconWithMenu;
-	private ObservableData data;
-
 	TrayIconMenu(ObservableData data) {
-		this.data = data;
-//		data.projects().addListener((InvalidationListener) observable -> log.info("invalidated = {}", observable));
-//		data.projects().addListener((ListChangeListener<FxProject>) c -> log.info("onChanged = {}", c));
 	}
 
-	static TrayIconMenu create(Stage primaryStage, ObservableData data) {
-		log.info("Showing FXTrayIcon ...");
-		Image logo = new Resources().loadLogo();
-		logo = getResized(logo);
+	static void create(Stage primaryStage, ObservableData data, SpanRecorder spanRecorder) {
+		if (!SystemTray.isSupported() || GraphicsEnvironment.isHeadless()) {
+			log.warn("Cannot resize logo (System tray not supported, or using headless graphics).");
+			return;
+		}
+		
+		data.projects().addListener((InvalidationListener) observable -> log.info("invalidated = {}", observable));
+		data.projects().addListener((ListChangeListener<FxProject>) c -> log.info("onChanged = {}", c));
 
-		TrayIconMenu tim = new TrayIconMenu(data);
 
-		Builder menuBuilder = new FXTrayIcon.Builder(primaryStage, logo) //
-				.addTitleItem(true) //
-				.separator();
+		log.info("Showing TrayIcon ...");
+		Platform.setImplicitExit(false);
+		TrayIcon trayIcon = new TrayIcon(new Resources().loadAwtLogo());
 
-		data.fxProjectTree().children().map(project -> createMenu(project)).forEach(menuBuilder::menuItem);
+		final PopupMenu popup = new PopupMenu();
+		final SystemTray tray = SystemTray.getSystemTray();
 
-		tim.iconWithMenu = menuBuilder //
-				.separator().addExitMenuItem(MenuItems.Exit.fmt()) //
-				.show().build();
-		return tim;
+		MenuItem showItem = new MenuItem("SimplerTimes");
+		showItem.addActionListener(e -> Platform.runLater(() -> {
+			if (primaryStage.isIconified())
+				primaryStage.setIconified(false);
+			else
+				primaryStage.show();
+		}));
+
+		MenuItem exitItem = new MenuItem("Exit");
+		exitItem.addActionListener(e -> {
+			tray.remove(trayIcon);
+			Platform.exit();
+		});
+		MenuItem stopItem = new MenuItem("Stop");
+		stopItem.addActionListener(e -> {
+			Platform.runLater(() -> spanRecorder.stopRecording());
+			stopItem.setEnabled(false);
+		});
+		stopItem.setEnabled(false);
+
+		popup.add(showItem);
+		popup.addSeparator();
+
+		data.fxProjectTree().children().map(project -> createMenu(project, spanRecorder, stopItem))
+				.forEach(m -> popup.add(m));
+
+		popup.addSeparator();
+		popup.add(stopItem);
+		popup.add(exitItem);
+
+		trayIcon.setPopupMenu(popup);
+		try {
+			tray.add(trayIcon);
+		} catch (AWTException e) {
+			log.error("Could not add tray icon", e);
+			return;
+		}
 	}
 
 	/*
 	 * Create menu items of all project leaves in this project.
 	 */
-	private static MenuItem createMenu(FxProject project) {
+	private static MenuItem createMenu(FxProject project, SpanRecorder spanRecorder, MenuItem stopItem) {
 
-		if (!project.hasChildren())
-			return new MenuItem(project.text());
-
-		Menu projectMenu = new Menu(project.text());
-		var children = projectMenu.getItems();
-		project.leafChildren().forEach(c -> children.add(new MenuItem(c.formatName(project, " · "))));
+		String projectName = project.text();
+		if (!project.hasChildren()) {
+			return createProjectMenuItem(projectName, project, spanRecorder, stopItem);
+		}
+		Menu projectMenu = new Menu(projectName);
+		project.leafChildren().forEach(c -> projectMenu
+				.add(createProjectMenuItem(c.formatName(project, " · "), project, spanRecorder, stopItem)));
 		return projectMenu;
 	}
 
-	private static Image getResized(Image logo) {
-
-		if (!SystemTray.isSupported() || GraphicsEnvironment.isHeadless()) {
-			log.warn("Cannot resize logo (System tray not supported, or using headless graphics).");
-			return logo;
-		}
-
-		ImageView resized = new ImageView(logo);
-		resized.setSmooth(true);
-		resized.setPreserveRatio(true);
-		SnapshotParameters params = new SnapshotParameters();
-		params.setFill(Color.TRANSPARENT);
-		double height = SystemTray.getSystemTray().getTrayIconSize().getHeight();
-		resized.setFitHeight(height);
-		log.debug("Resizing logo to height {}", height);
-		return resized.snapshot(params, null);
+	private static MenuItem createProjectMenuItem(String name, FxProject project, SpanRecorder spanRecorder,
+			MenuItem stopItem) {
+		MenuItem menuItem = new MenuItem(name);
+		menuItem.addActionListener(e -> {
+			Platform.runLater(() -> spanRecorder.startRecording(project));
+			stopItem.setEnabled(true);
+		});
+		return menuItem;
 	}
+
 }

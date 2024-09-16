@@ -18,7 +18,10 @@
  */
 package org.hansib.simplertimes.fx;
 
+import java.net.URL;
 import java.util.function.Consumer;
+
+import javax.swing.ImageIcon;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +38,7 @@ public class Resources {
 	public void loadLogo(Consumer<Image> logoHandler) {
 		Image logo;
 		try {
-			logo = loadLogo();
+			logo = fxLoader.resourceLoader().loadResourceStream("logo.png", Image::new);
 		} catch (IllegalStateException ex) {
 			log.warn("Could not load logo", ex);
 			return;
@@ -43,7 +46,9 @@ public class Resources {
 		logoHandler.accept(logo);
 	}
 
-	public Image loadLogo() {
-		return fxLoader.resourceLoader().loadResourceStream("logo.png", Image::new);
+	public java.awt.Image loadAwtLogo() {
+		URL imageURL = Resources.class.getClassLoader().getResource("logo.png");
+		return new ImageIcon(imageURL, "SimplerTimes Logo").getImage().getScaledInstance(16, 16,
+				java.awt.Image.SCALE_SMOOTH);
 	}
 }

@@ -96,12 +96,24 @@ class SpanRecorder {
 		return isRecording;
 	}
 
+	void startRecording(FxProject project) {
+
+		if (intervalTicker.isStarted()) {
+			log.info("Implicitly stopping {}", projectSelection.getValue());
+			stopRecording();
+		}
+
+		log.info("Starting {}", project);
+		projectSelection.setValue(project);
+		startRecording();
+	}
+
 	private void startRecording() {
 		isRecording.set(true);
 		intervalTicker.start();
 	}
 
-	private void stopRecording() {
+	void stopRecording() {
 		isRecording.set(false);
 		intervalTicker.stopAndGet();
 
