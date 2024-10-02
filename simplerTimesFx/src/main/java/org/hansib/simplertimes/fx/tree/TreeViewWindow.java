@@ -38,7 +38,7 @@ import javafx.stage.WindowEvent;
 
 public class TreeViewWindow<T extends TreeItemNode<T>> {
 
-	public  static final String PROJECT_PANE_FX_ID = "ProjectTreePane";
+	public static final String PROJECT_PANE_FX_ID = "ProjectTreePane";
 
 	private final TreeView<T> treeView;
 
@@ -114,7 +114,7 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 		return new Scene(treePane, 250, 250);
 	}
 
-	void removeItem(TreeItem<T> item) {
+	private void removeItem(TreeItem<T> item) {
 		T node = item.getValue();
 
 		boolean removalAccepted = removalChecker == null || removalChecker.removalAccepted(node);
@@ -131,15 +131,10 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 	}
 
 	private void newTreeItem(TreeView<T> treeview, TreeItem<T> parent) {
-		TreeItem<T> newItem = addChild(parent, MenuItems.NewProject.fmt());
+		T newChild = parent.getValue().addChild(MenuItems.NewProject.fmt());
+		TreeItem<T> newItem = new TreeItem<>(newChild);
+		parent.getChildren().add(newItem);
 		treeview.getSelectionModel().select(newItem);
 		treeview.edit(newItem);
-	}
-
-	private TreeItem<T> addChild(TreeItem<T> parent, String newChildString) {
-		T nodeChild = parent.getValue().addChild(newChildString);
-		TreeItem<T> newItem = new TreeItem<>(nodeChild);
-		parent.getChildren().add(newItem);
-		return newItem;
 	}
 }
