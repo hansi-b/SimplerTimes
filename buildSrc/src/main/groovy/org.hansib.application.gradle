@@ -8,6 +8,17 @@ plugins {
 
 def versionedProjectName = "${rootProject.name}-${project.version}"
 
+task writeVersion() {
+	doFirst {
+		file('src/main/resources/version.properties').text = """app.name=${rootProject.name}
+build.version=$version
+build.date=${new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
+"""
+	}
+}
+
+compileJava.dependsOn writeVersion
+
 license {
 	header project.file('LICENSE.HEADER')
 	ext.year = Calendar.getInstance().get(Calendar.YEAR)
