@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
@@ -33,6 +35,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class ObservableData {
+
+	private static final Logger log = LogManager.getLogger();
 
 	private final FxProject fxProjectTree;
 	private final ObservableList<FxProject> projectList = FXCollections
@@ -48,7 +52,10 @@ public class ObservableData {
 	}
 
 	public void updateProjectList() {
+		log.debug("Updating project list ...");
+		log.debug("Old: {}", projectList);
 		projectList.setAll(fxProjectTree.flatList());
+		log.debug("New: {}", projectList);
 	}
 
 	public static ObservableData load(DataStore dataStore) {

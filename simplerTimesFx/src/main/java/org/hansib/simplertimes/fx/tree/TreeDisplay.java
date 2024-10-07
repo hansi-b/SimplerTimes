@@ -39,9 +39,10 @@ public class TreeDisplay {
 	private void showWindow(Supplier<ObservableData> lazyData) {
 		if (stageToggle == null) {
 			ObservableData data = lazyData.get();
-			TreeViewWindow<FxProject> treeViewWindow = new TreeViewWindow<>(data.fxProjectTree());
+			TreeViewWindow<FxProject> treeViewWindow = new TreeViewWindow<>(data.fxProjectTree(),
+					data::updateProjectList);
 			treeViewWindow.setPreRemovalChecker(data.fxProjectRemovalCallback());
-			stageToggle = new StageToggle(() -> treeViewWindow.initStage(data::updateProjectList));
+			stageToggle = new StageToggle(() -> treeViewWindow.initStage());
 		}
 		stageToggle.toggle();
 	}

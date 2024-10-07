@@ -20,6 +20,9 @@ package org.hansib.simplertimes.fx.tree;
 
 import java.util.function.Function;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
@@ -28,11 +31,16 @@ import javafx.scene.input.KeyCode;
 
 class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 
+	private static final Logger log = LogManager.getLogger();
+
 	private TextField textField;
 	private Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction;
 
-	public TextFieldTreeCellImpl() {
+	private final Runnable changeHandler;
+
+	public TextFieldTreeCellImpl(Runnable changeHandler) {
 		super();
+		this.changeHandler = changeHandler;
 	}
 
 	public TextFieldTreeCellImpl<T> withContextMenu(
@@ -111,7 +119,9 @@ class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 
 	private void commitNewText() {
 		getItem().setText(textField.getText());
+		log.info("Commit new text in {}", this);
 		commitEdit(getItem());
+		changeHandler.run();
 	}
 
 	private String itemText() {

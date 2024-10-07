@@ -20,6 +20,8 @@ package org.hansib.simplertimes.fx.tree;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hansib.sundries.fx.Styler;
 
 import javafx.scene.control.TreeCell;
@@ -30,6 +32,8 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
 class TreeCellDragAndDrop<T extends TreeItemNode<T>> {
+
+	private static final Logger log = LogManager.getLogger();
 
 	private static final String CSS_CAN_DRAG_TO_ABOVE = "can-drag-to-above";
 	private static final String CSS_CAN_DRAG_TO_CHILD = "can-drag-to-child";
@@ -65,9 +69,11 @@ class TreeCellDragAndDrop<T extends TreeItemNode<T>> {
 	}
 
 	private final AtomicReference<TreeItem<T>> draggedItemHolder;
+	private final Runnable changeHandler;
 
-	TreeCellDragAndDrop() {
-		draggedItemHolder = new AtomicReference<>(null);
+	TreeCellDragAndDrop(Runnable changeHandler) {
+		this.draggedItemHolder = new AtomicReference<>(null);
+		this.changeHandler = changeHandler;
 	}
 
 	TreeCell<T> withDragAndDrop(TreeCell<T> cell) {
@@ -123,6 +129,8 @@ class TreeCellDragAndDrop<T extends TreeItemNode<T>> {
 			source.moveTo(target.targetItem().getValue(), target.targetIndex());
 			draggedItem.getParent().getChildren().remove(draggedItem);
 			target.targetItem().getChildren().add(target.targetIndex(), draggedItem);
+			log.info("Dragged {} to {}", source, target);
+			changeHandler.run();
 		}
 
 		cell.getTreeView().getSelectionModel().select(draggedItem);

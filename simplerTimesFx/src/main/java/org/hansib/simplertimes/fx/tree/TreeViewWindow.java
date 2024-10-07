@@ -34,30 +34,31 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class TreeViewWindow<T extends TreeItemNode<T>> {
 
 	public static final String PROJECT_PANE_FX_ID = "ProjectTreePane";
 
 	private final TreeView<T> treeView;
+	private final Runnable itemsChangeHandler;
 
 	private PreRemovalCallback<T> removalChecker;
 
-	TreeViewWindow(T root) {
-		this.treeView = initTreeView(TreeItemNode.linkTree(root));
+	TreeViewWindow(T root, Runnable itemsChangeHandler) {
+		this.treeView = initTreeView(TreeItemNode.linkTree(root), itemsChangeHandler);
 		this.treeView.getStylesheets().add(new ResourceLoader().getResourceUrl("fxml/app.css").toString());
+		this.itemsChangeHandler = itemsChangeHandler;
 	}
 
-	private TreeView<T> initTreeView(TreeItem<T> rootItem) {
+	private TreeView<T> initTreeView(TreeItem<T> rootItem, Runnable changeHandler) {
 		rootItem.setExpanded(true);
 
 		TreeView<T> tree = new TreeView<>(rootItem);
 		tree.setEditable(true);
 		tree.setShowRoot(false);
 
-		TreeCellDragAndDrop<T> dnd = new TreeCellDragAndDrop<>();
-		tree.setCellFactory(p -> dnd.withDragAndDrop(new TextFieldTreeCellImpl<T>() //
+		TreeCellDragAndDrop<T> dnd = new TreeCellDragAndDrop<>(changeHandler);
+		tree.setCellFactory(p -> dnd.withDragAndDrop(new TextFieldTreeCellImpl<T>(changeHandler) //
 				.withContextMenu(this::createContextMenu)));
 		return tree;
 	}
@@ -88,15 +89,13 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 		this.removalChecker = preRemovalCallback;
 	}
 
-	Stage initStage(Runnable projectsChangeHandler) {
+	Stage initStage() {
 		Stage treeStage = new Stage();
 		treeStage.setTitle("Projects");
 
 		new Resources().loadLogo(logo -> treeStage.getIcons().add(logo));
 
 		treeStage.setScene(initTreePaneScene());
-		treeStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> projectsChangeHandler.run());
-
 		return treeStage;
 	}
 
@@ -123,11 +122,13 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 
 		node.remove();
 		item.getParent().getChildren().remove(item);
+		itemsChangeHandler.run();
 	}
 
 	private void sortChildren(TreeItem<T> item) {
 		item.getChildren().sort((o1, o2) -> o1.getValue().text().compareTo(o2.getValue().text()));
 		item.getValue().sortChildren(String::compareTo);
+		itemsChangeHandler.run();
 	}
 
 	private void newTreeItem(TreeView<T> treeview, TreeItem<T> parent) {
