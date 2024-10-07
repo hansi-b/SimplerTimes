@@ -44,9 +44,9 @@ import javafx.scene.input.KeyEvent;
 
 class SpanRecorder {
 
-	private static final Duration minimumSpanDuration = Duration.ofSeconds(1);
-
 	private static final Logger log = LogManager.getLogger();
+
+	private static final Duration minimumSpanDuration = Duration.ofSeconds(1);
 
 	private final SearchableComboBox<FxProject> projectSelection;
 

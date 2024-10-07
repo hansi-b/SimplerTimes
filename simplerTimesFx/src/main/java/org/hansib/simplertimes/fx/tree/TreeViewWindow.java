@@ -49,10 +49,6 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 		this.treeView.getStylesheets().add(new ResourceLoader().getResourceUrl("fxml/app.css").toString());
 	}
 
-	public void setPreRemovalChecker(PreRemovalCallback<T> preRemovalCallback) {
-		this.removalChecker = preRemovalCallback;
-	}
-
 	private TreeView<T> initTreeView(TreeItem<T> rootItem) {
 		rootItem.setExpanded(true);
 
@@ -88,14 +84,18 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 		return Bindings.lessThan(Bindings.size(cell.getTreeItem().getChildren()), 2);
 	}
 
-	Stage initStage(Runnable updateHandler) {
+	public void setPreRemovalChecker(PreRemovalCallback<T> preRemovalCallback) {
+		this.removalChecker = preRemovalCallback;
+	}
+
+	Stage initStage(Runnable projectsChangeHandler) {
 		Stage treeStage = new Stage();
 		treeStage.setTitle("Projects");
 
 		new Resources().loadLogo(logo -> treeStage.getIcons().add(logo));
 
 		treeStage.setScene(initTreePaneScene());
-		treeStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> updateHandler.run());
+		treeStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> projectsChangeHandler.run());
 
 		return treeStage;
 	}
