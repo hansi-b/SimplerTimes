@@ -24,7 +24,7 @@ public class IntervalTickerSpec extends Specification {
 		def end = manualClock.turnForward(Duration.ofSeconds(10))
 
 		then:
-		await().pollDelay(Duration.ofMillis(20)).timeout(Duration.ofMillis(200)).until(() -> interval != null)
+		await().timeout(Duration.ofMillis(200)).until(() -> interval != null)
 		interval.start == start
 		interval.end == end
 
@@ -69,18 +69,17 @@ public class IntervalTickerSpec extends Specification {
 
 		then:
 		!timer.isStarted()
-		
+
 		when:
 		timer.start()
 
 		then:
 		timer.isStarted()
-		
+
 		when:
 		timer.stopAndGet()
-		
+
 		then:
 		!timer.isStarted()
-
 	}
 }
