@@ -48,10 +48,9 @@ class TrayIconMenu {
 			log.warn("Cannot resize logo (System tray not supported, or using headless graphics).");
 			return;
 		}
-		
+
 		data.projects().addListener((InvalidationListener) observable -> log.info("invalidated = {}", observable));
 		data.projects().addListener((ListChangeListener<FxProject>) c -> log.info("onChanged = {}", c));
-
 
 		log.info("Showing TrayIcon ...");
 		Platform.setImplicitExit(false);
@@ -75,7 +74,7 @@ class TrayIconMenu {
 		});
 		MenuItem stopItem = new MenuItem("Stop");
 		stopItem.addActionListener(e -> {
-			Platform.runLater(() -> spanRecorder.stopRecording());
+			Platform.runLater(spanRecorder::stopRecording);
 			stopItem.setEnabled(false);
 		});
 		stopItem.setEnabled(false);
@@ -83,8 +82,7 @@ class TrayIconMenu {
 		popup.add(showItem);
 		popup.addSeparator();
 
-		data.fxProjectTree().children().map(project -> createMenu(project, spanRecorder, stopItem))
-				.forEach(m -> popup.add(m));
+		data.fxProjectTree().children().map(project -> createMenu(project, spanRecorder, stopItem)).forEach(popup::add);
 
 		popup.addSeparator();
 		popup.add(stopItem);
@@ -95,7 +93,6 @@ class TrayIconMenu {
 			tray.add(trayIcon);
 		} catch (AWTException e) {
 			log.error("Could not add tray icon", e);
-			return;
 		}
 	}
 
