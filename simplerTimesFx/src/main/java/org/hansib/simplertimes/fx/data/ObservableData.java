@@ -52,10 +52,8 @@ public class ObservableData {
 	}
 
 	public void updateProjectList() {
-		log.debug("Updating project list ...");
-		log.debug("Old: {}", projectList);
 		projectList.setAll(fxProjectTree.flatList());
-		log.debug("New: {}", projectList);
+		log.debug("Updated project list to {}", projectList);
 	}
 
 	public static ObservableData load(DataStore dataStore) {
