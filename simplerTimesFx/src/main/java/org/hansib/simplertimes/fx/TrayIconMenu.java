@@ -19,12 +19,16 @@
 package org.hansib.simplertimes.fx;
 
 import java.awt.AWTException;
-import java.awt.GraphicsEnvironment;
 import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Arrays;
+
+import javax.swing.SwingUtilities;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,52 +37,42 @@ import org.hansib.simplertimes.fx.data.ObservableData;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
-import javafx.collections.ListChangeListener;
 import javafx.stage.Stage;
 
 class TrayIconMenu {
 
 	private static final Logger log = LogManager.getLogger();
 
-	TrayIconMenu(ObservableData data) {
+	private final ObservableData data;
+	private final SpanRecorder spanRecorder;
+
+	private TrayIcon trayIcon;
+
+	private PopupMenu popup;
+
+	private MenuItem showItem;
+	private MenuItem stopItem;
+	private MenuItem exitItem;
+
+	TrayIconMenu(ObservableData data, SpanRecorder spanRecorder, Stage primaryStage) {
+		this.data = data;
+		this.spanRecorder = spanRecorder;
+
+		this.trayIcon = new TrayIcon(new Resources().loadAwtLogo());
+
+		this.showItem = createShowItem(primaryStage);
+
+		this.exitItem = createExitItem();
+		this.stopItem = createStopItem();
+		this.stopItem.setEnabled(false);
+
+		popup = new PopupMenu();
 	}
 
-	static void create(Stage primaryStage, ObservableData data, SpanRecorder spanRecorder) {
-		if (!SystemTray.isSupported() || GraphicsEnvironment.isHeadless()) {
-			log.warn("Cannot resize logo (System tray not supported, or using headless graphics).");
-			return;
-		}
+	private void fillPopup() {
+		log.info("Filling popup menu");
 
-		data.projects().addListener((InvalidationListener) observable -> log.info("invalidated = {}", observable));
-		data.projects().addListener((ListChangeListener<FxProject>) c -> log.info("onChanged = {}", c));
-
-		log.info("Showing TrayIcon ...");
-		Platform.setImplicitExit(false);
-		TrayIcon trayIcon = new TrayIcon(new Resources().loadAwtLogo());
-
-		final PopupMenu popup = new PopupMenu();
-		final SystemTray tray = SystemTray.getSystemTray();
-
-		MenuItem showItem = new MenuItem("SimplerTimes");
-		showItem.addActionListener(e -> Platform.runLater(() -> {
-			if (primaryStage.isIconified())
-				primaryStage.setIconified(false);
-			else
-				primaryStage.show();
-		}));
-
-		MenuItem exitItem = new MenuItem("Exit");
-		exitItem.addActionListener(e -> {
-			tray.remove(trayIcon);
-			Platform.exit();
-		});
-		MenuItem stopItem = new MenuItem("Stop");
-		stopItem.addActionListener(e -> {
-			Platform.runLater(spanRecorder::stopRecording);
-			stopItem.setEnabled(false);
-		});
-		stopItem.setEnabled(false);
-
+		popup.removeAll();
 		popup.add(showItem);
 		popup.addSeparator();
 
@@ -88,12 +82,49 @@ class TrayIconMenu {
 		popup.add(stopItem);
 		popup.add(exitItem);
 
+		data.projects().addListener((InvalidationListener) observable -> fillPopup());
+	}
+
+	void show() {
+		log.info("Showing TrayIcon ...");
+		Platform.setImplicitExit(false);
+
+		fillPopup();
 		trayIcon.setPopupMenu(popup);
 		try {
-			tray.add(trayIcon);
+			SystemTray.getSystemTray().add(trayIcon);
 		} catch (AWTException e) {
 			log.error("Could not add tray icon", e);
 		}
+	}
+
+	private static MenuItem createShowItem(Stage primaryStage) {
+		MenuItem showItem = new MenuItem("SimplerTimes");
+		showItem.addActionListener(e -> Platform.runLater(() -> {
+			if (primaryStage.isIconified())
+				primaryStage.setIconified(false);
+			else
+				primaryStage.show();
+		}));
+		return showItem;
+	}
+
+	private MenuItem createStopItem() {
+		MenuItem item = new MenuItem("Stop");
+		item.addActionListener(e -> {
+			item.setEnabled(false);
+			Platform.runLater(spanRecorder::stopRecording);
+		});
+		return item;
+	}
+
+	private MenuItem createExitItem() {
+		MenuItem item = new MenuItem("Exit");
+		item.addActionListener(e -> {
+			SystemTray.getSystemTray().remove(trayIcon);
+			Platform.exit();
+		});
+		return item;
 	}
 
 	/*

@@ -20,6 +20,9 @@ package org.hansib.simplertimes.fx;
 
 import static org.hansib.simplertimes.fx.l10n.General.AppNameWindowTitle;
 
+import java.awt.GraphicsEnvironment;
+import java.awt.SystemTray;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.AppPrefs;
@@ -76,9 +79,10 @@ public class SimplerTimesFx extends Application {
 				fireCloseRequest();
 		});
 
-		if (isWindows()) {
-			TrayIconMenu.create(primaryStage, data, timesMainController.getRecorder());
+		if (isSystemTrayMenuSupported()) {
+			new TrayIconMenu(data, timesMainController.getRecorder(), primaryStage).show();
 		} else {
+			log.info("System tray menu not supported.");
 			primaryStage.setOnCloseRequest(event -> Platform.exit());
 		}
 		primaryStage.show();
@@ -89,11 +93,9 @@ public class SimplerTimesFx extends Application {
 		window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
 
-	/**
-	 * @return true iff we are on Windows
-	 */
-	private static boolean isWindows() {
-		return System.getProperty("os.name").toLowerCase().contains("win");
+	private static boolean isSystemTrayMenuSupported() {
+		return SystemTray.isSupported() && !GraphicsEnvironment.isHeadless();
+		// && System.getProperty("os.name").toLowerCase().contains("win");
 	}
 
 	@Override
