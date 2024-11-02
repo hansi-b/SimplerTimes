@@ -32,17 +32,17 @@ public class DataStore {
 	private static final Logger log = LogManager.getLogger();
 
 	private final SpansStore spansStore;
-	private final ProjectStore treeStore;
+	private final ProjectStore projectStore;
 
 	public DataStore() {
 		DataPaths appData = DataPaths.atDefault();
 
 		spansStore = new SpansStore(appData.spansPath());
-		treeStore = new ProjectStore(appData.projectsPath());
+		projectStore = new ProjectStore(appData.projectsPath());
 	}
 
 	public Project loadProjectTree() {
-		return treeStore.load();
+		return projectStore.load();
 	}
 
 	public SpansCollection loadSpans(Project projects) {
@@ -51,7 +51,7 @@ public class DataStore {
 
 	public void save(Project projects, SpansCollection spans) {
 		try {
-			treeStore.save(projects);
+			projectStore.save(projects);
 		} catch (IOException e) {
 			log.error("Could not save projects", e);
 		}
