@@ -53,7 +53,7 @@ class DateTimeHandler {
 		try {
 			return OffsetDateTime.of(LocalDateTime.parse(text, dateTimeFormatter), offset);
 		} catch (DateTimeParseException ex) {
-			log.debug("Could not parse new value as date: {}", text);
+			log.warn("Could not parse new value as date: '{}'", text);
 			return null;
 		}
 	}
