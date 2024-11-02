@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.fx.l10n.Names;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.SpansCollection;
 import org.hansib.simplertimes.yaml.ProjectStore;
@@ -38,7 +39,7 @@ public class DataStore {
 		DataPaths appData = DataPaths.atDefault();
 
 		spansStore = new SpansStore(appData.spansPath());
-		projectStore = new ProjectStore(appData.projectsPath());
+		projectStore = new ProjectStore(appData.projectsPath(), Names.NewProjectName.fmt());
 	}
 
 	public Project loadProjectTree() {

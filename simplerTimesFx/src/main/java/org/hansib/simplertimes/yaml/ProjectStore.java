@@ -31,9 +31,15 @@ public class ProjectStore {
 	private static final Logger log = LogManager.getLogger();
 
 	private final Path projectsPath;
+	private final String newProjectName;
 
-	public ProjectStore(Path projectsPath) {
+	/**
+	 * @param newProjectName the name used for the first placeholder project if we
+	 *                       don't have or cannot load an existing project tree
+	 */
+	public ProjectStore(Path projectsPath, String newProjectName) {
 		this.projectsPath = projectsPath;
+		this.newProjectName = newProjectName;
 	}
 
 	public Project load() {
@@ -47,9 +53,9 @@ public class ProjectStore {
 		}
 	}
 
-	private static Project emptyTree() {
+	private Project emptyTree() {
 		Project root = Project.root();
-		root.add("New Project");
+		root.add(newProjectName);
 		return root;
 	}
 

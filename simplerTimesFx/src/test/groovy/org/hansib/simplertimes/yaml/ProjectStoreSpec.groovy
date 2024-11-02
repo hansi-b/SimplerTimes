@@ -22,7 +22,7 @@ children:
 '''
 
 		when:
-		def root = new ProjectStore(projYaml.toPath()).load()
+		def root = new ProjectStore(projYaml.toPath(), 'My Project').load()
 
 		then:
 		root.id == 0
@@ -40,7 +40,7 @@ children:
 		File projYaml = new File(tmpDir.toFile(), 'doesnotexist.yaml')
 
 		when:
-		def root = new ProjectStore(projYaml.toPath()).load()
+		def root = new ProjectStore(projYaml.toPath(), 'My Project').load()
 
 		then:
 		root.id == 0
@@ -49,7 +49,7 @@ children:
 
 		def newProject = root.children[0]
 		newProject.id == 1
-		newProject.name == 'New Project'
+		newProject.name == 'My Project'
 		newProject.children == []
 	}
 }
