@@ -1,10 +1,14 @@
+MainWindow:
+  en: SimplerTimes
 NewProject:
-   en: New Project
+  en: New Project
 NewSubproject:
-   en: New Subproject
+  en: New Subproject
 Delete:
-   en: Delete
+  en: Delete
 SortChildren:
-   en: Sort Children
+  en: Sort Children
+Stop:
+  en: Stop
 Exit:
-   en: Exit
+  en: Exit

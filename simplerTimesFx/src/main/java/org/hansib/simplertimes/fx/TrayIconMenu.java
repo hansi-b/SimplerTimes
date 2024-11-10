@@ -29,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
+import org.hansib.simplertimes.fx.l10n.MenuItems;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -92,7 +93,7 @@ class TrayIconMenu {
 	}
 
 	private static MenuItem createShowItem(Stage primaryStage) {
-		MenuItem showItem = new MenuItem("SimplerTimes");
+		MenuItem showItem = new MenuItem(MenuItems.MainWindow.fmt());
 		showItem.addActionListener(e -> Platform.runLater(() -> {
 			if (primaryStage.isIconified())
 				primaryStage.setIconified(false);
@@ -103,7 +104,7 @@ class TrayIconMenu {
 	}
 
 	private MenuItem createStopItem() {
-		MenuItem item = new MenuItem("Stop");
+		MenuItem item = new MenuItem(MenuItems.Stop.fmt());
 		item.addActionListener(e -> {
 			item.setEnabled(false);
 			Platform.runLater(spanRecorder::stopRecording);
@@ -112,7 +113,7 @@ class TrayIconMenu {
 	}
 
 	private MenuItem createExitItem() {
-		MenuItem item = new MenuItem("Exit");
+		MenuItem item = new MenuItem(MenuItems.Exit.fmt());
 		item.addActionListener(e -> {
 			SystemTray.getSystemTray().remove(trayIcon);
 			Platform.exit();
