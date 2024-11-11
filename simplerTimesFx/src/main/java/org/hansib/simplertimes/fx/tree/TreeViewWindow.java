@@ -19,6 +19,7 @@
 package org.hansib.simplertimes.fx.tree;
 
 import org.hansib.simplertimes.fx.Resources;
+import org.hansib.simplertimes.fx.l10n.General;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
 import org.hansib.sundries.ResourceLoader;
@@ -91,7 +92,7 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 
 	Stage initStage() {
 		Stage treeStage = new Stage();
-		treeStage.setTitle("Projects");
+		treeStage.setTitle(General.ProjectsWindowTitle.fmt());
 
 		new Resources().loadLogo(logo -> treeStage.getIcons().add(logo));
 

@@ -21,5 +21,7 @@ package org.hansib.simplertimes.fx.l10n;
 import org.hansib.sundries.l10n.FormatKey;
 
 public enum General implements FormatKey {
-	AppNameWindowTitle
+	AppNameWindowTitle, //
+	ProjectsWindowTitle, //
+	SpansWindowTitle
 }
