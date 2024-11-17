@@ -30,6 +30,7 @@ import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
 import org.hansib.sundries.fx.FxResourceLoader;
+import org.hansib.sundries.fx.StageToggle;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -85,7 +86,8 @@ public class SimplerTimesFx extends Application {
 			log.info("System tray menu not supported.");
 			primaryStage.setOnCloseRequest(event -> Platform.exit());
 		}
-		primaryStage.show();
+		new StageToggle(() -> primaryStage).toggle();
+		primaryStage.sizeToScene();
 	}
 
 	private void fireCloseRequest() {
