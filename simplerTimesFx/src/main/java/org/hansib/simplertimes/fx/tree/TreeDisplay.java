@@ -42,7 +42,7 @@ public class TreeDisplay {
 			TreeViewWindow<FxProject> treeViewWindow = new TreeViewWindow<>(data.fxProjectTree(),
 					data::updateProjectList);
 			treeViewWindow.setPreRemovalChecker(data.fxProjectRemovalCallback());
-			stageToggle = new StageToggle(() -> treeViewWindow.initStage());
+			stageToggle = new StageToggle(treeViewWindow::initStage);
 		}
 		stageToggle.toggle();
 	}

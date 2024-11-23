@@ -35,9 +35,7 @@ abstract public class AbstractAppSpec extends ApplicationSpec {
 		FxToolkit.cleanupStages()
 	}
 
-	static boolean isHeadless() {
-		Boolean.valueOf(System.properties['testfx.headless'])
-	}
+	static boolean isHeadless() { Boolean.getBoolean('testfx.headless') }
 
 	/**
 	 * Right-click on the argument element; adds a hack from
