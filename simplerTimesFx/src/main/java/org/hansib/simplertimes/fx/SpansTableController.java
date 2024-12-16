@@ -27,6 +27,8 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.FxSpan;
 import org.hansib.simplertimes.fx.data.ObservableData;
+import org.hansib.simplertimes.fx.l10n.Buttons;
+import org.hansib.simplertimes.fx.l10n.Headers;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;
@@ -127,7 +129,7 @@ public class SpansTableController {
 		spansTable.setEditable(true);
 		spansTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-		new TableColumnBuilder<>(startCol).headerText("Start") //
+		new TableColumnBuilder<>(startCol).headerText(Headers.Start.fmt()) //
 				.value(FxSpan::start) //
 				.cellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
 						(cell, text) -> {
@@ -138,7 +140,7 @@ public class SpansTableController {
 				.onEditCommit(e -> setNewDateTime(e, FxSpan::start)) //
 				.build();
 
-		new TableColumnBuilder<>(endCol).headerText("End") //
+		new TableColumnBuilder<>(endCol).headerText(Headers.End.fmt()) //
 				.value(FxSpan::end) //
 				.cellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
 						(cell, text) -> {
@@ -149,14 +151,14 @@ public class SpansTableController {
 				.onEditCommit(e -> setNewDateTime(e, FxSpan::end)) //
 				.build();
 
-		new TableColumnBuilder<>(projectCol).headerText("Project") //
+		new TableColumnBuilder<>(projectCol).headerText(Headers.Project.fmt()) //
 				.value(FxSpan::fxProject) //
 				.cellFactory(list -> new ProjectComboBoxTableCell(projects, updateHandler)) //
 				.editable() //
 				.comparator(FxProject.nameComparator) //
 				.build();
 
-		new TableColumnBuilder<>(durationCol).headerText("Duration") //
+		new TableColumnBuilder<>(durationCol).headerText(Headers.Duration.fmt()) //
 				.value(FxSpan::duration) //
 				.cellFactory(new CellFactoryBuilder<>(durationCol).format(Utils::toHmsString).build()) //
 				.build();
@@ -206,8 +208,8 @@ public class SpansTableController {
 
 		boolean userAgreed = new AlertBuilder(AlertType.WARNING,
 				"The deletion of the %d selected item(s) cannot be undone.".formatted(selectedItems.size())) //
-						.withDefaultButton(ButtonType.CANCEL, "Cancel") //
-						.withButton(ButtonType.YES, "Delete") //
+						.withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt()) //
+						.withButton(ButtonType.YES, Buttons.Delete.fmt()) //
 						.showAndWaitFor(ButtonType.YES);
 
 		if (userAgreed) {
