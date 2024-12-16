@@ -46,7 +46,9 @@ public class L10nSetup {
 
 	@VisibleForTesting
 	static L10n loadEnglish(Consumer<L10nFormatError> errorHandler) {
-		L10n english = new L10n().with(General.class).with(MenuItems.class).with(Names.class);
+		L10n english = new L10n().with(General.class) //
+				.with(MenuItems.class).with(Names.class) //
+				.with(Buttons.class).with(Headers.class);
 		english.load("l10n", Locales.en, errorHandler);
 		return english;
 	}

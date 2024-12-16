@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.fx.l10n.Buttons;
 import org.hansib.sundries.ResourceLoader;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.prefs.PrimitiveBooleanPref;
@@ -70,8 +71,8 @@ class DisclaimerChecker {
 		return new AlertBuilder(AlertType.CONFIRMATION, new VBox(textArea)) //
 				.withTitle("SimplerTimes - Disclaimer") //
 				.withHeaderText("SimplerTimes - Disclaimer") //
-				.withDefaultButton(ButtonType.CANCEL, "Cancel") //
-				.withButton(ButtonType.OK, "OK") //
+				.withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt()) //
+				.withButton(ButtonType.OK, Buttons.Ok.fmt()) //
 				.resizable(true) //
 				.showAndWaitFor(ButtonType.OK);
 	}
