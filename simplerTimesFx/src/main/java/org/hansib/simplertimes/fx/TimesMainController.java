@@ -20,18 +20,18 @@ package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
 
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+
 import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.tree.TreeDisplay;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.testing.VisibleForTesting;
-
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 
 public class TimesMainController {
 

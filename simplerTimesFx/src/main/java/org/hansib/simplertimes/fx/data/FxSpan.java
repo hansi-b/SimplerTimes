@@ -21,13 +21,13 @@ package org.hansib.simplertimes.fx.data;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 
-import org.hansib.simplertimes.spans.Span;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
+
+import org.hansib.simplertimes.spans.Span;
 
 public class FxSpan {
 

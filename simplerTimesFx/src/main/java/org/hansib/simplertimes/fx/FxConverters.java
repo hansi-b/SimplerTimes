@@ -18,10 +18,10 @@
  */
 package org.hansib.simplertimes.fx;
 
+import javafx.scene.control.ComboBox;
+
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.sundries.fx.Converters;
-
-import javafx.scene.control.ComboBox;
 
 class FxConverters {
 

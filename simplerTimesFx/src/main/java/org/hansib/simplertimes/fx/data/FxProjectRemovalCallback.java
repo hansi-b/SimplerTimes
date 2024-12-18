@@ -20,12 +20,12 @@ package org.hansib.simplertimes.fx.data;
 
 import java.util.List;
 
-import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
-import org.hansib.sundries.fx.AlertBuilder;
-
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+
+import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
+import org.hansib.sundries.fx.AlertBuilder;
 
 class FxProjectRemovalCallback implements PreRemovalCallback<FxProject> {
 	private ObservableList<FxSpan> spans;

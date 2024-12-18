@@ -24,10 +24,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hansib.simplertimes.projects.Project;
-import org.hansib.simplertimes.projects.Project.Builder;
-import org.hansib.simplertimes.spans.Span;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,6 +38,10 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+
+import org.hansib.simplertimes.projects.Project;
+import org.hansib.simplertimes.projects.Project.Builder;
+import org.hansib.simplertimes.spans.Span;
 
 public class YamlMapper {
 

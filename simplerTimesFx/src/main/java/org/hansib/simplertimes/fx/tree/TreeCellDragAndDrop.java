@@ -20,16 +20,16 @@ package org.hansib.simplertimes.fx.tree;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hansib.sundries.fx.Styler;
-
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hansib.sundries.fx.Styler;
 
 class TreeCellDragAndDrop<T extends TreeItemNode<T>> {
 

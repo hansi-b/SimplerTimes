@@ -23,15 +23,6 @@ import static org.hansib.simplertimes.fx.l10n.General.AppNameWindowTitle;
 import java.awt.GraphicsEnvironment;
 import java.awt.SystemTray;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.AppPrefs;
-import org.hansib.simplertimes.DataStore;
-import org.hansib.simplertimes.fx.data.ObservableData;
-import org.hansib.simplertimes.fx.l10n.L10nSetup;
-import org.hansib.sundries.fx.FxResourceLoader;
-import org.hansib.sundries.fx.StageToggle;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
@@ -41,6 +32,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.AppPrefs;
+import org.hansib.simplertimes.DataStore;
+import org.hansib.simplertimes.fx.data.ObservableData;
+import org.hansib.simplertimes.fx.l10n.L10nSetup;
+import org.hansib.sundries.fx.FxResourceLoader;
+import org.hansib.sundries.fx.StageToggle;
 
 public class SimplerTimesFx extends Application {
 

@@ -20,14 +20,14 @@ package org.hansib.simplertimes.fx;
 
 import java.util.function.Supplier;
 
+import javafx.scene.control.Button;
+import javafx.stage.Stage;
+
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.General;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
 import org.hansib.sundries.fx.StageToggle;
-
-import javafx.scene.control.Button;
-import javafx.stage.Stage;
 
 class SpansDisplay {
 

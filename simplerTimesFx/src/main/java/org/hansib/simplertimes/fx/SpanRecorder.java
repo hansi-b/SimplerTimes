@@ -22,6 +22,14 @@ import java.time.Duration;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.SearchableComboBox;
@@ -33,14 +41,6 @@ import org.hansib.simplertimes.times.IntervalTicker;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.testing.VisibleForTesting;
-
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 
 class SpanRecorder {
 

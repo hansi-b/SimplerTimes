@@ -18,9 +18,9 @@
  */
 package org.hansib.simplertimes.fx;
 
-import org.kordamp.ikonli.javafx.FontIcon;
-
 import javafx.scene.Node;
+
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public class Icons {
 

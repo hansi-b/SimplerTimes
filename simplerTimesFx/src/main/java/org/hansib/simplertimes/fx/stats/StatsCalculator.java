@@ -25,11 +25,11 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-import org.hansib.simplertimes.fx.data.FxProject;
-import org.hansib.simplertimes.fx.data.FxSpan;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import org.hansib.simplertimes.fx.data.FxProject;
+import org.hansib.simplertimes.fx.data.FxSpan;
 
 class StatsCalculator {
 	private final ObservableList<FxSpan> spans;

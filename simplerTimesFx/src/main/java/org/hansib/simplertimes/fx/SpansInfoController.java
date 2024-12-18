@@ -18,13 +18,13 @@
  */
 package org.hansib.simplertimes.fx;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.stats.SpansStatsController;
-
-import javafx.fxml.FXML;
-import javafx.scene.control.Tab;
 
 public class SpansInfoController {
 

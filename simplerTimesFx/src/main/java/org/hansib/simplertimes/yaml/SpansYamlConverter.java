@@ -21,11 +21,11 @@ package org.hansib.simplertimes.yaml;
 import java.io.IOException;
 import java.util.List;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 
 class SpansYamlConverter {
 

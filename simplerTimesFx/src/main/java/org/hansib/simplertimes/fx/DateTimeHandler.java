@@ -25,11 +25,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.function.Function;
 
+import javafx.util.StringConverter;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.sundries.fx.Converters;
-
-import javafx.util.StringConverter;
 
 class DateTimeHandler {
 

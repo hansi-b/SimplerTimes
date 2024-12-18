@@ -23,11 +23,11 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hansib.simplertimes.fx.data.FxProject;
-import org.hansib.simplertimes.times.Utils;
-
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
+
+import org.hansib.simplertimes.fx.data.FxProject;
+import org.hansib.simplertimes.times.Utils;
 
 record StatsRow(ReadOnlyStringProperty project, Map<LocalDate, ReadOnlyStringProperty> durations) {
 

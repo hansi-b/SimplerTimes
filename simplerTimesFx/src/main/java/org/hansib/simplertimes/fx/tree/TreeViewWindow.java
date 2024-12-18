@@ -18,13 +18,6 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
-import org.hansib.simplertimes.fx.Resources;
-import org.hansib.simplertimes.fx.l10n.General;
-import org.hansib.simplertimes.fx.l10n.MenuItems;
-import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
-import org.hansib.sundries.ResourceLoader;
-import org.hansib.sundries.fx.ContextMenuBuilder;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -35,6 +28,13 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import org.hansib.simplertimes.fx.Resources;
+import org.hansib.simplertimes.fx.l10n.General;
+import org.hansib.simplertimes.fx.l10n.MenuItems;
+import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
+import org.hansib.sundries.ResourceLoader;
+import org.hansib.sundries.fx.ContextMenuBuilder;
 
 public class TreeViewWindow<T extends TreeItemNode<T>> {
 

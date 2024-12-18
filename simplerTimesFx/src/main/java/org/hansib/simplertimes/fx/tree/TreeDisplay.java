@@ -20,13 +20,13 @@ package org.hansib.simplertimes.fx.tree;
 
 import java.util.function.Supplier;
 
+import javafx.scene.control.Button;
+
 import org.hansib.simplertimes.fx.Icons;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.StageToggle;
-
-import javafx.scene.control.Button;
 
 public class TreeDisplay {
 

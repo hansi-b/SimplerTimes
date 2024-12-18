@@ -22,20 +22,6 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.fx.data.FxProject;
-import org.hansib.simplertimes.fx.data.FxSpan;
-import org.hansib.simplertimes.fx.data.ObservableData;
-import org.hansib.simplertimes.fx.l10n.Buttons;
-import org.hansib.simplertimes.fx.l10n.Headers;
-import org.hansib.simplertimes.times.Utils;
-import org.hansib.sundries.fx.AlertBuilder;
-import org.hansib.sundries.fx.ContextMenuBuilder;
-import org.hansib.sundries.fx.table.CellFactoryBuilder;
-import org.hansib.sundries.fx.table.EditingCell;
-import org.hansib.sundries.fx.table.TableColumnBuilder;
-
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -49,6 +35,20 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.util.StringConverter;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.fx.data.FxProject;
+import org.hansib.simplertimes.fx.data.FxSpan;
+import org.hansib.simplertimes.fx.data.ObservableData;
+import org.hansib.simplertimes.fx.l10n.Buttons;
+import org.hansib.simplertimes.fx.l10n.Headers;
+import org.hansib.simplertimes.times.Utils;
+import org.hansib.sundries.fx.AlertBuilder;
+import org.hansib.sundries.fx.ContextMenuBuilder;
+import org.hansib.sundries.fx.table.CellFactoryBuilder;
+import org.hansib.sundries.fx.table.EditingCell;
+import org.hansib.sundries.fx.table.TableColumnBuilder;
 
 public class SpansTableController {
 
