@@ -60,7 +60,7 @@ public class SpansTableController {
 
 		ProjectComboBoxTableCell(ObservableList<FxProject> projects, Runnable updateHandler) {
 
-			super(new StringConverter<FxProject>() {
+			super(new StringConverter<>() {
 				@Override
 				public String toString(FxProject project) {
 					return project == null ? null : project.text();

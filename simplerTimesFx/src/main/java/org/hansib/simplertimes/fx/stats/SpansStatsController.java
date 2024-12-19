@@ -74,7 +74,7 @@ public class SpansStatsController {
 
 		selectedDate = new SimpleObjectProperty<>(LocalDate.now());
 		datesShown = selectedDate.map(Utils::daysOfWeek);
-		datesShown.addListener((InvalidationListener) observable -> updateStats());
+		datesShown.addListener(observable -> updateStats());
 
 		new ButtonBuilder(monthBack) //
 				.graphic(Icons.monthBack()).onAction(e -> shiftDate(Period.ofMonths(-1))).build();
