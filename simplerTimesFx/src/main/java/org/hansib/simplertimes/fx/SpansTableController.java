@@ -43,6 +43,7 @@ import org.hansib.simplertimes.fx.data.FxSpan;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.Buttons;
 import org.hansib.simplertimes.fx.l10n.Headers;
+import org.hansib.simplertimes.fx.l10n.MenuItems;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;
@@ -134,8 +135,8 @@ public class SpansTableController {
 				.cellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
 						(cell, text) -> {
 							OffsetDateTime newStartTime = dtHandler.parseToOffsetDateTime(text);
-							return newStartTime != null && withReferenceOffset(newStartTime, cell.getItem())
-									.isBefore(endCol.getCellData(cell.getIndex()));
+							return newStartTime != null && withReferenceOffset(newStartTime, cell.getItem()).isBefore(
+									endCol.getCellData(cell.getIndex()));
 						})) //
 				.onEditCommit(e -> setNewDateTime(e, FxSpan::start)) //
 				.build();
@@ -145,8 +146,8 @@ public class SpansTableController {
 				.cellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
 						(cell, text) -> {
 							OffsetDateTime newEndTime = dtHandler.parseToOffsetDateTime(text);
-							return newEndTime != null && withReferenceOffset(newEndTime, cell.getItem())
-									.isAfter(startCol.getCellData(cell.getIndex()));
+							return newEndTime != null && withReferenceOffset(newEndTime, cell.getItem()).isAfter(
+									startCol.getCellData(cell.getIndex()));
 						})) //
 				.onEditCommit(e -> setNewDateTime(e, FxSpan::end)) //
 				.build();
@@ -174,7 +175,7 @@ public class SpansTableController {
 		durationCol.prefWidthProperty().bind(spansTable.widthProperty().subtract(colsWidth));
 
 		spansTable.setContextMenu(new ContextMenuBuilder() //
-				.item("Delete", e -> deleteSelected()).build());
+				.item(MenuItems.Delete.fmt(), e -> deleteSelected()).build());
 	}
 
 	void setUpdateHandler(Runnable updateHandler) {
@@ -208,9 +209,9 @@ public class SpansTableController {
 
 		boolean userAgreed = new AlertBuilder(AlertType.WARNING,
 				"The deletion of the %d selected item(s) cannot be undone.".formatted(selectedItems.size())) //
-						.withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt()) //
-						.withButton(ButtonType.YES, Buttons.Delete.fmt()) //
-						.showAndWaitFor(ButtonType.YES);
+				.withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt()) //
+				.withButton(ButtonType.YES, Buttons.Delete.fmt()) //
+				.showAndWaitFor(ButtonType.YES);
 
 		if (userAgreed) {
 			spansTable.getItems().removeAll(selectedItems);

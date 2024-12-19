@@ -37,6 +37,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.Icons;
 import org.hansib.simplertimes.fx.data.FxSpan;
+import org.hansib.simplertimes.fx.l10n.Headers;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.table.TableColumnBuilder;
@@ -69,7 +70,7 @@ public class SpansStatsController {
 		log.info("Initialising spans stats");
 
 		spansStats.getColumns()
-				.add(new TableColumnBuilder<StatsRow, String>("Project").value(StatsRow::project).build());
+				.add(new TableColumnBuilder<StatsRow, String>(Headers.Project.fmt()).value(StatsRow::project).build());
 
 		selectedDate = new SimpleObjectProperty<>(LocalDate.now());
 		datesShown = selectedDate.map(Utils::daysOfWeek);
