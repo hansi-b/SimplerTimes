@@ -29,18 +29,9 @@ import org.hansib.sundries.prefs.store.UserNodePrefsStore;
 
 public class AppPrefs {
 
-	private static PrefsStore fixedPrefsStore;
-
-	/**
-	 * poor person's dependency injection for a prefs store to use mocked prefs in tests
-	 */
-	static void fix(PrefsStore prefsStore) {
-		fixedPrefsStore = prefsStore;
-	}
-
 	enum PrefKeys {
 		_prefsVersion, // optionalEnum
-		isDisclaimerAccepted; // requiredBoolean
+		isDisclaimerAccepted // requiredBoolean
 	}
 
 	enum PrefVersion {
@@ -48,9 +39,7 @@ public class AppPrefs {
 	}
 
 	public static AppPrefs create() {
-		Prefs<PrefKeys> prefs = buildPrefs(
-				fixedPrefsStore != null ? fixedPrefsStore : UserNodePrefsStore.forApp(SimplerTimesFx.class));
-		return new AppPrefs(prefs);
+		return new AppPrefs(buildPrefs(UserNodePrefsStore.forApp(SimplerTimesFx.class)));
 	}
 
 	private static Prefs<PrefKeys> buildPrefs(PrefsStore prefsStore) {
