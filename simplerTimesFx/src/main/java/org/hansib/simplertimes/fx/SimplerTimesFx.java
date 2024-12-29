@@ -24,14 +24,11 @@ import java.awt.GraphicsEnvironment;
 import java.awt.SystemTray;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import javafx.stage.WindowEvent;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +36,7 @@ import org.hansib.simplertimes.AppPrefs;
 import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
+import org.hansib.sundries.fx.AppExitManager;
 import org.hansib.sundries.fx.FxResourceLoader;
 import org.hansib.sundries.fx.StageToggle;
 
@@ -48,8 +46,6 @@ public class SimplerTimesFx extends Application {
 
 	private final FxResourceLoader fxLoader = new FxResourceLoader();
 
-	private Stage primaryStage;
-
 	private DataStore dataStore;
 
 	private TimesMainController timesMainController;
@@ -58,11 +54,11 @@ public class SimplerTimesFx extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		log.info("Starting ...");
-		this.primaryStage = primaryStage;
+		final AppExitManager appExitManager = new AppExitManager();
 
 		L10nSetup.activateEnglish();
 
-		DisclaimerChecker.checkDisclaimer(AppPrefs.create().disclaimerAccepted(), this::fireCloseRequest);
+		DisclaimerChecker.checkDisclaimer(AppPrefs.create().disclaimerAccepted(), appExitManager::exit);
 
 		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
 				(Parent root) -> primaryStage.setScene(new Scene(root)));
@@ -76,22 +72,17 @@ public class SimplerTimesFx extends Application {
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
 			if (ev.getCode() == KeyCode.Q && ev.isControlDown())
-				fireCloseRequest();
+				appExitManager.exit();
 		});
 
 		if (isSystemTrayMenuSupported()) {
-			new TrayIconMenu(data, timesMainController.getRecorder(), primaryStage).show();
+			new TrayIconMenu(data, timesMainController.getRecorder(), primaryStage, appExitManager).show();
 		} else {
 			log.info("System tray menu not supported.");
-			primaryStage.setOnCloseRequest(event -> Platform.exit());
+			primaryStage.setOnCloseRequest(e -> appExitManager.exit());
 		}
 		new StageToggle(() -> primaryStage).toggle();
 		primaryStage.sizeToScene();
-	}
-
-	private void fireCloseRequest() {
-		Window window = primaryStage.getScene().getWindow();
-		window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
 
 	private static boolean isSystemTrayMenuSupported() {

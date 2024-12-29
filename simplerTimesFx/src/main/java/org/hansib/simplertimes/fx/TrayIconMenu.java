@@ -34,6 +34,7 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
+import org.hansib.sundries.fx.AppExitManager;
 
 class TrayIconMenu {
 
@@ -50,15 +51,16 @@ class TrayIconMenu {
 	private final MenuItem stopItem;
 	private final MenuItem exitItem;
 
-	TrayIconMenu(ObservableData data, SpanRecorder spanRecorder, Stage primaryStage) {
+	TrayIconMenu(ObservableData data, SpanRecorder spanRecorder, Stage primaryStage, AppExitManager appExitManager) {
 		this.data = data;
 		this.spanRecorder = spanRecorder;
 
 		this.trayIcon = new TrayIcon(new Resources().loadAwtLogo());
+		appExitManager.addPreExitAction(() -> SystemTray.getSystemTray().remove(trayIcon));
 
 		this.popup = new PopupMenu();
 		this.showItem = createShowItem(primaryStage);
-		this.exitItem = createExitItem();
+		this.exitItem = createExitItem(appExitManager);
 		this.stopItem = createStopItem();
 		this.stopItem.setEnabled(false);
 
@@ -112,12 +114,9 @@ class TrayIconMenu {
 		return item;
 	}
 
-	private MenuItem createExitItem() {
+	private MenuItem createExitItem(AppExitManager appExitManager) {
 		MenuItem item = new MenuItem(MenuItems.Exit.fmt());
-		item.addActionListener(e -> {
-			SystemTray.getSystemTray().remove(trayIcon);
-			Platform.exit();
-		});
+		item.addActionListener(e -> appExitManager.exit());
 		return item;
 	}
 
