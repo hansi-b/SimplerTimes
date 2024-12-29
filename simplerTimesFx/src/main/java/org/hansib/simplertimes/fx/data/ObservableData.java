@@ -30,6 +30,7 @@ import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.DataStore;
+import org.hansib.simplertimes.fx.tree.TreeItemNode;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.simplertimes.spans.Span;
 import org.hansib.simplertimes.spans.SpansCollection;
@@ -39,11 +40,11 @@ public class ObservableData {
 	private static final Logger log = LogManager.getLogger();
 
 	private final FxProject fxProjectTree;
-	private final ObservableList<FxProject> projectList = FXCollections
-			.observableArrayList(p -> new Observable[] { p.name() });
+	private final ObservableList<FxProject> projectList = FXCollections.observableArrayList(
+			p -> new Observable[] { p.name() });
 
-	private final ObservableList<FxSpan> spans = FXCollections
-			.observableArrayList(s -> new Observable[] { s.fxProject(), s.duration() });
+	private final ObservableList<FxSpan> spans = FXCollections.observableArrayList(
+			s -> new Observable[] { s.fxProject(), s.duration() });
 
 	private ObservableData(FxProject fxProjectTree, List<FxSpan> spans) {
 		this.fxProjectTree = fxProjectTree;
@@ -61,7 +62,7 @@ public class ObservableData {
 		FxProject fxProjectTree = FxProject.root(projectTree);
 
 		Map<Project, FxProject> projectMap = fxProjectTree.flatList().stream()
-				.collect(Collectors.toMap(p -> p.project(), p -> p));
+				.collect(Collectors.toMap(FxProject::project, p -> p));
 
 		List<FxSpan> fxSpans = dataStore.loadSpans(projectTree).stream()
 				.map(s -> new FxSpan(projectMap.get(s.project()), s.start(), s.end())).toList();
@@ -93,7 +94,7 @@ public class ObservableData {
 		spans.add(new FxSpan(project, temp.start(), temp.end()));
 	}
 
-	public FxProjectRemovalCallback fxProjectRemovalCallback() {
+	public TreeItemNode.PreRemovalCallback<FxProject> fxProjectRemovalCallback() {
 		return new FxProjectRemovalCallback(spans);
 	}
 }

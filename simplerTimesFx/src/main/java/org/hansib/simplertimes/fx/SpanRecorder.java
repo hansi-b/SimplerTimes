@@ -50,7 +50,7 @@ class SpanRecorder {
 
 	private final SearchableComboBox<FxProject> projectSelection;
 
-	private IntervalTicker intervalTicker;
+	private final IntervalTicker intervalTicker;
 	private final Supplier<ObservableData> lazySpanReceiver;
 
 	private final BooleanProperty isRecording = new SimpleBooleanProperty(false);

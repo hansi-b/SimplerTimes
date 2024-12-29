@@ -18,6 +18,8 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
+import java.util.Comparator;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -71,7 +73,8 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 		return new ContextMenuBuilder() //
 				.item(MenuItems.NewSubproject.fmt(), e -> newTreeItem(cell.getTreeView(), cell.getTreeItem())) //
 				.item(MenuItems.Delete.fmt(), e -> removeItem(cell.getTreeItem()), isLastProject(cell)) //
-				.item(MenuItems.SortChildren.fmt(), e -> sortChildren(cell.getTreeItem()), hasFewerThan2Children(cell)) //
+				.item(MenuItems.SortChildren.fmt(), e -> sortChildren(cell.getTreeItem()),
+						hasFewerThan2Children(cell)) //
 				.build();
 	}
 
@@ -127,7 +130,7 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 	}
 
 	private void sortChildren(TreeItem<T> item) {
-		item.getChildren().sort((o1, o2) -> o1.getValue().text().compareTo(o2.getValue().text()));
+		item.getChildren().sort(Comparator.comparing(o -> o.getValue().text()));
 		item.getValue().sortChildren(String::compareTo);
 		itemsChangeHandler.run();
 	}

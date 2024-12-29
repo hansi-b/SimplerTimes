@@ -24,39 +24,39 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 public class Icons {
 
-	public static final Node start() {
+	public static Node start() {
 		return new FontIcon("codicon-play-circle");
 	}
 
-	public static final Node stop() {
+	public static Node stop() {
 		return new FontIcon("codicon-stop-circle");
 	}
 
-	public static final Node editTree() {
+	public static Node editTree() {
 		return new FontIcon("codicon-list-tree");
 	}
 
-	public static final Node showSpans() {
+	public static Node showSpans() {
 		return new FontIcon("codicon-calendar");
 	}
 
-	public static final Node weekBack() {
+	public static Node weekBack() {
 		return new FontIcon("unil-angle-left");
 	}
 
-	public static final Node weekForward() {
+	public static Node weekForward() {
 		return new FontIcon("unil-angle-right");
 	}
 
-	public static final Node monthBack() {
+	public static Node monthBack() {
 		return new FontIcon("unil-angle-double-left");
 	}
 
-	public static final Node monthForward() {
+	public static Node monthForward() {
 		return new FontIcon("unil-angle-double-right");
 	}
 
-	public static final Node today() {
+	public static Node today() {
 		return new FontIcon("unil-circle");
 	}
 }

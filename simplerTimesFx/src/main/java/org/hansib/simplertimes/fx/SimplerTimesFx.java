@@ -62,8 +62,7 @@ public class SimplerTimesFx extends Application {
 
 		L10nSetup.activateEnglish();
 
-		AppPrefs prefs = AppPrefs.create();
-		DisclaimerChecker.checkDisclaimer(prefs.disclaimerAccepted(), this::fireCloseRequest);
+		DisclaimerChecker.checkDisclaimer(AppPrefs.create().disclaimerAccepted(), this::fireCloseRequest);
 
 		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
 				(Parent root) -> primaryStage.setScene(new Scene(root)));

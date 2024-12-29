@@ -45,9 +45,9 @@ class DisclaimerChecker {
 			return;
 
 		Platform.runLater(() -> {
-			boolean displayDislaimerAndAccept = new DisclaimerChecker().askAcceptDisclaimer();
-			isDisclaimerAccepted.set(displayDislaimerAndAccept);
-			if (!displayDislaimerAndAccept) {
+			boolean displayDisclaimerAndAccept = new DisclaimerChecker().askAcceptDisclaimer();
+			isDisclaimerAccepted.set(displayDisclaimerAndAccept);
+			if (!displayDisclaimerAndAccept) {
 				log.info("Disclaimer was rejected");
 				exitCall.run();
 			}
@@ -61,8 +61,8 @@ class DisclaimerChecker {
 		if (disclaimer == null)
 			return false;
 
-		final String frage = "Do you accept this agreement?\n(\"Cancel\" quits the program.)";
-		TextArea textArea = new TextArea("%s%n%s".formatted(disclaimer, frage));
+		final String doYouAccept = "Do you accept this agreement?\n(\"Cancel\" quits the program.)";
+		TextArea textArea = new TextArea("%s%n%s".formatted(disclaimer, doYouAccept));
 		textArea.setEditable(false);
 		textArea.setWrapText(true);
 		textArea.setPrefHeight(300);
@@ -82,8 +82,9 @@ class DisclaimerChecker {
 			return resourceLoader.getResourceAsString("disclaimer.txt");
 		} catch (final RuntimeException | IOException e) {
 			log.error("Could not load disclaimer", e);
-			new AlertBuilder(AlertType.ERROR, "The disclaimer could not be loaded: %s".formatted(e.getMessage()))
-					.withTitle("Internal error while loading the disclaimer") //
+			new AlertBuilder(AlertType.ERROR,
+					"The disclaimer could not be loaded: %s".formatted(e.getMessage())).withTitle(
+							"Internal error while loading the disclaimer") //
 					.showAndWait();
 			return null;
 		}

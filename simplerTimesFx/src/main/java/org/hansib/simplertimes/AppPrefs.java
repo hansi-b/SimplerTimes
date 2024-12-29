@@ -32,8 +32,7 @@ public class AppPrefs {
 	private static PrefsStore fixedPrefsStore;
 
 	/**
-	 * poor person's dependency injection for a prefs store to use mocked prefs in
-	 * tests
+	 * poor person's dependency injection for a prefs store to use mocked prefs in tests
 	 */
 	static void fix(PrefsStore prefsStore) {
 		fixedPrefsStore = prefsStore;
@@ -77,12 +76,13 @@ public class AppPrefs {
 
 		OptEnum<PrefVersion> version = prefs.getPref(PrefKeys._prefsVersion);
 		Optional<PrefVersion> incomingVersion = version.get();
-		if (!incomingVersion.isPresent()) {
+		if (incomingVersion.isEmpty()) {
 			version.set(currentVersion);
 		} else {
 			if (incomingVersion.get() != currentVersion)
-				throw new IllegalStateException(String.format("Cannot handle preferences version %s (need %s)",
-						incomingVersion.get(), currentVersion));
+				throw new IllegalStateException(
+						String.format("Cannot handle preferences version %s (need %s)", incomingVersion.get(),
+								currentVersion));
 		}
 	}
 

@@ -37,9 +37,8 @@ public class DataPaths {
 		if (Files.exists(dataDir)) {
 			if (!Files.isDirectory(dataDir))
 				throw Errors.illegalArg("Data directory argument '%s' exists, but is not a directory", dataDir);
-		} else {
-			dataDir.toFile().mkdirs();
-		}
+		} else if (!dataDir.toFile().mkdirs())
+			throw Errors.illegalArg("Could not create data directory '%s'", dataDir);
 	}
 
 	public static DataPaths atDefault() {

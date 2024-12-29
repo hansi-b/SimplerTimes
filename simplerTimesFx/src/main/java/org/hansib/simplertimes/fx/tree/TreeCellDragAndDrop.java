@@ -45,7 +45,7 @@ class TreeCellDragAndDrop<T extends TreeItemNode<T>> {
 		private final double threshold;
 		private final String css;
 
-		private DragRelation(double threshold, String css) {
+		DragRelation(double threshold, String css) {
 			this.threshold = threshold;
 			this.css = css;
 		}
@@ -147,7 +147,8 @@ class TreeCellDragAndDrop<T extends TreeItemNode<T>> {
 		int targetIndex = 0;
 		if (dragRelation != DragRelation.Child && targetItem.getParent() != null) {
 			TreeItem<T> parent = targetItem.getParent();
-			targetIndex = dragRelation == DragRelation.Above ? parent.getChildren().indexOf(cell.getTreeItem())
+			targetIndex = dragRelation == DragRelation.Above
+					? parent.getChildren().indexOf(cell.getTreeItem())
 					: parent.getChildren().indexOf(cell.getTreeItem()) + 1;
 			targetItem = parent;
 		}
@@ -157,8 +158,7 @@ class TreeCellDragAndDrop<T extends TreeItemNode<T>> {
 	}
 
 	/**
-	 * @return either the argument cell's item, if not null; otherwise (for empty
-	 *         cells) the root of the dragged item
+	 * @return either the argument cell's item, if not null; otherwise (for empty cells) the root of the dragged item
 	 */
 	private TreeItem<T> findTargetItem(TreeCell<T> cell, TreeItem<T> draggedItem) {
 		TreeItem<T> targetItem = cell.getTreeItem();

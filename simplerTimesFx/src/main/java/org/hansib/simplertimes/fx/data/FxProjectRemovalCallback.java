@@ -28,7 +28,7 @@ import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
 import org.hansib.sundries.fx.AlertBuilder;
 
 class FxProjectRemovalCallback implements PreRemovalCallback<FxProject> {
-	private ObservableList<FxSpan> spans;
+	private final ObservableList<FxSpan> spans;
 
 	FxProjectRemovalCallback(ObservableList<FxSpan> spans) {
 		this.spans = spans;
@@ -42,7 +42,8 @@ class FxProjectRemovalCallback implements PreRemovalCallback<FxProject> {
 		List<FxSpan> affectedSpans = spans.stream().filter(s -> projects.contains(s.fxProject().get())).toList();
 
 		String projectDeletionWarning = "%d selected project(s)".formatted(projects.size());
-		String spanDeletionWarning = affectedSpans.isEmpty() ? ""
+		String spanDeletionWarning = affectedSpans.isEmpty()
+				? ""
 				: " and %d associated span(s)".formatted(spans.size());
 
 		String warning = "The deletion of %s%s cannot be undone.".formatted(projectDeletionWarning,

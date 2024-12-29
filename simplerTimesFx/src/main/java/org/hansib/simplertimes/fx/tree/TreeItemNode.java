@@ -28,16 +28,14 @@ public interface TreeItemNode<T extends TreeItemNode<T>> extends TextNode {
 	interface PreRemovalCallback<T> {
 
 		/**
-		 * Called when the tree view is asked to remove the argument node. Should check
-		 * and prepare the imminent removal of the argument node. Can return false to
-		 * cancel the removal.
-		 * 
-		 * NB: The implementation must not call {@link TreeItemNode#remove()} on the
-		 * argument - this is done by the tree.
-		 * 
+		 * Called when the tree view is asked to remove the argument node. Should check and prepare the imminent removal
+		 * of the argument node. Can return false to cancel the removal. <p/>
+		 *
+		 * NB: The implementation must not call {@link TreeItemNode#remove()} on the argument - this is done by the
+		 * tree.
+		 *
 		 * @param node the node submitted for removal
-		 * @return true if the removal of the argument node from the tree can proceed;
-		 *         if false, the node is not removed
+		 * @return true if the removal of the argument node from the tree can proceed; if false, the node is not removed
 		 */
 		boolean removalAccepted(T node);
 	}
@@ -49,14 +47,13 @@ public interface TreeItemNode<T extends TreeItemNode<T>> extends TextNode {
 	Stream<T> children();
 
 	/**
-	 * Sorts the children of this node by their texts according to the argument
-	 * comparator.
+	 * Sorts the children of this node by their texts according to the argument comparator.
 	 */
 	void sortChildren(Comparator<String> comparator);
 
 	/**
-	 * Checks the preconditions for moving this project to the argument parent
-	 * project at the argument child list index.
+	 * Checks the preconditions for moving this project to the argument parent project at the argument child list
+	 * index.
 	 * <ol>
 	 * <li>Both projects must be in the same project tree (have the same id
 	 * generator).
@@ -64,27 +61,23 @@ public interface TreeItemNode<T extends TreeItemNode<T>> extends TextNode {
 	 * <li>If the new parent is the current parent, the argument index must not be
 	 * this project's index in the children list.
 	 * </ol>
-	 * 
+	 *
 	 * @param newParent the project which would become the new parent
 	 * @param newIndex  the new index in the new parent's children list
-	 * @return true if this project can moved to become a child of the argument node
+	 * @return true if this project can be moved to become a child of the argument node
 	 */
 	boolean canMoveTo(T newParent, int newIndex);
 
 	/**
-	 * Makes this project to the argument parent project at the argument child list
-	 * index.
-	 * 
+	 * Makes this project to the argument parent project at the argument child list index.
+	 *
 	 * @param newParent the new parent for this project
-	 * @param index     the target index in the new parent's child list; if this
-	 *                  item is already in that list, then the index is interpreted
-	 *                  as the index in the list with the current item first removed
-	 *                  from the list
-	 * 
+	 * @param newIndex  the target index in the new parent's child list; if this item is already in that list, then the
+	 *                  index is interpreted as the index in the list with the current item first removed from the list
 	 */
 	void moveTo(T newParent, int newIndex);
 
-	public static <T extends TreeItemNode<T>> TreeItem<T> linkTree(T node) {
+	static <T extends TreeItemNode<T>> TreeItem<T> linkTree(T node) {
 		TreeItem<T> treeItem = new TreeItem<>(node);
 		node.children().forEach(c -> treeItem.getChildren().add(linkTree(c)));
 		return treeItem;
