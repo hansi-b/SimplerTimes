@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 
+import org.hansib.simplertimes.fx.l10n.Buttons;
 import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
 import org.hansib.sundries.fx.AlertBuilder;
 
@@ -50,8 +51,8 @@ class FxProjectRemovalCallback implements PreRemovalCallback<FxProject> {
 				spanDeletionWarning);
 
 		boolean userAgreed = new AlertBuilder(AlertType.WARNING, warning) //
-				.withDefaultButton(ButtonType.CANCEL, "Cancel") //
-				.withButton(ButtonType.YES, "Delete") //
+				.withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt()) //
+				.withButton(ButtonType.YES, Buttons.Delete.fmt()) //
 				.showAndWaitFor(ButtonType.YES);
 		if (userAgreed)
 			spans.removeAll(affectedSpans);
