@@ -29,10 +29,10 @@ import javafx.scene.layout.VBox;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.Prefs;
 import org.hansib.simplertimes.fx.l10n.Buttons;
 import org.hansib.sundries.ResourceLoader;
 import org.hansib.sundries.fx.AlertBuilder;
-import org.hansib.sundries.prefs.PrimitiveBooleanPref;
 
 class DisclaimerChecker {
 
@@ -40,13 +40,13 @@ class DisclaimerChecker {
 
 	private final ResourceLoader resourceLoader = new ResourceLoader();
 
-	static void checkDisclaimer(PrimitiveBooleanPref isDisclaimerAccepted, Runnable exitCall) {
-		if (isDisclaimerAccepted.isTrue())
+	static void checkDisclaimer(Prefs.Disclaimer disclaimer, Runnable exitCall) {
+		if (disclaimer.isAccepted)
 			return;
 
 		Platform.runLater(() -> {
 			boolean displayDisclaimerAndAccept = new DisclaimerChecker().askAcceptDisclaimer();
-			isDisclaimerAccepted.set(displayDisclaimerAndAccept);
+			disclaimer.isAccepted = displayDisclaimerAndAccept;
 			if (!displayDisclaimerAndAccept) {
 				log.info("Disclaimer was rejected");
 				exitCall.run();
@@ -82,9 +82,8 @@ class DisclaimerChecker {
 			return resourceLoader.getResourceAsString("disclaimer.txt");
 		} catch (final RuntimeException | IOException e) {
 			log.error("Could not load disclaimer", e);
-			new AlertBuilder(AlertType.ERROR,
-					"The disclaimer could not be loaded: %s".formatted(e.getMessage())).withTitle(
-							"Internal error while loading the disclaimer") //
+			new AlertBuilder(AlertType.ERROR, "The disclaimer could not be loaded: %s".formatted(e.getMessage()))
+					.withTitle("Internal error while loading the disclaimer") //
 					.showAndWait();
 			return null;
 		}

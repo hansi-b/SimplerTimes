@@ -32,12 +32,13 @@ import javafx.stage.Stage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.AppPrefs;
 import org.hansib.simplertimes.DataStore;
+import org.hansib.simplertimes.Prefs;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
 import org.hansib.sundries.fx.AppExitManager;
 import org.hansib.sundries.fx.FxResourceLoader;
+import org.hansib.sundries.fx.StageData;
 import org.hansib.sundries.fx.StageToggle;
 
 public class SimplerTimesFx extends Application {
@@ -47,6 +48,8 @@ public class SimplerTimesFx extends Application {
 	private final FxResourceLoader fxLoader = new FxResourceLoader();
 
 	private DataStore dataStore;
+
+	private Prefs.App prefs;
 
 	private TimesMainController timesMainController;
 
@@ -58,7 +61,8 @@ public class SimplerTimesFx extends Application {
 
 		L10nSetup.activateEnglish();
 
-		DisclaimerChecker.checkDisclaimer(AppPrefs.create().disclaimerAccepted(), appExitManager::exit);
+		prefs = Prefs.App.load();
+		DisclaimerChecker.checkDisclaimer(prefs.disclaimer, appExitManager::exit);
 
 		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
 				(Parent root) -> primaryStage.setScene(new Scene(root)));
@@ -83,6 +87,9 @@ public class SimplerTimesFx extends Application {
 		}
 		new StageToggle(() -> primaryStage).toggle();
 		primaryStage.sizeToScene();
+
+		prefs.windows.mainWindow.apply(primaryStage);
+		appExitManager.addPreExitAction(() -> prefs.windows.mainWindow = StageData.of(primaryStage));
 	}
 
 	private static boolean isSystemTrayMenuSupported() {
@@ -94,6 +101,7 @@ public class SimplerTimesFx extends Application {
 	public void stop() {
 		log.info("Stopping ...");
 		timesMainController.getData().store(dataStore);
+		prefs.save();
 	}
 
 	public static void main(String[] args) {
