@@ -58,7 +58,7 @@ public class SimplerTimesFx extends Application {
 
 		L10nSetup.activateEnglish();
 
-		DisclaimerChecker.checkDisclaimer(AppPrefs.create().disclaimerAccepted(), appExitManager::exit);
+		DisclaimerChecker.checkDisclaimer(AppPrefs.get().disclaimer(), appExitManager::exit);
 
 		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
 				(Parent root) -> primaryStage.setScene(new Scene(root)));
@@ -94,6 +94,7 @@ public class SimplerTimesFx extends Application {
 	public void stop() {
 		log.info("Stopping ...");
 		timesMainController.getData().store(dataStore);
+		AppPrefs.get().save();
 	}
 
 	public static void main(String[] args) {

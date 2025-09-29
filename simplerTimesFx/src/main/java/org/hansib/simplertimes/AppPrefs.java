@@ -18,64 +18,61 @@
  */
 package org.hansib.simplertimes;
 
-import java.util.Optional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import org.hansib.simplertimes.fx.SimplerTimesFx;
-import org.hansib.sundries.prefs.OptEnum;
-import org.hansib.sundries.prefs.Prefs;
-import org.hansib.sundries.prefs.ReqBoolean;
-import org.hansib.sundries.prefs.store.PrefsStore;
-import org.hansib.sundries.prefs.store.UserNodePrefsStore;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AppPrefs {
 
-	enum PrefKeys {
-		_prefsVersion, // optionalEnum
-		isDisclaimerAccepted // requiredBoolean
+	private static final Logger log = LogManager.getLogger();
+
+	private static AppPrefs instance;
+
+	private final Prefs.App appPrefs;
+
+	private AppPrefs() {
+		appPrefs = load();
 	}
 
-	enum PrefVersion {
-		v1
-	}
-
-	public static AppPrefs create() {
-		return new AppPrefs(buildPrefs(UserNodePrefsStore.forApp(SimplerTimesFx.class)));
-	}
-
-	private static Prefs<PrefKeys> buildPrefs(PrefsStore prefsStore) {
-		return new Prefs.Builder<>(PrefKeys.class, prefsStore) //
-				.optionalEnum(PrefKeys._prefsVersion, PrefVersion.class)//
-				.requiredBoolean(PrefKeys.isDisclaimerAccepted, false)//
-				.build();
-	}
-
-	private static final PrefVersion currentVersion = PrefVersion.v1;
-	private final Prefs<PrefKeys> prefs;
-
-	private AppPrefs(Prefs<PrefKeys> prefs) {
-
-		this.prefs = prefs;
-		ensureVersion();
-	}
-
-	/**
-	 * Check our prefs for version information and update if necessary.
-	 */
-	private void ensureVersion() {
-
-		OptEnum<PrefVersion> version = prefs.getPref(PrefKeys._prefsVersion);
-		Optional<PrefVersion> incomingVersion = version.get();
-		if (incomingVersion.isEmpty()) {
-			version.set(currentVersion);
-		} else {
-			if (incomingVersion.get() != currentVersion)
-				throw new IllegalStateException(
-						String.format("Cannot handle preferences version %s (need %s)", incomingVersion.get(),
-								currentVersion));
+	private static Prefs.App load() {
+		Path prefsPath = DataPaths.atDefault().prefsPath();
+		if (!prefsPath.toFile().isFile())
+			return new Prefs.App();
+		try {
+			String yaml = Files.readString(prefsPath);
+			ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+			return mapper.readValue(yaml, Prefs.App.class);
+		} catch (IOException e) {
+			log.error(String.format("Encountered exception while trying to read preferences from '%s'", prefsPath), e);
+			return new Prefs.App();
 		}
 	}
 
-	public ReqBoolean disclaimerAccepted() {
-		return prefs.getPref(PrefKeys.isDisclaimerAccepted);
+	public static AppPrefs get() {
+		if (instance == null)
+			instance = new AppPrefs();
+
+		return instance;
+	}
+
+	public void save() {
+		Path prefsPath = DataPaths.atDefault().prefsPath();
+		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+		try {
+			String yaml = mapper.writeValueAsString(appPrefs);
+			Files.writeString(prefsPath, yaml);
+		} catch (IOException e) {
+			log.error("Encountered exception while trying to write preferences", e);
+		}
+	}
+
+	public Prefs.Disclaimer disclaimer() {
+		return appPrefs.disclaimer;
 	}
 }

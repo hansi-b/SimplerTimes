@@ -58,6 +58,10 @@ public class DataPaths {
 		return dataPath("spans.yml");
 	}
 
+	public Path prefsPath() {
+		return dataPath("preferences.yml");
+	}
+
 	private Path dataPath(String filename) {
 		return dataDir.resolve(filename);
 	}
