@@ -63,11 +63,10 @@ public class TimesMainController {
 	@FXML
 	void initialize() {
 
-		setElapsedTime(Duration.ZERO);
-
 		new SpansDisplay(showSpansButton, this::getData);
 		new TreeDisplay(editTreeButton, this::getData);
 
+		setElapsedTime(Duration.ZERO);
 		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, this::getData);
 		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
 	}
