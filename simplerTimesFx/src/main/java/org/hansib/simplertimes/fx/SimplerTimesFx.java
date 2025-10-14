@@ -61,7 +61,7 @@ public class SimplerTimesFx extends Application {
 
 		L10nSetup.activateEnglish();
 
-		prefs = Prefs.App.load();
+		prefs = Prefs.App.get();
 		DisclaimerChecker.checkDisclaimer(prefs.disclaimer, appExitManager::exit);
 
 		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",

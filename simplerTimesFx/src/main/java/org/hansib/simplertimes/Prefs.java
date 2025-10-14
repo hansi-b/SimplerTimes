@@ -36,13 +36,21 @@ public interface Prefs {
 
 	class App {
 
+		public static App instance;
+
 		private static final Logger log = LogManager.getLogger();
 
 		public AppVersion version = AppVersion.v1;
 		public Disclaimer disclaimer = new Disclaimer();
 		public Windows windows = new Windows();
 
-		public static Prefs.App load() {
+		public static App get() {
+			if (instance == null)
+				instance = load();
+			return instance;
+		}
+
+		private static Prefs.App load() {
 			Path prefsPath = DataPaths.atDefault().prefsPath();
 			if (!prefsPath.toFile().isFile())
 				return new Prefs.App();
