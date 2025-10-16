@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
-import org.hansib.simplertimes.prefs.Prefs;
+import org.hansib.simplertimes.prefs.AppPrefs;
 import org.hansib.sundries.fx.AppExitManager;
 import org.hansib.sundries.fx.FxResourceLoader;
 import org.hansib.sundries.fx.StageData;
@@ -49,7 +49,7 @@ public class SimplerTimesFx extends Application {
 
 	private DataStore dataStore;
 
-	private Prefs.AppPrefs prefs;
+	private AppPrefs prefs;
 
 	private TimesMainController timesMainController;
 
@@ -61,7 +61,7 @@ public class SimplerTimesFx extends Application {
 
 		L10nSetup.activateEnglish();
 
-		prefs = Prefs.AppPrefs.get();
+		prefs = AppPrefs.get();
 		DisclaimerChecker.checkDisclaimer(prefs.disclaimer, appExitManager::exit);
 
 		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
