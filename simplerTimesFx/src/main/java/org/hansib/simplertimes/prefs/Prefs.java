@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with this program.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-package org.hansib.simplertimes;
+package org.hansib.simplertimes.prefs;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,6 +26,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hansib.simplertimes.DataPaths;
 import org.hansib.sundries.fx.StageData;
 
 public interface Prefs {
@@ -58,15 +59,15 @@ public interface Prefs {
 				String yaml = Files.readString(prefsPath);
 				ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 				mapper.setVisibility(mapper.getSerializationConfig().getDefaultVisibilityChecker()
-						.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-						.withGetterVisibility(JsonAutoDetect.Visibility.NONE)
-						.withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
-						.withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-						.withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+					.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+					.withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+					.withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
+					.withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+					.withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
 				return mapper.readValue(yaml, Prefs.App.class);
 			} catch (IOException e) {
 				log.error(String.format("Encountered exception while trying to read preferences from '%s'", prefsPath),
-						e);
+					e);
 				return new Prefs.App();
 			}
 		}
@@ -75,11 +76,10 @@ public interface Prefs {
 			Path prefsPath = DataPaths.atDefault().prefsPath();
 			ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 			mapper.setVisibility(mapper.getSerializationConfig().getDefaultVisibilityChecker()
-					.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-					.withGetterVisibility(JsonAutoDetect.Visibility.NONE)
-					.withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
-					.withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-					.withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+				.withFieldVisibility(JsonAutoDetect.Visibility.ANY).withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+				.withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
+				.withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+				.withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
 			try {
 				String yaml = mapper.writeValueAsString(this);
 				Files.writeString(prefsPath, yaml);

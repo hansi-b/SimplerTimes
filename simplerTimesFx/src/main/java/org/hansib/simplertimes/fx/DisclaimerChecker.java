@@ -29,8 +29,8 @@ import javafx.scene.layout.VBox;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.simplertimes.Prefs;
 import org.hansib.simplertimes.fx.l10n.Buttons;
+import org.hansib.simplertimes.prefs.Prefs;
 import org.hansib.sundries.ResourceLoader;
 import org.hansib.sundries.fx.AlertBuilder;
 
