@@ -35,9 +35,9 @@ public interface Prefs {
 		v1
 	}
 
-	class App {
+	class AppPrefs {
 
-		public static App instance;
+		public static AppPrefs instance;
 
 		private static final Logger log = LogManager.getLogger();
 
@@ -45,16 +45,16 @@ public interface Prefs {
 		public Disclaimer disclaimer = new Disclaimer();
 		public Windows windows = new Windows();
 
-		public static App get() {
+		public static AppPrefs get() {
 			if (instance == null)
 				instance = load();
 			return instance;
 		}
 
-		private static Prefs.App load() {
+		private static AppPrefs load() {
 			Path prefsPath = DataPaths.atDefault().prefsPath();
 			if (!prefsPath.toFile().isFile())
-				return new Prefs.App();
+				return new AppPrefs();
 			try {
 				String yaml = Files.readString(prefsPath);
 				ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -64,11 +64,11 @@ public interface Prefs {
 					.withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
 					.withSetterVisibility(JsonAutoDetect.Visibility.NONE)
 					.withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
-				return mapper.readValue(yaml, Prefs.App.class);
+				return mapper.readValue(yaml, AppPrefs.class);
 			} catch (IOException e) {
 				log.error(String.format("Encountered exception while trying to read preferences from '%s'", prefsPath),
 					e);
-				return new Prefs.App();
+				return new AppPrefs();
 			}
 		}
 

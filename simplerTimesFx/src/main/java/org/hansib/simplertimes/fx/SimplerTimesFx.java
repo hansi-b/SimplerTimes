@@ -49,7 +49,7 @@ public class SimplerTimesFx extends Application {
 
 	private DataStore dataStore;
 
-	private Prefs.App prefs;
+	private Prefs.AppPrefs prefs;
 
 	private TimesMainController timesMainController;
 
@@ -61,11 +61,11 @@ public class SimplerTimesFx extends Application {
 
 		L10nSetup.activateEnglish();
 
-		prefs = Prefs.App.get();
+		prefs = Prefs.AppPrefs.get();
 		DisclaimerChecker.checkDisclaimer(prefs.disclaimer, appExitManager::exit);
 
 		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
-				(Parent root) -> primaryStage.setScene(new Scene(root)));
+			(Parent root) -> primaryStage.setScene(new Scene(root)));
 
 		dataStore = new DataStore();
 		ObservableData data = ObservableData.load(dataStore);
