@@ -36,7 +36,6 @@ import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
 import org.hansib.simplertimes.prefs.AppPrefs;
-import org.hansib.sundries.fx.AppExitManager;
 import org.hansib.sundries.fx.FxResourceLoader;
 import org.hansib.sundries.fx.StageData;
 import org.hansib.sundries.fx.StageToggle;
@@ -57,12 +56,12 @@ public class SimplerTimesFx extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		log.info("Starting ...");
-		final AppExitManager appExitManager = new AppExitManager();
+		final ExitManager exitManager = new ExitManager();
 
 		L10nSetup.activateEnglish();
 
 		prefs = AppPrefs.get();
-		DisclaimerChecker.checkDisclaimer(prefs.disclaimer, appExitManager::exit);
+		DisclaimerChecker.checkDisclaimer(prefs.disclaimer, exitManager::exit);
 
 		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
 			(Parent root) -> primaryStage.setScene(new Scene(root)));
@@ -76,20 +75,20 @@ public class SimplerTimesFx extends Application {
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
 			if (ev.getCode() == KeyCode.Q && ev.isControlDown())
-				appExitManager.exit();
+				exitManager.exit();
 		});
 
 		if (isSystemTrayMenuSupported()) {
-			new TrayIconMenu(data, timesMainController.getRecorder(), primaryStage, appExitManager).show();
+			new TrayIconMenu(data, timesMainController.getRecorder(), primaryStage, exitManager).show();
 		} else {
 			log.info("System tray menu not supported.");
-			primaryStage.setOnCloseRequest(e -> appExitManager.exit());
+			primaryStage.setOnCloseRequest(e -> exitManager.exit());
 		}
 		new StageToggle(() -> primaryStage).toggle();
 		primaryStage.sizeToScene();
 
 		prefs.windows.mainWindow.apply(primaryStage);
-		appExitManager.addPreExitAction(() -> prefs.windows.mainWindow = StageData.of(primaryStage));
+		exitManager.addPreExitAction(() -> prefs.windows.mainWindow = StageData.of(primaryStage));
 	}
 
 	private static boolean isSystemTrayMenuSupported() {
