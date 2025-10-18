@@ -47,10 +47,9 @@ public class SimplerTimesFx extends Application {
 	private final FxResourceLoader fxLoader = new FxResourceLoader();
 
 	private DataStore dataStore;
+	private ObservableData data;
 
 	private AppPrefs prefs;
-
-	private TimesMainController timesMainController;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -63,11 +62,11 @@ public class SimplerTimesFx extends Application {
 		prefs = AppPrefs.get();
 		DisclaimerChecker.checkDisclaimer(prefs.disclaimer, exitManager::exit);
 
-		timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
+		TimesMainController timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
 			(Parent root) -> primaryStage.setScene(new Scene(root)));
 
 		dataStore = new DataStore();
-		ObservableData data = ObservableData.load(dataStore);
+		data = ObservableData.load(dataStore);
 		timesMainController.setData(data);
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
@@ -99,7 +98,7 @@ public class SimplerTimesFx extends Application {
 	@Override
 	public void stop() {
 		log.info("Stopping ...");
-		timesMainController.getData().store(dataStore);
+		data.store(dataStore);
 		prefs.save();
 	}
 
