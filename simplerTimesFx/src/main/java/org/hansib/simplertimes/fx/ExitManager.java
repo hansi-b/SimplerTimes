@@ -33,6 +33,14 @@ import javafx.application.Platform;
 
 public class ExitManager {
 
+	private static ExitManager instance;
+
+	public static ExitManager get() {
+		if (instance == null)
+			instance = new ExitManager();
+		return instance;
+	}
+
 	private final List<Runnable> preExitActions = new ArrayList<>();
 
 	/**

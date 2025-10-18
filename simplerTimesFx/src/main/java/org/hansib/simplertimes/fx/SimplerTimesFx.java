@@ -56,7 +56,7 @@ public class SimplerTimesFx extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		log.info("Starting ...");
-		final ExitManager exitManager = new ExitManager();
+		final ExitManager exitManager = ExitManager.get();
 
 		L10nSetup.activateEnglish();
 
