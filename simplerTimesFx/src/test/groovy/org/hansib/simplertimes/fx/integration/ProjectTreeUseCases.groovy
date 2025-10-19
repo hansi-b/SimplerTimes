@@ -36,7 +36,7 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 		dataStore.loadProjectTree() >> root
 		dataStore.loadSpans(_) >> spans
 
-		controller = new ControllerLoader().loadFxmlToStage("timesMain.fxml",
+		controller = new ControllerLoader<TimesMainController>().loadFxmlToStage("timesMain.fxml",
 			() -> new TimesMainController(ObservableData.load(dataStore)), stage)
 		return stage.getScene()
 	}

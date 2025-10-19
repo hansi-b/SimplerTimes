@@ -24,8 +24,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.SystemTray;
 
 import javafx.application.Application;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -63,9 +61,8 @@ public class SimplerTimesFx extends Application {
 		dataStore = new DataStore();
 		data = ObservableData.load(dataStore);
 
-		TimesMainController timesMainController = new ControllerLoader<TimesMainController>().loadFxmlAndGetController(
-			"timesMain.fxml", () -> new TimesMainController(data),
-			(Parent root) -> primaryStage.setScene(new Scene(root)));
+		TimesMainController timesMainController = new ControllerLoader<TimesMainController>().loadFxmlToStage(
+			"timesMain.fxml", () -> new TimesMainController(data), primaryStage);
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
 		new Resources().loadLogo(logo -> primaryStage.getIcons().add(logo));
