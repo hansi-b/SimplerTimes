@@ -25,22 +25,29 @@ import javafx.stage.Stage;
 
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.General;
+import org.hansib.simplertimes.prefs.Prefs;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.FxResourceLoader;
+import org.hansib.sundries.fx.StageData;
 import org.hansib.sundries.fx.StageToggle;
 
 class SpansDisplay {
 
 	private final Supplier<ObservableData> lazyData;
+	private final ExitManager exitManager;
+	private final Prefs.Windows windowPrefs;
 
-	SpansDisplay(Button showSpansButton, Supplier<ObservableData> lazyData) {
+	SpansDisplay(Button showSpansButton, Supplier<ObservableData> lazyData, ExitManager exitManager,
+		Prefs.Windows windowPrefs) {
 
 		this.lazyData = lazyData;
+		this.exitManager = exitManager;
+		this.windowPrefs = windowPrefs;
 
-		StageToggle stageToggle = new StageToggle(this::initStage);
+		StageToggle stageToggle = new StageToggle(this::initStage, windowPrefs.spans);
 		new ButtonBuilder(showSpansButton) //
-				.graphic(Icons.showSpans()).onAction(event -> stageToggle.toggle()) //
-				.build();
+			.graphic(Icons.showSpans()).onAction(event -> stageToggle.toggle()) //
+			.build();
 	}
 
 	private Stage initStage() {
@@ -52,6 +59,7 @@ class SpansDisplay {
 		spansInfoController.setData(lazyData.get());
 
 		new Resources().loadLogo(logo -> spansStage.getIcons().add(logo));
+		exitManager.addPreExitAction(() -> windowPrefs.spans = StageData.of(spansStage));
 		return spansStage;
 	}
 }

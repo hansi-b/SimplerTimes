@@ -62,12 +62,11 @@ public class SimplerTimesFx extends Application {
 		prefs = AppPrefs.get();
 		DisclaimerChecker.checkDisclaimer(prefs.disclaimer, exitManager::exit);
 
-		TimesMainController timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
-			(Parent root) -> primaryStage.setScene(new Scene(root)));
-
 		dataStore = new DataStore();
 		data = ObservableData.load(dataStore);
-		timesMainController.setData(data);
+
+		TimesMainController timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
+			() -> new TimesMainController(data), (Parent root) -> primaryStage.setScene(new Scene(root)));
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
 		new Resources().loadLogo(logo -> primaryStage.getIcons().add(logo));

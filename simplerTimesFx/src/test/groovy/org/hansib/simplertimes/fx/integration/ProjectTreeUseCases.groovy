@@ -1,5 +1,10 @@
 package org.hansib.simplertimes.fx.integration
 
+import javafx.scene.Scene
+import javafx.scene.control.MenuItem
+import javafx.scene.input.KeyCode
+import javafx.scene.input.MouseButton
+
 import org.hansib.simplertimes.DataStore
 import org.hansib.simplertimes.fx.AbstractAppSpec
 import org.hansib.simplertimes.fx.TimesMainController
@@ -10,11 +15,6 @@ import org.hansib.simplertimes.projects.Project
 import org.hansib.simplertimes.spans.SpansCollection
 import org.hansib.sundries.fx.FxResourceLoader
 import org.testfx.util.WaitForAsyncUtils
-
-import javafx.scene.Scene
-import javafx.scene.control.MenuItem
-import javafx.scene.input.KeyCode
-import javafx.scene.input.MouseButton
 import spock.lang.IgnoreIf
 
 public class ProjectTreeUseCases extends AbstractAppSpec {
@@ -28,16 +28,6 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 
 	@Override
 	protected Scene createScene() {
-		controller = new FxResourceLoader().loadFxmlToStage("timesMain.fxml", stage)
-		return stage.getScene()
-	}
-
-	def 'setupSpec'() {
-		L10nSetup.activateEnglish()
-	}
-
-	def 'setup'() {
-
 		root = Project.root()
 		root.add('First')
 
@@ -46,7 +36,13 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 		dataStore.loadProjectTree() >> root
 		dataStore.loadSpans(_) >> spans
 
-		controller.setData(ObservableData.load(dataStore))
+		controller = new FxResourceLoader().loadFxmlToStage("timesMain.fxml",
+			() -> new TimesMainController(ObservableData.load(dataStore)), stage)
+		return stage.getScene()
+	}
+
+	def 'setupSpec'() {
+		L10nSetup.activateEnglish()
 	}
 
 	def 'can rename project'() {
@@ -62,7 +58,7 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 		root.children[0].name == 'Modified'
 	}
 
-	/*
+	/**
 	 * Ignored in headless mode because on the pane of the tree view,
 	 * we cannot apply the hack to show the context menu. 
 	 */
@@ -117,7 +113,7 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 		root.children.size() == 1
 		def child = root.children[0]
 		child.children.size() == 1
-		assert child.children[0].name == 'Second' : "Got $child with ${child.children}"
+		assert child.children[0].name == 'Second': "Got $child with ${child.children}"
 	}
 
 	@IgnoreIf({ isHeadless() })

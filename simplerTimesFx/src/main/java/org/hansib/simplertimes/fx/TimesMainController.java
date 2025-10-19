@@ -30,6 +30,7 @@ import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.tree.TreeDisplay;
+import org.hansib.simplertimes.prefs.AppPrefs;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.testing.VisibleForTesting;
 
@@ -56,14 +57,19 @@ public class TimesMainController {
 	@FXML
 	private Button showSpansButton;
 
-	private ObservableData observableData;
+	private ObservableData data;
 
 	private SpanRecorder spanRecorder;
 
+	TimesMainController(ObservableData data) {
+		this.data = data;
+	}
+
 	@FXML
 	void initialize() {
+		projectSelection.setItems(data.projects());
 
-		new SpansDisplay(showSpansButton, this::getData);
+		new SpansDisplay(showSpansButton, this::getData, ExitManager.get(), AppPrefs.get().windows);
 		new TreeDisplay(editTreeButton, this::getData);
 
 		setElapsedTime(Duration.ZERO);
@@ -81,11 +87,11 @@ public class TimesMainController {
 
 	@VisibleForTesting
 	public void setData(ObservableData data) {
-		observableData = data;
-		projectSelection.setItems(observableData.projects());
+		this.data = data;
+		projectSelection.setItems(data.projects());
 	}
 
 	ObservableData getData() {
-		return observableData;
+		return data;
 	}
 }

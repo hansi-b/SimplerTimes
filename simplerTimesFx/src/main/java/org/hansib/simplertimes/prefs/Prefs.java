@@ -30,5 +30,6 @@ public interface Prefs {
 
 	class Windows {
 		public StageData mainWindow = StageData.NONE;
+		public StageData spans = StageData.NONE;
 	}
 }
