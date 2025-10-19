@@ -13,7 +13,7 @@ import org.hansib.simplertimes.fx.l10n.L10nSetup
 import org.hansib.simplertimes.fx.tree.TreeViewWindow
 import org.hansib.simplertimes.projects.Project
 import org.hansib.simplertimes.spans.SpansCollection
-import org.hansib.sundries.fx.FxResourceLoader
+import org.hansib.sundries.fx.ControllerLoader
 import org.testfx.util.WaitForAsyncUtils
 import spock.lang.IgnoreIf
 
@@ -36,7 +36,7 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 		dataStore.loadProjectTree() >> root
 		dataStore.loadSpans(_) >> spans
 
-		controller = new FxResourceLoader().loadFxmlToStage("timesMain.fxml",
+		controller = new ControllerLoader().loadFxmlToStage("timesMain.fxml",
 			() -> new TimesMainController(ObservableData.load(dataStore)), stage)
 		return stage.getScene()
 	}

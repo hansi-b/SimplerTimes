@@ -36,15 +36,13 @@ import org.hansib.simplertimes.DataStore;
 import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.L10nSetup;
 import org.hansib.simplertimes.prefs.AppPrefs;
-import org.hansib.sundries.fx.FxResourceLoader;
+import org.hansib.sundries.fx.ControllerLoader;
 import org.hansib.sundries.fx.StageData;
 import org.hansib.sundries.fx.StageToggle;
 
 public class SimplerTimesFx extends Application {
 
 	private static final Logger log = LogManager.getLogger();
-
-	private final FxResourceLoader fxLoader = new FxResourceLoader();
 
 	private DataStore dataStore;
 	private ObservableData data;
@@ -65,8 +63,9 @@ public class SimplerTimesFx extends Application {
 		dataStore = new DataStore();
 		data = ObservableData.load(dataStore);
 
-		TimesMainController timesMainController = fxLoader.loadFxmlAndGetController("timesMain.fxml",
-			() -> new TimesMainController(data), (Parent root) -> primaryStage.setScene(new Scene(root)));
+		TimesMainController timesMainController = new ControllerLoader<TimesMainController>().loadFxmlAndGetController(
+			"timesMain.fxml", () -> new TimesMainController(data),
+			(Parent root) -> primaryStage.setScene(new Scene(root)));
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
 		new Resources().loadLogo(logo -> primaryStage.getIcons().add(logo));

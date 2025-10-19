@@ -27,7 +27,7 @@ import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.General;
 import org.hansib.simplertimes.prefs.Prefs;
 import org.hansib.sundries.fx.ButtonBuilder;
-import org.hansib.sundries.fx.FxResourceLoader;
+import org.hansib.sundries.fx.ControllerLoader;
 import org.hansib.sundries.fx.StageData;
 import org.hansib.sundries.fx.StageToggle;
 
@@ -54,8 +54,8 @@ class SpansDisplay {
 		Stage spansStage = new Stage();
 		spansStage.setTitle(General.SpansWindowTitle.fmt());
 
-		FxResourceLoader fxLoader = new FxResourceLoader();
-		SpansInfoController spansInfoController = fxLoader.loadFxmlToStage("spansInfo.fxml", spansStage);
+		SpansInfoController spansInfoController = new ControllerLoader<SpansInfoController>().loadFxmlToStage(
+			"spansInfo.fxml", spansStage);
 		spansInfoController.setData(lazyData.get());
 
 		new Resources().loadLogo(logo -> spansStage.getIcons().add(logo));
