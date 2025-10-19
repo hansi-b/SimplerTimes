@@ -27,18 +27,18 @@ import javafx.scene.image.Image;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hansib.sundries.fx.FxResourceLoader;
+import org.hansib.sundries.ResourceLoader;
 
 public class Resources {
 
 	private static final Logger log = LogManager.getLogger();
 
-	private final FxResourceLoader fxLoader = new FxResourceLoader();
+	private final ResourceLoader loader = new ResourceLoader();
 
 	public void loadLogo(Consumer<Image> logoHandler) {
 		Image logo;
 		try {
-			logo = fxLoader.resourceLoader().loadResourceStream("logo.png", Image::new);
+			logo = loader.loadResourceStream("logo.png", Image::new);
 		} catch (IllegalStateException ex) {
 			log.warn("Could not load logo", ex);
 			return;
@@ -48,7 +48,7 @@ public class Resources {
 
 	public java.awt.Image loadAwtLogo() {
 		URL imageURL = Resources.class.getClassLoader().getResource("logo.png");
-		return new ImageIcon(imageURL, "SimplerTimes Logo").getImage().getScaledInstance(16, 16,
-				java.awt.Image.SCALE_SMOOTH);
+		return new ImageIcon(imageURL, "SimplerTimes Logo").getImage()
+			.getScaledInstance(16, 16, java.awt.Image.SCALE_SMOOTH);
 	}
 }
