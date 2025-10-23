@@ -61,8 +61,8 @@ public class SimplerTimesFx extends Application {
 		dataStore = new DataStore();
 		data = ObservableData.load(dataStore);
 
-		TimesMainController timesMainController = new ControllerLoader<TimesMainController>().loadFxmlToStage(
-			"timesMain.fxml", () -> new TimesMainController(data), primaryStage);
+		TimesMainController timesMainController = ControllerLoader.<TimesMainController>of("timesMain.fxml")
+			.withControllerFactory(() -> new TimesMainController(data)).withTargetStage(primaryStage).load();
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
 		new Resources().loadLogo(logo -> primaryStage.getIcons().add(logo));

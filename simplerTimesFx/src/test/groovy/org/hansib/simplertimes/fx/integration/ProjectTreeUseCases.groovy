@@ -36,8 +36,9 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 		dataStore.loadProjectTree() >> root
 		dataStore.loadSpans(_) >> spans
 
-		controller = new ControllerLoader<TimesMainController>().loadFxmlToStage("timesMain.fxml",
-			() -> new TimesMainController(ObservableData.load(dataStore)), stage)
+		controller = ControllerLoader.<TimesMainController> of("timesMain.fxml")
+			.withControllerFactory(() -> new TimesMainController(ObservableData.load(dataStore)))
+			.withTargetStage(stage).load()
 		return stage.getScene()
 	}
 
@@ -60,8 +61,7 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 
 	/**
 	 * Ignored in headless mode because on the pane of the tree view,
-	 * we cannot apply the hack to show the context menu. 
-	 */
+	 * we cannot apply the hack to show the context menu. 	*/
 	@IgnoreIf({ isHeadless() })
 	def 'can add second project'() {
 

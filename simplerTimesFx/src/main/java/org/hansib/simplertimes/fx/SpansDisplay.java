@@ -54,8 +54,8 @@ class SpansDisplay {
 		Stage spansStage = new Stage();
 		spansStage.setTitle(General.SpansWindowTitle.fmt());
 
-		SpansInfoController spansInfoController = new ControllerLoader<SpansInfoController>().loadFxmlToStage(
-			"spansInfo.fxml", spansStage);
+		SpansInfoController spansInfoController = ControllerLoader.<SpansInfoController>of("spansInfo.fxml")
+			.withTargetStage(spansStage).load();
 		spansInfoController.setData(lazyData.get());
 
 		new Resources().loadLogo(logo -> spansStage.getIcons().add(logo));
