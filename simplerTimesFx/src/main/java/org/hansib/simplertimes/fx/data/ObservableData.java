@@ -41,12 +41,15 @@ public class ObservableData {
 
 	private final FxProject fxProjectTree;
 	private final ObservableList<FxProject> projectList = FXCollections.observableArrayList(
-			p -> new Observable[] { p.name() });
+		p -> new Observable[] { p.name() });
 
 	private final ObservableList<FxSpan> spans = FXCollections.observableArrayList(
-			s -> new Observable[] { s.fxProject(), s.duration() });
+		s -> new Observable[] { s.fxProject(), s.duration() });
 
-	private ObservableData(FxProject fxProjectTree, List<FxSpan> spans) {
+	/**
+	 * Mostly for test usage when you know what you're doing.
+	 */
+	public ObservableData(FxProject fxProjectTree, List<FxSpan> spans) {
 		this.fxProjectTree = fxProjectTree;
 		updateProjectList();
 		this.spans.setAll(spans);
@@ -62,10 +65,10 @@ public class ObservableData {
 		FxProject fxProjectTree = FxProject.root(projectTree);
 
 		Map<Project, FxProject> projectMap = fxProjectTree.flatList().stream()
-				.collect(Collectors.toMap(FxProject::project, p -> p));
+			.collect(Collectors.toMap(FxProject::project, p -> p));
 
 		List<FxSpan> fxSpans = dataStore.loadSpans(projectTree).stream()
-				.map(s -> new FxSpan(projectMap.get(s.project()), s.start(), s.end())).toList();
+			.map(s -> new FxSpan(projectMap.get(s.project()), s.start(), s.end())).toList();
 
 		return new ObservableData(fxProjectTree, fxSpans);
 	}

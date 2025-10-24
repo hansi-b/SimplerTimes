@@ -1,55 +1,47 @@
-package org.hansib.simplertimes.fx.integration
+package org.hansib.simplertimes.fx.tree
 
 import javafx.scene.Scene
 import javafx.scene.control.MenuItem
 import javafx.scene.input.KeyCode
-import javafx.scene.input.MouseButton
 
-import org.hansib.simplertimes.DataStore
 import org.hansib.simplertimes.fx.AbstractAppSpec
-import org.hansib.simplertimes.fx.TimesMainController
+import org.hansib.simplertimes.fx.data.FxProject
 import org.hansib.simplertimes.fx.data.ObservableData
 import org.hansib.simplertimes.fx.l10n.L10nSetup
-import org.hansib.simplertimes.fx.tree.TreeViewWindow
 import org.hansib.simplertimes.projects.Project
-import org.hansib.simplertimes.spans.SpansCollection
-import org.hansib.sundries.fx.ControllerLoader
 import org.testfx.util.WaitForAsyncUtils
 import spock.lang.IgnoreIf
 
-public class ProjectTreeUseCases extends AbstractAppSpec {
+public class TreeViewWindowSpec extends AbstractAppSpec {
 
-	SpansCollection spans
 	Project root
+	ObservableData data
 
-	DataStore dataStore = Mock()
+	TreeViewWindow treeWindow
 
-	TimesMainController controller
+	def 'setupSpec'() {
+		L10nSetup.activateEnglish()
+	}
 
 	@Override
 	protected Scene createScene() {
 		root = Project.root()
 		root.add('First')
 
-		spans = new SpansCollection()
+		def fxRoot = FxProject.root(root)
 
-		dataStore.loadProjectTree() >> root
-		dataStore.loadSpans(_) >> spans
+		data = new ObservableData(fxRoot, Collections.emptyList())
 
-		controller = ControllerLoader.<TimesMainController> of("timesMain.fxml")
-			.withControllerFactory(() -> new TimesMainController(ObservableData.load(dataStore)))
-			.withTargetStage(stage).load()
+		treeWindow = new TreeViewWindow(fxRoot, data::updateProjectList)
+		treeWindow.setPreRemovalChecker(data.fxProjectRemovalCallback())
+		
+		def stage = treeWindow.initStage()
 		return stage.getScene()
-	}
-
-	def 'setupSpec'() {
-		L10nSetup.activateEnglish()
 	}
 
 	def 'can rename project'() {
 
 		when:
-		clickOn '#editTreeButton'
 		doubleClickOn 'First'
 		write 'Modified'
 		type KeyCode.ENTER
@@ -65,38 +57,19 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 	@IgnoreIf({ isHeadless() })
 	def 'can add second project'() {
 
-		when:
-		clickOn '#editTreeButton'
+		given:
+		givenSecondProject()
 
-		def node = lookup("#${TreeViewWindow.PROJECT_PANE_FX_ID}").query()
-		rightClickOn node
-		if (isHeadless()) {
-			WaitForAsyncUtils.asyncFx {
-				// unclear how to get the context menu visible on the pane
-			}.get()
-		}
-
-		clickOn lookup('New Project').query()
-		/* auto-selection of new node does not work in headless mode */
-		if (isHeadless()) {
-			clickOn MouseButton.PRIMARY
-			push(KeyCode.CONTROL, KeyCode.A)
-		}
-
-		write 'Second'
-		type KeyCode.ENTER
-
-		then:
+		expect:
 		root.children.size() == 2
 		root.children[0].name == 'First'
 		root.children[1].name == 'Second'
 	}
 
+
 	def 'can add subproject'() {
 
 		when:
-		clickOn '#editTreeButton'
-
 		rightClick lookup('First')
 
 		clickOn 'New Subproject'
@@ -120,12 +93,9 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 	def 'can delete project with warning'() {
 
 		given:
-		root.add('Second Project')
-		controller.setData(ObservableData.load(dataStore))
+		givenSecondProject()
 
 		when:
-		clickOn '#editTreeButton'
-
 		rightClick lookup('First')
 
 		// in context menu:
@@ -136,18 +106,31 @@ public class ProjectTreeUseCases extends AbstractAppSpec {
 
 		then:
 		root.children.size() == 1
-		root.children[0].name == 'Second Project'
+		root.children[0].name == 'Second'
+	}
+
+	def givenSecondProject() {
+		def node = lookup("#${TreeViewWindow.PROJECT_PANE_FX_ID}").query()
+		rightClickOn node
+
+		if (isHeadless()) {
+			WaitForAsyncUtils.asyncFx {
+				// does not work in headless mode
+				// unclear how to get the context menu visible on the pane
+			}.get()
+		}
+		clickOn lookup('New Project').query()
+		write 'Second'
+		type KeyCode.ENTER
 	}
 
 	def 'cannot delete only project'() {
 
 		when:
-		clickOn '#editTreeButton'
-
 		rightClick lookup('First')
 
 		then:
 		MenuItem item = lookup('Delete').query().getLabelFor().item
-		item.isDisable() == true
+		item.isDisable()
 	}
 }
