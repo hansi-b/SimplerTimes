@@ -32,7 +32,6 @@ import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.tree.TreeDisplay;
 import org.hansib.simplertimes.prefs.AppPrefs;
 import org.hansib.simplertimes.times.Utils;
-import org.hansib.sundries.testing.VisibleForTesting;
 
 public class TimesMainController {
 
@@ -83,12 +82,6 @@ public class TimesMainController {
 
 	private void setElapsedTime(Duration duration) {
 		Platform.runLater(() -> elapsedTime.setText(Utils.toHmsString(duration)));
-	}
-
-	@VisibleForTesting
-	public void setData(ObservableData data) {
-		this.data = data;
-		projectSelection.setItems(data.projects());
 	}
 
 	ObservableData getData() {
