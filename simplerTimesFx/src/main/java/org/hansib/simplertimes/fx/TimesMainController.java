@@ -19,7 +19,6 @@
 package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
-import java.util.function.Supplier;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -76,8 +75,8 @@ public class TimesMainController {
 	void initialize() {
 		projectSelection.setItems(data.projects());
 
-		buildSpansDisplay(showSpansButton, this::getData, ExitManager.get(), AppPrefs.get().windows);
-		buildTreeDisplay(editTreeButton, this::getData, ExitManager.get(), AppPrefs.get().windows);
+		buildSpansDisplay(showSpansButton, ExitManager.get(), AppPrefs.get().windows);
+		buildTreeDisplay(editTreeButton, ExitManager.get(), AppPrefs.get().windows);
 
 		setElapsedTime(Duration.ZERO);
 		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, this::getData);
@@ -96,17 +95,15 @@ public class TimesMainController {
 		return data;
 	}
 
-	private void buildSpansDisplay(Button showSpansButton, Supplier<ObservableData> lazyData, ExitManager exitManager,
-		Prefs.Windows windowPrefs) {
+	private void buildSpansDisplay(Button showSpansButton, ExitManager exitManager, Prefs.Windows windowPrefs) {
 
-		StageToggle stageToggle = new StageToggle(() -> initSpansStage(lazyData.get(), windowPrefs, exitManager),
-			windowPrefs.spans);
+		StageToggle stageToggle = new StageToggle(() -> initSpansStage(windowPrefs, exitManager), windowPrefs.spans);
 		new ButtonBuilder(showSpansButton) //
 			.graphic(Icons.showSpans()).onAction(event -> stageToggle.toggle()) //
 			.build();
 	}
 
-	private static Stage initSpansStage(ObservableData data, Prefs.Windows windowPrefs, ExitManager exitManager) {
+	private Stage initSpansStage(Prefs.Windows windowPrefs, ExitManager exitManager) {
 		Stage spansStage = new Stage();
 		spansStage.setTitle(General.SpansWindowTitle.fmt());
 
@@ -119,14 +116,13 @@ public class TimesMainController {
 		return spansStage;
 	}
 
-	private void buildTreeDisplay(Button editTreeButton, Supplier<ObservableData> lazyData, ExitManager exitManager,
-		Prefs.Windows windowPrefs) {
-		StageToggle stageToggle = new StageToggle(() -> initTreeViewStage(lazyData.get()), windowPrefs.projects);
+	private void buildTreeDisplay(Button editTreeButton, ExitManager exitManager, Prefs.Windows windowPrefs) {
+		StageToggle stageToggle = new StageToggle(this::initTreeViewStage, windowPrefs.projects);
 		exitManager.addPreExitAction(() -> windowPrefs.projects = StageData.of(stageToggle.getStage()));
 		new ButtonBuilder(editTreeButton).graphic(Icons.editTree()).onAction(event -> stageToggle.toggle()).build();
 	}
 
-	private static Stage initTreeViewStage(ObservableData data) {
+	private Stage initTreeViewStage() {
 		TreeViewWindow<FxProject> treeViewWindow = new TreeViewWindow<>(data.fxProjectTree(), data::updateProjectList);
 		treeViewWindow.setPreRemovalChecker(data.fxProjectRemovalCallback());
 		return treeViewWindow.initStage();
