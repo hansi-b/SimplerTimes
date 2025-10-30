@@ -56,7 +56,7 @@ public class TimesMainController {
 	@FXML
 	private Button showSpansButton;
 
-	private ObservableData data;
+	private final ObservableData data;
 
 	private SpanRecorder spanRecorder;
 
@@ -69,7 +69,7 @@ public class TimesMainController {
 		projectSelection.setItems(data.projects());
 
 		new SpansDisplay(showSpansButton, this::getData, ExitManager.get(), AppPrefs.get().windows);
-		new TreeDisplay(editTreeButton, this::getData);
+		new TreeDisplay(editTreeButton, this::getData, ExitManager.get(), AppPrefs.get().windows);
 
 		setElapsedTime(Duration.ZERO);
 		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, this::getData);

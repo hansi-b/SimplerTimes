@@ -21,29 +21,29 @@ package org.hansib.simplertimes.fx.tree;
 import java.util.function.Supplier;
 
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
+import org.hansib.simplertimes.fx.ExitManager;
 import org.hansib.simplertimes.fx.Icons;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
+import org.hansib.simplertimes.prefs.Prefs;
 import org.hansib.sundries.fx.ButtonBuilder;
+import org.hansib.sundries.fx.StageData;
 import org.hansib.sundries.fx.StageToggle;
 
 public class TreeDisplay {
 
-	private StageToggle stageToggle;
-
-	public TreeDisplay(Button editTreeButton, Supplier<ObservableData> lazyData) {
-		new ButtonBuilder(editTreeButton).graphic(Icons.editTree()).onAction(event -> showWindow(lazyData)).build();
+	public TreeDisplay(Button editTreeButton, Supplier<ObservableData> lazyData, ExitManager exitManager,
+		Prefs.Windows windowPrefs) {
+		StageToggle stageToggle = new StageToggle(() -> initTreeView(lazyData.get()), windowPrefs.projects);
+		exitManager.addPreExitAction(() -> windowPrefs.projects = StageData.of(stageToggle.getStage()));
+		new ButtonBuilder(editTreeButton).graphic(Icons.editTree()).onAction(event -> stageToggle.toggle()).build();
 	}
 
-	private void showWindow(Supplier<ObservableData> lazyData) {
-		if (stageToggle == null) {
-			ObservableData data = lazyData.get();
-			TreeViewWindow<FxProject> treeViewWindow = new TreeViewWindow<>(data.fxProjectTree(),
-					data::updateProjectList);
-			treeViewWindow.setPreRemovalChecker(data.fxProjectRemovalCallback());
-			stageToggle = new StageToggle(treeViewWindow::initStage);
-		}
-		stageToggle.toggle();
+	private Stage initTreeView(ObservableData data) {
+		TreeViewWindow<FxProject> treeViewWindow = new TreeViewWindow<>(data.fxProjectTree(), data::updateProjectList);
+		treeViewWindow.setPreRemovalChecker(data.fxProjectRemovalCallback());
+		return treeViewWindow.initStage();
 	}
 }
