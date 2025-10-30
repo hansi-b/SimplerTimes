@@ -20,7 +20,6 @@ package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -51,40 +50,39 @@ class SpanRecorder {
 	private final SearchableComboBox<FxProject> projectSelection;
 
 	private final IntervalTicker intervalTicker;
-	private final Supplier<ObservableData> lazySpanReceiver;
+	private final ObservableData spanReceiver;
 
 	private final BooleanProperty isRecording = new SimpleBooleanProperty(false);
 
 	SpanRecorder(SearchableComboBox<FxProject> projectSelection, Button startButton, Button stopButton,
-			Consumer<Duration> elapsedTimeDisplay, Supplier<ObservableData> lazySpanReceiver) {
+		Consumer<Duration> elapsedTimeDisplay, ObservableData spanReceiver) {
 
-		this(projectSelection, startButton, stopButton, elapsedTimeDisplay, lazySpanReceiver,
-				new IntervalTicker(i -> elapsedTimeDisplay.accept(Span.effectiveDuration(i.start(), i.end()))));
+		this(projectSelection, startButton, stopButton, elapsedTimeDisplay, spanReceiver,
+			new IntervalTicker(i -> elapsedTimeDisplay.accept(Span.effectiveDuration(i.start(), i.end()))));
 	}
 
 	@VisibleForTesting
 	SpanRecorder(SearchableComboBox<FxProject> projectSelection, Button startButton, Button stopButton,
-			Consumer<Duration> elapsedTimeDisplay, Supplier<ObservableData> lazySpanReceiver,
-			IntervalTicker intervalTicker) {
+		Consumer<Duration> elapsedTimeDisplay, ObservableData spanReceiver, IntervalTicker intervalTicker) {
 
 		this.projectSelection = projectSelection;
 
 		this.intervalTicker = intervalTicker;
-		this.lazySpanReceiver = lazySpanReceiver;
+		this.spanReceiver = spanReceiver;
 
 		new ButtonBuilder(startButton) //
-				.graphic(Icons.start()).onAction(a -> startRecording()).disabled().build();
+			.graphic(Icons.start()).onAction(a -> startRecording()).disabled().build();
 		new ButtonBuilder(stopButton) //
-				.graphic(Icons.stop()).onAction(a -> stopRecording()).disabled().build();
+			.graphic(Icons.stop()).onAction(a -> stopRecording()).disabled().build();
 
 		startButton.disableProperty()
-				.bind(projectSelection.getSelectionModel().selectedItemProperty().isNull().or(isRecording));
+			.bind(projectSelection.getSelectionModel().selectedItemProperty().isNull().or(isRecording));
 		stopButton.disableProperty().bind(isRecording.not());
 		projectSelection.disableProperty().bind(isRecording);
 
 		FxConverters.setComboBoxProjectConverter(projectSelection);
 		projectSelection.showingProperty()
-				.addListener((observable, oldValue, newValue) -> elapsedTimeDisplay.accept(Duration.ZERO));
+			.addListener((observable, oldValue, newValue) -> elapsedTimeDisplay.accept(Duration.ZERO));
 		projectSelection.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				Platform.runLater(startButton::requestFocus);
@@ -122,10 +120,10 @@ class SpanRecorder {
 
 		if (Duration.between(t.start(), t.end()).compareTo(minimumSpanDuration) > 0) {
 			log.info("Registering {} during {}", project, t);
-			lazySpanReceiver.get().addSpan(project, t.start(), t.end());
+			spanReceiver.addSpan(project, t.start(), t.end());
 		} else {
 			log.info("Ignoring interval {} - {} (is smaller than {})", t::start, t::end,
-					() -> Utils.toHmsString(minimumSpanDuration));
+				() -> Utils.toHmsString(minimumSpanDuration));
 		}
 
 		projectSelection.requestFocus();

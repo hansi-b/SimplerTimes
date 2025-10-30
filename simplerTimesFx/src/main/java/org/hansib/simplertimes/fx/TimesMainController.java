@@ -79,7 +79,7 @@ public class TimesMainController {
 		buildTreeDisplay(editTreeButton, ExitManager.get(), AppPrefs.get().windows);
 
 		setElapsedTime(Duration.ZERO);
-		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, this::getData);
+		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, data);
 		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
 	}
 

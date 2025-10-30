@@ -4,17 +4,17 @@ import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.function.Consumer
 
+import javafx.scene.Scene
+import javafx.scene.control.Button
+import javafx.scene.input.KeyCode
+import javafx.scene.layout.VBox
+
 import org.controlsfx.control.SearchableComboBox
 import org.hansib.simplertimes.fx.data.FxProject
 import org.hansib.simplertimes.fx.data.ObservableData
 import org.hansib.simplertimes.projects.Project
 import org.hansib.simplertimes.times.Interval
 import org.hansib.simplertimes.times.IntervalTicker
-
-import javafx.scene.Scene
-import javafx.scene.control.Button
-import javafx.scene.input.KeyCode
-import javafx.scene.layout.VBox
 
 public class SpanRecorderSpec extends AbstractAppSpec {
 
@@ -33,7 +33,7 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 	List ticks = []
 	List spans = []
 	Consumer<Duration> tickReceiver = t -> ticks << t
-	ObservableData observableData =  Mock()
+	ObservableData observableData = Mock()
 
 	SpanRecorder recorder
 
@@ -46,7 +46,7 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 		startButton = new Button("start")
 		stopButton = new Button("stop")
 
-		recorder = new SpanRecorder(projectSelection, startButton, stopButton, tickReceiver, () -> observableData, intervalTicker)
+		recorder = new SpanRecorder(projectSelection, startButton, stopButton, tickReceiver, observableData, intervalTicker)
 
 		return new Scene(new VBox(projectSelection, startButton, stopButton))
 	}
@@ -106,7 +106,7 @@ public class SpanRecorderSpec extends AbstractAppSpec {
 		type(KeyCode.ENTER)
 
 		then:
-		1 * observableData.addSpan(alpha, startTime, endTime )
+		1 * observableData.addSpan(alpha, startTime, endTime)
 
 		isEnabled projectSelection
 		isEnabled startButton
