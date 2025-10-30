@@ -19,19 +19,27 @@
 package org.hansib.simplertimes.fx;
 
 import java.time.Duration;
+import java.util.function.Supplier;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import org.controlsfx.control.SearchableComboBox;
 import org.hansib.simplertimes.fx.data.FxProject;
 import org.hansib.simplertimes.fx.data.ObservableData;
-import org.hansib.simplertimes.fx.tree.TreeDisplay;
+import org.hansib.simplertimes.fx.l10n.General;
+import org.hansib.simplertimes.fx.tree.TreeViewWindow;
 import org.hansib.simplertimes.prefs.AppPrefs;
+import org.hansib.simplertimes.prefs.Prefs;
 import org.hansib.simplertimes.times.Utils;
+import org.hansib.sundries.fx.ButtonBuilder;
+import org.hansib.sundries.fx.ControllerLoader;
+import org.hansib.sundries.fx.StageData;
+import org.hansib.sundries.fx.StageToggle;
 
 public class TimesMainController {
 
@@ -68,23 +76,60 @@ public class TimesMainController {
 	void initialize() {
 		projectSelection.setItems(data.projects());
 
-		new SpansDisplay(showSpansButton, this::getData, ExitManager.get(), AppPrefs.get().windows);
-		new TreeDisplay(editTreeButton, this::getData, ExitManager.get(), AppPrefs.get().windows);
+		buildSpansDisplay(showSpansButton, this::getData, ExitManager.get(), AppPrefs.get().windows);
+		buildTreeDisplay(editTreeButton, this::getData, ExitManager.get(), AppPrefs.get().windows);
 
 		setElapsedTime(Duration.ZERO);
 		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, this::getData);
 		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
 	}
 
-	SpanRecorder getRecorder() {
-		return spanRecorder;
-	}
-
 	private void setElapsedTime(Duration duration) {
 		Platform.runLater(() -> elapsedTime.setText(Utils.toHmsString(duration)));
+	}
+
+	SpanRecorder getRecorder() {
+		return spanRecorder;
 	}
 
 	ObservableData getData() {
 		return data;
 	}
+
+	private void buildSpansDisplay(Button showSpansButton, Supplier<ObservableData> lazyData, ExitManager exitManager,
+		Prefs.Windows windowPrefs) {
+
+		StageToggle stageToggle = new StageToggle(() -> initSpansStage(lazyData.get(), windowPrefs, exitManager),
+			windowPrefs.spans);
+		new ButtonBuilder(showSpansButton) //
+			.graphic(Icons.showSpans()).onAction(event -> stageToggle.toggle()) //
+			.build();
+	}
+
+	private static Stage initSpansStage(ObservableData data, Prefs.Windows windowPrefs, ExitManager exitManager) {
+		Stage spansStage = new Stage();
+		spansStage.setTitle(General.SpansWindowTitle.fmt());
+
+		SpansInfoController spansInfoController = ControllerLoader.<SpansInfoController>of("spansInfo.fxml")
+			.withTargetStage(spansStage).load();
+		spansInfoController.setData(data);
+
+		new Resources().loadLogo(logo -> spansStage.getIcons().add(logo));
+		exitManager.addPreExitAction(() -> windowPrefs.spans = StageData.of(spansStage));
+		return spansStage;
+	}
+
+	private void buildTreeDisplay(Button editTreeButton, Supplier<ObservableData> lazyData, ExitManager exitManager,
+		Prefs.Windows windowPrefs) {
+		StageToggle stageToggle = new StageToggle(() -> initTreeViewStage(lazyData.get()), windowPrefs.projects);
+		exitManager.addPreExitAction(() -> windowPrefs.projects = StageData.of(stageToggle.getStage()));
+		new ButtonBuilder(editTreeButton).graphic(Icons.editTree()).onAction(event -> stageToggle.toggle()).build();
+	}
+
+	private static Stage initTreeViewStage(ObservableData data) {
+		TreeViewWindow<FxProject> treeViewWindow = new TreeViewWindow<>(data.fxProjectTree(), data::updateProjectList);
+		treeViewWindow.setPreRemovalChecker(data.fxProjectRemovalCallback());
+		return treeViewWindow.initStage();
+	}
+
 }

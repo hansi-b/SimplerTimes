@@ -47,7 +47,7 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 
 	private PreRemovalCallback<T> removalChecker;
 
-	TreeViewWindow(T root, Runnable itemsChangeHandler) {
+	public TreeViewWindow(T root, Runnable itemsChangeHandler) {
 		this.treeView = initTreeView(TreeItemNode.linkTree(root), itemsChangeHandler);
 		this.treeView.getStylesheets().add(new ResourceLoader().getResourceUrl("fxml/app.css").toString());
 		this.itemsChangeHandler = itemsChangeHandler;
@@ -62,7 +62,7 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 
 		TreeCellDragAndDrop<T> dnd = new TreeCellDragAndDrop<>(changeHandler);
 		tree.setCellFactory(p -> dnd.withDragAndDrop(new TextFieldTreeCellImpl<T>(changeHandler) //
-				.withContextMenu(this::createContextMenu)));
+			.withContextMenu(this::createContextMenu)));
 		return tree;
 	}
 
@@ -71,18 +71,17 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 			return null;
 
 		return new ContextMenuBuilder() //
-				.item(MenuItems.NewSubproject.fmt(), e -> newTreeItem(cell.getTreeView(), cell.getTreeItem())) //
-				.item(MenuItems.Delete.fmt(), e -> removeItem(cell.getTreeItem()), isLastProject(cell)) //
-				.item(MenuItems.SortChildren.fmt(), e -> sortChildren(cell.getTreeItem()),
-						hasFewerThan2Children(cell)) //
-				.build();
+			.item(MenuItems.NewSubproject.fmt(), e -> newTreeItem(cell.getTreeView(), cell.getTreeItem())) //
+			.item(MenuItems.Delete.fmt(), e -> removeItem(cell.getTreeItem()), isLastProject(cell)) //
+			.item(MenuItems.SortChildren.fmt(), e -> sortChildren(cell.getTreeItem()), hasFewerThan2Children(cell)) //
+			.build();
 	}
 
 	private ObservableValue<Boolean> isLastProject(TextFieldTreeCellImpl<T> cell) {
 		ReadOnlyObjectProperty<TreeItem<T>> parentProp = cell.getTreeItem().parentProperty();
 
 		return Bindings.isNull(parentProp.get().parentProperty())
-				.and(Bindings.equal(Bindings.size(parentProp.get().getChildren()), 1));
+			.and(Bindings.equal(Bindings.size(parentProp.get().getChildren()), 1));
 	}
 
 	private BooleanBinding hasFewerThan2Children(TextFieldTreeCellImpl<T> cell) {
@@ -93,7 +92,7 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 		this.removalChecker = preRemovalCallback;
 	}
 
-	Stage initStage() {
+	public Stage initStage() {
 		Stage treeStage = new Stage();
 		treeStage.setTitle(General.ProjectsWindowTitle.fmt());
 
@@ -108,10 +107,10 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 
 		treePane.setId(PROJECT_PANE_FX_ID);
 		ContextMenu contextMenu = new ContextMenuBuilder() //
-				.item(MenuItems.NewProject.fmt(), t -> newTreeItem(treeView, treeView.getRoot())) //
-				.build();
+			.item(MenuItems.NewProject.fmt(), t -> newTreeItem(treeView, treeView.getRoot())) //
+			.build();
 		treePane.setOnContextMenuRequested(
-				e -> contextMenu.show(treePane.getScene().getWindow(), e.getScreenX(), e.getScreenY()));
+			e -> contextMenu.show(treePane.getScene().getWindow(), e.getScreenX(), e.getScreenY()));
 
 		treePane.getChildren().add(treeView);
 		return new Scene(treePane, 250, 250);
