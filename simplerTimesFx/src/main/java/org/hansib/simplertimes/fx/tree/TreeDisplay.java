@@ -41,7 +41,7 @@ public class TreeDisplay {
 		new ButtonBuilder(editTreeButton).graphic(Icons.editTree()).onAction(event -> stageToggle.toggle()).build();
 	}
 
-	private Stage initTreeView(ObservableData data) {
+	private static Stage initTreeView(ObservableData data) {
 		TreeViewWindow<FxProject> treeViewWindow = new TreeViewWindow<>(data.fxProjectTree(), data::updateProjectList);
 		treeViewWindow.setPreRemovalChecker(data.fxProjectRemovalCallback());
 		return treeViewWindow.initStage();

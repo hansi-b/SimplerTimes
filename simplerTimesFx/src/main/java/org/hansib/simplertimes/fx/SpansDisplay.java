@@ -33,26 +33,23 @@ import org.hansib.sundries.fx.StageToggle;
 
 class SpansDisplay {
 
-	private final Supplier<ObservableData> lazyData;
-
 	SpansDisplay(Button showSpansButton, Supplier<ObservableData> lazyData, ExitManager exitManager,
 		Prefs.Windows windowPrefs) {
 
-		this.lazyData = lazyData;
-
-		StageToggle stageToggle = new StageToggle(() -> initStage(windowPrefs, exitManager), windowPrefs.spans);
+		StageToggle stageToggle = new StageToggle(() -> initStage(lazyData.get(), windowPrefs, exitManager),
+			windowPrefs.spans);
 		new ButtonBuilder(showSpansButton) //
 			.graphic(Icons.showSpans()).onAction(event -> stageToggle.toggle()) //
 			.build();
 	}
 
-	private Stage initStage(Prefs.Windows windowPrefs, ExitManager exitManager) {
+	private static Stage initStage(ObservableData data, Prefs.Windows windowPrefs, ExitManager exitManager) {
 		Stage spansStage = new Stage();
 		spansStage.setTitle(General.SpansWindowTitle.fmt());
 
 		SpansInfoController spansInfoController = ControllerLoader.<SpansInfoController>of("spansInfo.fxml")
 			.withTargetStage(spansStage).load();
-		spansInfoController.setData(lazyData.get());
+		spansInfoController.setData(data);
 
 		new Resources().loadLogo(logo -> spansStage.getIcons().add(logo));
 		exitManager.addPreExitAction(() -> windowPrefs.spans = StageData.of(spansStage));
