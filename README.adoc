@@ -2,7 +2,7 @@
 
 Simple desktop timer written in JavaFX.
 
-image:https://github.com/hansi-b/SimplerTimes/actions/workflows/gradle.yml/badge.svg[link="https://github.com/hansi-b/SimplerTimes/actions/workflows/gradle.yml"]
+image:https://github.com/hansi-b/SimplerTimes/actions/workflows/unit_tests.yml/badge.svg[link="https://github.com/hansi-b/SimplerTimes/actions/workflows/unit_tests.yml"]
 image:https://codecov.io/gh/hansi-b/SimplerTimes/branch/main/graph/badge.svg[link="https://codecov.io/gh/hansi-b/SimplerTimes"]
 
 == Release Log
