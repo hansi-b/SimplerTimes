@@ -91,10 +91,6 @@ public class TimesMainController {
 		return spanRecorder;
 	}
 
-	ObservableData getData() {
-		return data;
-	}
-
 	private void buildSpansDisplay(Button showSpansButton, ExitManager exitManager, Prefs.Windows windowPrefs) {
 
 		StageToggle stageToggle = new StageToggle(() -> initSpansStage(windowPrefs, exitManager), windowPrefs.spans);
