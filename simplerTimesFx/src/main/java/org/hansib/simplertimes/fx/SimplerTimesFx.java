@@ -62,7 +62,8 @@ public class SimplerTimesFx extends Application {
 		data = ObservableData.load(dataStore);
 
 		TimesMainController timesMainController = ControllerLoader.<TimesMainController>of("timesMain.fxml")
-			.withControllerFactory(() -> new TimesMainController(data)).withTargetStage(primaryStage).load();
+				.withControllerFactory(() -> new TimesMainController(data, exitManager)).withTargetStage(primaryStage)
+				.load();
 
 		primaryStage.setTitle(AppNameWindowTitle.fmt());
 		new Resources().loadLogo(logo -> primaryStage.getIcons().add(logo));
@@ -81,8 +82,8 @@ public class SimplerTimesFx extends Application {
 		new StageToggle(() -> primaryStage).toggle();
 		primaryStage.sizeToScene();
 
-		prefs.windows.mainWindow.apply(primaryStage);
-		exitManager.addPreExitAction(() -> prefs.windows.mainWindow = StageData.of(primaryStage));
+		prefs.windowPositions.current().main.apply(primaryStage);
+		exitManager.addPreExitAction(() -> prefs.windowPositions.current().main = StageData.of(primaryStage));
 	}
 
 	private static boolean isSystemTrayMenuSupported() {

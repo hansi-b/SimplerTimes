@@ -16,6 +16,13 @@
  */
 package org.hansib.simplertimes.prefs;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.StringJoiner;
+
+import javafx.geometry.Rectangle2D;
+import javafx.stage.Screen;
+
 import org.hansib.sundries.fx.StageData;
 
 public interface Prefs {
@@ -29,8 +36,49 @@ public interface Prefs {
 	}
 
 	class Windows {
-		public StageData mainWindow = StageData.NONE;
+		public StageData main = StageData.NONE;
 		public StageData projects = StageData.NONE;
 		public StageData spans = StageData.NONE;
+	}
+
+	/**
+	 * Remember stage data by screen configuration to restore them only on known
+	 * screens.
+	 */
+	class WindowsPositions {
+
+		@SuppressWarnings("serial")
+		private final Map<String, Windows> byScreenConfig = new LinkedHashMap<>() {
+			private static final int CACHE_SIZE = 5;
+
+			@Override
+			protected boolean removeEldestEntry(final Map.Entry<String, Windows> eldest) {
+				return size() > CACHE_SIZE;
+			}
+		};
+
+		/**
+		 * @return either stored positions for the current screen configuration or new
+		 *         (undefined) positions
+		 */
+		public Windows current() {
+			return byScreenConfig.computeIfAbsent(currentScreensCacheKey(), k -> new Windows());
+		}
+
+		/**
+		 * @return a string representing the current screen configuration for use as a
+		 *         cache key
+		 */
+		static String currentScreensCacheKey() {
+			StringJoiner screenConfigStr = new StringJoiner("+");
+			Screen.getScreens().forEach(s -> screenConfigStr.add(screenCacheKey(s)));
+			return screenConfigStr.toString();
+		}
+
+		private static String screenCacheKey(Screen screen) {
+			Rectangle2D bounds = screen.getVisualBounds();
+			return String.format("@%s/%s:%sx%s", bounds.getMinX(), bounds.getMinY(), bounds.getWidth(),
+					bounds.getHeight());
+		}
 	}
 }

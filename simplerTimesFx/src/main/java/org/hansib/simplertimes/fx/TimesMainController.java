@@ -34,6 +34,7 @@ import org.hansib.simplertimes.fx.l10n.General;
 import org.hansib.simplertimes.fx.tree.TreeViewWindow;
 import org.hansib.simplertimes.prefs.AppPrefs;
 import org.hansib.simplertimes.prefs.Prefs;
+import org.hansib.simplertimes.prefs.Prefs.Windows;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.ControllerLoader;
@@ -63,20 +64,23 @@ public class TimesMainController {
 	@FXML
 	private Button showSpansButton;
 
+	private final ExitManager exitManager;
 	private final ObservableData data;
 
 	private SpanRecorder spanRecorder;
 
-	TimesMainController(ObservableData data) {
+	TimesMainController(ObservableData data, ExitManager exitManager) {
 		this.data = data;
+		this.exitManager = exitManager;
 	}
 
 	@FXML
 	void initialize() {
 		projectSelection.setItems(data.projects());
 
-		buildSpansDisplay(showSpansButton, ExitManager.get(), AppPrefs.get().windows);
-		buildTreeDisplay(editTreeButton, ExitManager.get(), AppPrefs.get().windows);
+		Windows windowPrefs = AppPrefs.get().windowPositions.current();
+		buildSpansDisplay(showSpansButton, windowPrefs);
+		buildTreeDisplay(editTreeButton, windowPrefs);
 
 		setElapsedTime(Duration.ZERO);
 		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, data);
@@ -91,20 +95,20 @@ public class TimesMainController {
 		return spanRecorder;
 	}
 
-	private void buildSpansDisplay(Button showSpansButton, ExitManager exitManager, Prefs.Windows windowPrefs) {
+	private void buildSpansDisplay(Button showSpansButton, Prefs.Windows windowPrefs) {
 
-		StageToggle stageToggle = new StageToggle(() -> initSpansStage(windowPrefs, exitManager), windowPrefs.spans);
+		StageToggle stageToggle = new StageToggle(() -> initSpansStage(windowPrefs), windowPrefs.spans);
 		new ButtonBuilder(showSpansButton) //
-			.graphic(Icons.showSpans()).onAction(event -> stageToggle.toggle()) //
-			.build();
+				.graphic(Icons.showSpans()).onAction(event -> stageToggle.toggle()) //
+				.build();
 	}
 
-	private Stage initSpansStage(Prefs.Windows windowPrefs, ExitManager exitManager) {
+	private Stage initSpansStage(Prefs.Windows windowPrefs) {
 		Stage spansStage = new Stage();
 		spansStage.setTitle(General.SpansWindowTitle.fmt());
 
 		SpansInfoController spansInfoController = ControllerLoader.<SpansInfoController>of("spansInfo.fxml")
-			.withTargetStage(spansStage).load();
+				.withTargetStage(spansStage).load();
 		spansInfoController.setData(data);
 
 		new Resources().loadLogo(logo -> spansStage.getIcons().add(logo));
@@ -112,7 +116,7 @@ public class TimesMainController {
 		return spansStage;
 	}
 
-	private void buildTreeDisplay(Button editTreeButton, ExitManager exitManager, Prefs.Windows windowPrefs) {
+	private void buildTreeDisplay(Button editTreeButton, Prefs.Windows windowPrefs) {
 		StageToggle stageToggle = new StageToggle(this::initTreeViewStage, windowPrefs.projects);
 		exitManager.addPreExitAction(() -> windowPrefs.projects = StageData.of(stageToggle.getStage()));
 		new ButtonBuilder(editTreeButton).graphic(Icons.editTree()).onAction(event -> stageToggle.toggle()).build();
@@ -123,5 +127,4 @@ public class TimesMainController {
 		treeViewWindow.setPreRemovalChecker(data.fxProjectRemovalCallback());
 		return treeViewWindow.initStage();
 	}
-
 }
