@@ -1,4 +1,4 @@
-/**
+/*-
  * GPL for SimplerTimes - https://github.com/hansi-b/SimplerTimes
  *
  * Copyright (C) 2022-2025 Hans Bering
