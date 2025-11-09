@@ -16,12 +16,20 @@
  */
 package org.hansib.simplertimes.prefs;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.hansib.sundries.fx.StageData;
 
@@ -42,32 +50,50 @@ public interface Prefs {
 	}
 
 	/**
-	 * Remember stage data by screen configuration to restore them only on known
-	 * screens.
+	 * Remember stage data by screen configuration to restore them only on known screens. Limit cache size, removing
+	 * least commonly used first.
 	 */
 	class WindowsPositions {
+		private static final int CACHE_SIZE = 5;
 
-		@SuppressWarnings("serial")
-		private final Map<String, Windows> byScreenConfig = new LinkedHashMap<>() {
-			private static final int CACHE_SIZE = 5;
+		@JsonDeserialize(using = LruMapDeserializer.class)
+		private final Map<String, Windows> byScreenConfig = newLruMap();
 
+		private static class LruMapDeserializer extends JsonDeserializer<Map<String, Windows>> {
 			@Override
-			protected boolean removeEldestEntry(final Map.Entry<String, Windows> eldest) {
-				return size() > CACHE_SIZE;
+			public Map<String, Windows> deserialize(JsonParser p, DeserializationContext context) throws IOException {
+				JsonNode node = p.getCodec().readTree(p);
+
+				Map<String, Windows> result = newLruMap();
+				if (node.isObject()) {
+					ObjectMapper mapper = (ObjectMapper) p.getCodec();
+					for (Map.Entry<String, JsonNode> entry : node.properties()) {
+						Windows value = mapper.treeToValue(entry.getValue(), Windows.class);
+						result.put(entry.getKey(), value);
+					}
+				}
+				return result;
 			}
-		};
+		}
+
+		private static Map<String, Windows> newLruMap() {
+			return new LinkedHashMap<>(2 * CACHE_SIZE, .75F, true) {
+				@Override
+				protected boolean removeEldestEntry(final Map.Entry<String, Windows> eldest) {
+					return size() > CACHE_SIZE;
+				}
+			};
+		}
 
 		/**
-		 * @return either stored positions for the current screen configuration or new
-		 *         (undefined) positions
+		 * @return either stored positions for the current screen configuration or new (undefined) positions
 		 */
 		public Windows current() {
 			return byScreenConfig.computeIfAbsent(currentScreensCacheKey(), k -> new Windows());
 		}
 
 		/**
-		 * @return a string representing the current screen configuration for use as a
-		 *         cache key
+		 * @return a string representing the current screen configuration for use as a cache key
 		 */
 		static String currentScreensCacheKey() {
 			StringJoiner screenConfigStr = new StringJoiner("+");
@@ -78,7 +104,7 @@ public interface Prefs {
 		private static String screenCacheKey(Screen screen) {
 			Rectangle2D bounds = screen.getVisualBounds();
 			return String.format("@%s/%s:%sx%s", bounds.getMinX(), bounds.getMinY(), bounds.getWidth(),
-					bounds.getHeight());
+				bounds.getHeight());
 		}
 	}
 }
