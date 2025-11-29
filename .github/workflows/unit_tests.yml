@@ -24,6 +24,7 @@ jobs:
     - name: Build with Gradle
       env:
         GITHUB_ACTOR: hansi-b
+        # this is defined the Github repository settings
         GITHUB_REPO_PAT_RO: ${{ secrets.REPO_PAT_RO }}
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
