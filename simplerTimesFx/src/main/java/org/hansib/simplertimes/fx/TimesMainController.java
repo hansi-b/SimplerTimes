@@ -67,25 +67,27 @@ public class TimesMainController {
 
 	private final ExitManager exitManager;
 	private final ObservableData data;
+	private final AppPrefs prefs;
 
 	private SpanRecorder spanRecorder;
 
-	TimesMainController(ObservableData data, ExitManager exitManager) {
+	TimesMainController(ObservableData data, ExitManager exitManager, AppPrefs prefs) {
 		this.data = data;
 		this.exitManager = exitManager;
+		this.prefs = prefs;
 	}
 
 	@FXML
 	void initialize() {
 		projectSelection.setItems(data.projects());
 
-		Windows windowPrefs = AppPrefs.get().windowPositions.current();
+		Windows windowPrefs = prefs.windowPositions.current();
 		buildSpansDisplay(showSpansButton, windowPrefs);
 		buildTreeDisplay(editTreeButton, windowPrefs);
 
 		setElapsedTime(Duration.ZERO);
 		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, data);
-		Long savedSelectedProjectId = AppPrefs.get().selectedProjectId;
+		Long savedSelectedProjectId = prefs.selectedProjectId;
 		if (savedSelectedProjectId != null && savedSelectedProjectId != -1) {
 			FilteredList<FxProject> filtered = projectSelection.getItems()
 					.filtered(p -> p.project().id() == savedSelectedProjectId);
@@ -94,7 +96,7 @@ public class TimesMainController {
 		}
 		exitManager.addPreExitAction(() -> {
 			FxProject selectedProject = projectSelection.getValue();
-			AppPrefs.get().selectedProjectId = selectedProject != null ? selectedProject.project().id() : -1;
+			prefs.selectedProjectId = selectedProject != null ? selectedProject.project().id() : -1;
 		});
 		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
 	}
