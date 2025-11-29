@@ -21,6 +21,7 @@ package org.hansib.simplertimes.fx;
 import java.time.Duration;
 
 import javafx.application.Platform;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -84,6 +85,17 @@ public class TimesMainController {
 
 		setElapsedTime(Duration.ZERO);
 		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, data);
+		Long savedSelectedProjectId = AppPrefs.get().selectedProjectId;
+		if (savedSelectedProjectId != null && savedSelectedProjectId != -1) {
+			FilteredList<FxProject> filtered = projectSelection.getItems()
+					.filtered(p -> p.project().id() == savedSelectedProjectId);
+			if (!filtered.isEmpty())
+				projectSelection.setValue(filtered.getFirst());
+		}
+		exitManager.addPreExitAction(() -> {
+			FxProject selectedProject = projectSelection.getValue();
+			AppPrefs.get().selectedProjectId = selectedProject != null ? selectedProject.project().id() : -1;
+		});
 		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
 	}
 

@@ -41,6 +41,8 @@ public class AppPrefs {
 	public Prefs.Disclaimer disclaimer = new Prefs.Disclaimer();
 	public Prefs.WindowsPositions windowPositions = new Prefs.WindowsPositions();
 
+	public Long selectedProjectId;
+
 	public static AppPrefs get() {
 		if (instance == null)
 			instance = load();

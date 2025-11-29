@@ -77,7 +77,7 @@ public class FxProject implements TreeItemNode<FxProject> {
 		return accu;
 	}
 
-	Project project() {
+	public Project project() {
 		return project;
 	}
 
@@ -100,7 +100,7 @@ public class FxProject implements TreeItemNode<FxProject> {
 	public String formatName(FxProject relativeTo, String delimiter) {
 		return String.join(delimiter, project.namesList(relativeTo.project));
 	}
-	
+
 	public boolean hasChildren() {
 		return project.hasChildren();
 	}
