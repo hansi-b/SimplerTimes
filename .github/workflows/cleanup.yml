@@ -17,8 +17,17 @@ jobs:
 
       - name: List and delete old (>28 days) workflow runs
         run: |
-          gh run list --limit 200 --json databaseId,createdAt |
-          jq -r '[.[] | select((now - (.createdAt | fromdateiso8601)) > (28 * 24 * 60 * 60))] | .[].databaseId' |
-          tail -n +2 | xargs -I ID gh run delete ID
+          set -euo pipefail
+          gh run list --limit 500 --json databaseId,createdAt,workflowName |
+          jq -r '
+            [ .[]
+            | select((now - (.createdAt | fromdateiso8601)) > (28 * 24 * 60 * 60))
+            | .workflowName = (.workflowName // .workflow.name // .name // "unknown") ]
+            | sort_by(.workflowName, .createdAt)
+            | group_by(.workflowName)
+            | map(reverse | .[1:][])
+            | .[].databaseId
+          ' |
+          xargs -r -I ID gh run delete ID
         env:
           GH_TOKEN: ${{ secrets. GITHUB_TOKEN }}
