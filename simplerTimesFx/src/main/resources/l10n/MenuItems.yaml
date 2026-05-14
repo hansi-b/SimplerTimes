@@ -8,6 +8,10 @@ Delete:
   en: Delete
 SortChildren:
   en: Sort Children
+ExpandAll:
+  en: Expand All
+CollapseAll:
+  en: Collapse All
 Stop:
   en: Stop
 Exit:

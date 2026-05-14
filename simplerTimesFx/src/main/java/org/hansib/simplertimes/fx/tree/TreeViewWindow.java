@@ -18,12 +18,6 @@
  */
 package org.hansib.simplertimes.fx.tree;
 
-import java.util.Comparator;
-
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
@@ -62,30 +56,25 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 
 		TreeCellDragAndDrop<T> dnd = new TreeCellDragAndDrop<>(changeHandler);
 		tree.setCellFactory(p -> dnd.withDragAndDrop(new TextFieldTreeCellImpl<T>(changeHandler) //
-			.withContextMenu(this::createContextMenu)));
+				.withContextMenu(this::createContextMenu)));
 		return tree;
 	}
 
 	private ContextMenu createContextMenu(TextFieldTreeCellImpl<T> cell) {
-		if (cell.getTreeItem().getParent() == null)
+		TreeItem<T> treeItem = cell.getTreeItem();
+		if (treeItem.getParent() == null)
 			return null;
 
+		TreeItemBindings<T> bindings = new TreeItemBindings<>(treeItem);
+		TreeItemActions<T> actions = new TreeItemActions<>(treeItem);
 		return new ContextMenuBuilder() //
-			.item(MenuItems.NewSubproject.fmt(), e -> newTreeItem(cell.getTreeView(), cell.getTreeItem())) //
-			.item(MenuItems.Delete.fmt(), e -> removeItem(cell.getTreeItem()), isLastProject(cell)) //
-			.item(MenuItems.SortChildren.fmt(), e -> sortChildren(cell.getTreeItem()), hasFewerThan2Children(cell)) //
-			.build();
-	}
-
-	private ObservableValue<Boolean> isLastProject(TextFieldTreeCellImpl<T> cell) {
-		ReadOnlyObjectProperty<TreeItem<T>> parentProp = cell.getTreeItem().parentProperty();
-
-		return Bindings.isNull(parentProp.get().parentProperty())
-			.and(Bindings.equal(Bindings.size(parentProp.get().getChildren()), 1));
-	}
-
-	private BooleanBinding hasFewerThan2Children(TextFieldTreeCellImpl<T> cell) {
-		return Bindings.lessThan(Bindings.size(cell.getTreeItem().getChildren()), 2);
+				.item(MenuItems.NewSubproject.fmt(), e -> actions.newTreeItem(cell.getTreeView())) //
+				.item(MenuItems.Delete.fmt(),
+						e -> actions.removeItem(n -> removalChecker.removalAccepted(n), itemsChangeHandler),
+						bindings.isLastProject()) //
+				.item(MenuItems.SortChildren.fmt(), e -> actions.sortChildren(itemsChangeHandler),
+						bindings.hasFewerThan2Children()) //
+				.build();
 	}
 
 	public void setPreRemovalChecker(PreRemovalCallback<T> preRemovalCallback) {
@@ -103,42 +92,24 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
 	}
 
 	private Scene initTreePaneScene() {
-		StackPane treePane = new StackPane();
 
+		StackPane treePane = new StackPane();
 		treePane.setId(PROJECT_PANE_FX_ID);
+
+		TreeItem<T> root = treeView.getRoot();
+		TreeItemBindings<T> bindings = new TreeItemBindings<>(root);
+		TreeItemActions<T> actions = new TreeItemActions<>(root);
 		ContextMenu contextMenu = new ContextMenuBuilder() //
-			.item(MenuItems.NewProject.fmt(), t -> newTreeItem(treeView, treeView.getRoot())) //
-			.build();
+				.item(MenuItems.NewProject.fmt(), t -> actions.newTreeItem(treeView)) //
+				.separator() //
+				.item(MenuItems.ExpandAll.fmt(), t -> actions.expandChildren(), bindings.areAllChildrenExpanded()) //
+				.item(MenuItems.CollapseAll.fmt(), t -> actions.collapseChildren(), bindings.areAllChildrenCollapsed()) //
+				.build();
 		treePane.setOnContextMenuRequested(
-			e -> contextMenu.show(treePane.getScene().getWindow(), e.getScreenX(), e.getScreenY()));
+				e -> contextMenu.show(treePane.getScene().getWindow(), e.getScreenX(), e.getScreenY()));
 
 		treePane.getChildren().add(treeView);
 		return new Scene(treePane, 250, 250);
 	}
 
-	private void removeItem(TreeItem<T> item) {
-		T node = item.getValue();
-
-		boolean removalAccepted = removalChecker == null || removalChecker.removalAccepted(node);
-		if (!removalAccepted)
-			return;
-
-		node.remove();
-		item.getParent().getChildren().remove(item);
-		itemsChangeHandler.run();
-	}
-
-	private void sortChildren(TreeItem<T> item) {
-		item.getChildren().sort(Comparator.comparing(o -> o.getValue().text()));
-		item.getValue().sortChildren(String::compareTo);
-		itemsChangeHandler.run();
-	}
-
-	private void newTreeItem(TreeView<T> treeview, TreeItem<T> parent) {
-		T newChild = parent.getValue().addChild(MenuItems.NewProject.fmt());
-		TreeItem<T> newItem = new TreeItem<>(newChild);
-		parent.getChildren().add(newItem);
-		treeview.getSelectionModel().select(newItem);
-		treeview.edit(newItem);
-	}
 }

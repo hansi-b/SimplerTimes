@@ -26,6 +26,8 @@ public enum MenuItems implements FormatKey {
 	NewSubproject, //
 	Delete, //
 	SortChildren, //
+	ExpandAll, //
+	CollapseAll, //
 	Stop, //
 	Exit
 }
