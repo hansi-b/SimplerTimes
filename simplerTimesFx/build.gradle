@@ -20,7 +20,7 @@ dependencies {
 
 	implementation 'net.harawata:appdirs:1.5.0'
 
-	implementation 'org.controlsfx:controlsfx:11.2.2'
+	implementation 'org.controlsfx:controlsfx:11.2.3'
 
 	implementation 'org.kordamp.ikonli:ikonli-javafx:12.4.0'
 	implementation 'org.kordamp.ikonli:ikonli-codicons-pack:12.4.0'
