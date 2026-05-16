@@ -25,11 +25,11 @@ import org.hansib.sundries.Errors;
 
 public record Interval(ZonedDateTime start, ZonedDateTime end) {
 
-	public Interval {
-		Objects.requireNonNull(start);
-		Objects.requireNonNull(end);
+  public Interval {
+    Objects.requireNonNull(start);
+    Objects.requireNonNull(end);
 
-		if (start.compareTo(end) > 0)
-			throw Errors.illegalArg("End (%s) must not be before start (%s)", end, start);
-	}
+    if (start.compareTo(end) > 0)
+      throw Errors.illegalArg("End (%s) must not be before start (%s)", end, start);
+  }
 }

@@ -29,33 +29,34 @@ import org.hansib.simplertimes.fx.tree.TreeItemNode.PreRemovalCallback;
 import org.hansib.sundries.fx.AlertBuilder;
 
 class FxProjectRemovalCallback implements PreRemovalCallback<FxProject> {
-	private final ObservableList<FxSpan> spans;
+  private final ObservableList<FxSpan> spans;
 
-	FxProjectRemovalCallback(ObservableList<FxSpan> spans) {
-		this.spans = spans;
-	}
+  FxProjectRemovalCallback(ObservableList<FxSpan> spans) {
+    this.spans = spans;
+  }
 
-	@Override
-	public boolean removalAccepted(FxProject project) {
+  @Override
+  public boolean removalAccepted(FxProject project) {
 
-		List<FxProject> projects = project.flatList();
+    List<FxProject> projects = project.flatList();
 
-		List<FxSpan> affectedSpans = spans.stream().filter(s -> projects.contains(s.fxProject().get())).toList();
+    List<FxSpan> affectedSpans =
+        spans.stream().filter(s -> projects.contains(s.fxProject().get())).toList();
 
-		String projectDeletionWarning = "%d selected project(s)".formatted(projects.size());
-		String spanDeletionWarning = affectedSpans.isEmpty()
-				? ""
-				: " and %d associated span(s)".formatted(spans.size());
+    String projectDeletionWarning = "%d selected project(s)".formatted(projects.size());
+    String spanDeletionWarning =
+        affectedSpans.isEmpty() ? "" : " and %d associated span(s)".formatted(spans.size());
 
-		String warning = "The deletion of %s%s cannot be undone.".formatted(projectDeletionWarning,
-				spanDeletionWarning);
+    String warning =
+        "The deletion of %s%s cannot be undone."
+            .formatted(projectDeletionWarning, spanDeletionWarning);
 
-		boolean userAgreed = new AlertBuilder(AlertType.WARNING, warning) //
-				.withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt()) //
-				.withButton(ButtonType.YES, Buttons.Delete.fmt()) //
-				.showAndWaitFor(ButtonType.YES);
-		if (userAgreed)
-			spans.removeAll(affectedSpans);
-		return userAgreed;
-	}
+    boolean userAgreed =
+        new AlertBuilder(AlertType.WARNING, warning)
+            .withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt())
+            .withButton(ButtonType.YES, Buttons.Delete.fmt())
+            .showAndWaitFor(ButtonType.YES);
+    if (userAgreed) spans.removeAll(affectedSpans);
+    return userAgreed;
+  }
 }

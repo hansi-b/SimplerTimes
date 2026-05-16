@@ -37,67 +37,67 @@ import org.hansib.simplertimes.spans.SpansCollection;
 
 public class ObservableData {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	private final FxProject fxProjectTree;
-	private final ObservableList<FxProject> projectList = FXCollections.observableArrayList(
-		p -> new Observable[] { p.name() });
+  private final FxProject fxProjectTree;
+  private final ObservableList<FxProject> projectList =
+      FXCollections.observableArrayList(p -> new Observable[] {p.name()});
 
-	private final ObservableList<FxSpan> spans = FXCollections.observableArrayList(
-		s -> new Observable[] { s.fxProject(), s.duration() });
+  private final ObservableList<FxSpan> spans =
+      FXCollections.observableArrayList(s -> new Observable[] {s.fxProject(), s.duration()});
 
-	/**
-	 * Mostly for test usage when you know what you're doing.
-	 */
-	public ObservableData(FxProject fxProjectTree, List<FxSpan> spans) {
-		this.fxProjectTree = fxProjectTree;
-		updateProjectList();
-		this.spans.setAll(spans);
-	}
+  /** Mostly for test usage when you know what you're doing. */
+  public ObservableData(FxProject fxProjectTree, List<FxSpan> spans) {
+    this.fxProjectTree = fxProjectTree;
+    updateProjectList();
+    this.spans.setAll(spans);
+  }
 
-	public void updateProjectList() {
-		projectList.setAll(fxProjectTree.flatList());
-		log.debug("Updated project list to {}", projectList);
-	}
+  public void updateProjectList() {
+    projectList.setAll(fxProjectTree.flatList());
+    log.debug("Updated project list to {}", projectList);
+  }
 
-	public static ObservableData load(DataStore dataStore) {
-		Project projectTree = dataStore.loadProjectTree();
-		FxProject fxProjectTree = FxProject.root(projectTree);
+  public static ObservableData load(DataStore dataStore) {
+    Project projectTree = dataStore.loadProjectTree();
+    FxProject fxProjectTree = FxProject.root(projectTree);
 
-		Map<Project, FxProject> projectMap = fxProjectTree.flatList().stream()
-			.collect(Collectors.toMap(FxProject::project, p -> p));
+    Map<Project, FxProject> projectMap =
+        fxProjectTree.flatList().stream().collect(Collectors.toMap(FxProject::project, p -> p));
 
-		List<FxSpan> fxSpans = dataStore.loadSpans(projectTree).stream()
-			.map(s -> new FxSpan(projectMap.get(s.project()), s.start(), s.end())).toList();
+    List<FxSpan> fxSpans =
+        dataStore.loadSpans(projectTree).stream()
+            .map(s -> new FxSpan(projectMap.get(s.project()), s.start(), s.end()))
+            .toList();
 
-		return new ObservableData(fxProjectTree, fxSpans);
-	}
+    return new ObservableData(fxProjectTree, fxSpans);
+  }
 
-	public void store(DataStore dataStore) {
-		SpansCollection spansCollection = new SpansCollection();
-		spans.forEach(s -> spansCollection.add(s.toSpan()));
-		dataStore.save(fxProjectTree.project(), spansCollection);
-	}
+  public void store(DataStore dataStore) {
+    SpansCollection spansCollection = new SpansCollection();
+    spans.forEach(s -> spansCollection.add(s.toSpan()));
+    dataStore.save(fxProjectTree.project(), spansCollection);
+  }
 
-	public FxProject fxProjectTree() {
-		return fxProjectTree;
-	}
+  public FxProject fxProjectTree() {
+    return fxProjectTree;
+  }
 
-	public ObservableList<FxProject> projects() {
-		return projectList;
-	}
+  public ObservableList<FxProject> projects() {
+    return projectList;
+  }
 
-	public ObservableList<FxSpan> spans() {
-		return spans;
-	}
+  public ObservableList<FxSpan> spans() {
+    return spans;
+  }
 
-	public void addSpan(FxProject project, ZonedDateTime start, ZonedDateTime end) {
-		// use the Span's truncation & precision:
-		Span temp = new Span(project.project(), start, end);
-		spans.add(new FxSpan(project, temp.start(), temp.end()));
-	}
+  public void addSpan(FxProject project, ZonedDateTime start, ZonedDateTime end) {
+    // use the Span's truncation & precision:
+    Span temp = new Span(project.project(), start, end);
+    spans.add(new FxSpan(project, temp.start(), temp.end()));
+  }
 
-	public TreeItemNode.PreRemovalCallback<FxProject> fxProjectRemovalCallback() {
-		return new FxProjectRemovalCallback(spans);
-	}
+  public TreeItemNode.PreRemovalCallback<FxProject> fxProjectRemovalCallback() {
+    return new FxProjectRemovalCallback(spans);
+  }
 }

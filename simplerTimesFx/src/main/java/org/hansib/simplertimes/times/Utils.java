@@ -28,27 +28,28 @@ import java.util.stream.Collectors;
 
 public class Utils {
 
-	public static String toHmsString(Duration duration) {
-		return String.format("%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart());
-	}
+  public static String toHmsString(Duration duration) {
+    return String.format(
+        "%d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart());
+  }
 
-	/**
-	 * @return a set of seven dates, starting from the last/current Monday to the
-	 *         current/next Sunday
-	 */
-	public static SortedSet<LocalDate> daysOfCurrentWeek() {
-		return daysOfWeek(LocalDate.now());
-	}
+  /**
+   * @return a set of seven dates, starting from the last/current Monday to the current/next Sunday
+   */
+  public static SortedSet<LocalDate> daysOfCurrentWeek() {
+    return daysOfWeek(LocalDate.now());
+  }
 
-	/**
-	 * Construct a set of the seven days of the current week.
-	 * 
-	 * @return a set of seven dates, starting from the previous (or current) Monday
-	 *         to the next Sunday
-	 */
-	public static SortedSet<LocalDate> daysOfWeek(final LocalDate day) {
-		LocalDate current = day.getDayOfWeek() == DayOfWeek.MONDAY ? day
-				: day.with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
-		return current.datesUntil(current.plusDays(7)).collect(Collectors.toCollection(TreeSet::new));
-	}
+  /**
+   * Construct a set of the seven days of the current week.
+   *
+   * @return a set of seven dates, starting from the previous (or current) Monday to the next Sunday
+   */
+  public static SortedSet<LocalDate> daysOfWeek(final LocalDate day) {
+    LocalDate current =
+        day.getDayOfWeek() == DayOfWeek.MONDAY
+            ? day
+            : day.with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
+    return current.datesUntil(current.plusDays(7)).collect(Collectors.toCollection(TreeSet::new));
+  }
 }

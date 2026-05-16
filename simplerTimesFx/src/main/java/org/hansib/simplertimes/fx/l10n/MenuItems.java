@@ -21,13 +21,13 @@ package org.hansib.simplertimes.fx.l10n;
 import org.hansib.sundries.l10n.FormatKey;
 
 public enum MenuItems implements FormatKey {
-	MainWindow, //
-	NewProject, //
-	NewSubproject, //
-	Delete, //
-	SortChildren, //
-	ExpandAll, //
-	CollapseAll, //
-	Stop, //
-	Exit
+  MainWindow,
+  NewProject,
+  NewSubproject,
+  Delete,
+  SortChildren,
+  ExpandAll,
+  CollapseAll,
+  Stop,
+  Exit
 }

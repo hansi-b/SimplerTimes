@@ -24,17 +24,17 @@ import org.hansib.simplertimes.projects.Project;
 
 class ProjectYamlConverter {
 
-	private final YamlMapper mapper;
+  private final YamlMapper mapper;
 
-	ProjectYamlConverter() {
-		mapper = YamlMapper.instance();
-	}
+  ProjectYamlConverter() {
+    mapper = YamlMapper.instance();
+  }
 
-	Project fromYaml(String yamlString) throws IOException {
-		return mapper.fromString(yamlString, Project.Builder.class).build();
-	}
+  Project fromYaml(String yamlString) throws IOException {
+    return mapper.fromString(yamlString, Project.Builder.class).build();
+  }
 
-	String toYaml(Project tree) throws IOException {
-		return mapper.asString(tree);
-	}
+  String toYaml(Project tree) throws IOException {
+    return mapper.asString(tree);
+  }
 }

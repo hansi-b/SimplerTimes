@@ -28,28 +28,24 @@ import org.hansib.simplertimes.fx.stats.SpansStatsController;
 
 public class SpansInfoController {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	@FXML
-	private Tab spansTableTab;
+  @FXML private Tab spansTableTab;
 
-	@FXML
-	private SpansTableController spansTableController;
+  @FXML private SpansTableController spansTableController;
 
-	@FXML
-	private Tab spansStatsTab;
+  @FXML private Tab spansStatsTab;
 
-	@FXML
-	private SpansStatsController spansStatsController;
+  @FXML private SpansStatsController spansStatsController;
 
-	@FXML
-	void initialize() {
-		log.info("Initialising spans info");
-		spansTableController.setUpdateHandler(() -> spansStatsController.updateStats());
-	}
+  @FXML
+  void initialize() {
+    log.info("Initialising spans info");
+    spansTableController.setUpdateHandler(() -> spansStatsController.updateStats());
+  }
 
-	void setData(ObservableData data) {
-		spansTableController.setData(data);
-		spansStatsController.setSpans(data.spans());
-	}
+  void setData(ObservableData data) {
+    spansTableController.setData(data);
+    spansStatsController.setSpans(data.spans());
+  }
 }

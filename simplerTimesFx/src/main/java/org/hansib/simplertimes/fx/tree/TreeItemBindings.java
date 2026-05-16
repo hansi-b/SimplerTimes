@@ -29,50 +29,48 @@ import javafx.scene.control.TreeItem;
 
 record TreeItemBindings<T extends TreeItemNode<T>>(TreeItem<T> item) {
 
-	BooleanBinding isLastProject() {
-		ReadOnlyObjectProperty<TreeItem<T>> parentProp = item.parentProperty();
+  BooleanBinding isLastProject() {
+    ReadOnlyObjectProperty<TreeItem<T>> parentProp = item.parentProperty();
 
-		return Bindings.isNull(parentProp.get().parentProperty())
-				.and(Bindings.equal(Bindings.size(parentProp.get().getChildren()), 1));
-	}
+    return Bindings.isNull(parentProp.get().parentProperty())
+        .and(Bindings.equal(Bindings.size(parentProp.get().getChildren()), 1));
+  }
 
-	BooleanBinding hasFewerThan2Children() {
-		return Bindings.lessThan(Bindings.size(item.getChildren()), 2);
-	}
+  BooleanBinding hasFewerThan2Children() {
+    return Bindings.lessThan(Bindings.size(item.getChildren()), 2);
+  }
 
-	BooleanBinding areAllChildrenExpanded() {
-		return Bindings.createBooleanBinding(() -> item.getChildren().stream().allMatch(this::isExpanded),
-				treeDependencies());
-	}
+  BooleanBinding areAllChildrenExpanded() {
+    return Bindings.createBooleanBinding(
+        () -> item.getChildren().stream().allMatch(this::isExpanded), treeDependencies());
+  }
 
-	BooleanBinding areAllChildrenCollapsed() {
-		return Bindings.createBooleanBinding(() -> item.getChildren().stream().allMatch(this::isCollapsed),
-				treeDependencies());
-	}
+  BooleanBinding areAllChildrenCollapsed() {
+    return Bindings.createBooleanBinding(
+        () -> item.getChildren().stream().allMatch(this::isCollapsed), treeDependencies());
+  }
 
-	private Observable[] treeDependencies() {
-		List<Observable> dependencies = new ArrayList<>();
-		collectTreeDependencies(item, dependencies);
-		return dependencies.toArray(new Observable[0]);
-	}
+  private Observable[] treeDependencies() {
+    List<Observable> dependencies = new ArrayList<>();
+    collectTreeDependencies(item, dependencies);
+    return dependencies.toArray(new Observable[0]);
+  }
 
-	private void collectTreeDependencies(TreeItem<T> item, List<Observable> dependencies) {
-		dependencies.add(item.expandedProperty());
-		dependencies.add(item.getChildren());
-		item.getChildren().forEach(c -> collectTreeDependencies(c, dependencies));
-	}
+  private void collectTreeDependencies(TreeItem<T> item, List<Observable> dependencies) {
+    dependencies.add(item.expandedProperty());
+    dependencies.add(item.getChildren());
+    item.getChildren().forEach(c -> collectTreeDependencies(c, dependencies));
+  }
 
-	private boolean isExpanded(TreeItem<T> item) {
-		if (item == null)
-			return false;
-		return item.getChildren().isEmpty()
-				|| (item.isExpanded() && item.getChildren().stream().allMatch(this::isExpanded));
-	}
+  private boolean isExpanded(TreeItem<T> item) {
+    if (item == null) return false;
+    return item.getChildren().isEmpty()
+        || (item.isExpanded() && item.getChildren().stream().allMatch(this::isExpanded));
+  }
 
-	private boolean isCollapsed(TreeItem<T> item) {
-		if (item == null)
-			return false;
-		return item.getChildren().isEmpty()
-				|| (!item.isExpanded() && item.getChildren().stream().allMatch(this::isCollapsed));
-	}
+  private boolean isCollapsed(TreeItem<T> item) {
+    if (item == null) return false;
+    return item.getChildren().isEmpty()
+        || (!item.isExpanded() && item.getChildren().stream().allMatch(this::isCollapsed));
+  }
 }

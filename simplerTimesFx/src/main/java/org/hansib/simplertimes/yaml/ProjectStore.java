@@ -28,38 +28,40 @@ import org.hansib.simplertimes.projects.Project;
 
 public class ProjectStore {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	private final Path projectsPath;
-	private final String newProjectName;
+  private final Path projectsPath;
+  private final String newProjectName;
 
-	/**
-	 * @param newProjectName the name used for the first placeholder project if we
-	 *                       don't have or cannot load an existing project tree
-	 */
-	public ProjectStore(Path projectsPath, String newProjectName) {
-		this.projectsPath = projectsPath;
-		this.newProjectName = newProjectName;
-	}
+  /**
+   * @param newProjectName the name used for the first placeholder project if we don't have or
+   *     cannot load an existing project tree
+   */
+  public ProjectStore(Path projectsPath, String newProjectName) {
+    this.projectsPath = projectsPath;
+    this.newProjectName = newProjectName;
+  }
 
-	public Project load() {
-		if (!projectsPath.toFile().isFile())
-			return emptyTree();
-		try {
-			return new ProjectYamlConverter().fromYaml(Files.readString(projectsPath));
-		} catch (IOException e) {
-			log.error(String.format("Encountered exception while trying to read projects from '%s'", projectsPath), e);
-			return emptyTree();
-		}
-	}
+  public Project load() {
+    if (!projectsPath.toFile().isFile()) return emptyTree();
+    try {
+      return new ProjectYamlConverter().fromYaml(Files.readString(projectsPath));
+    } catch (IOException e) {
+      log.error(
+          String.format(
+              "Encountered exception while trying to read projects from '%s'", projectsPath),
+          e);
+      return emptyTree();
+    }
+  }
 
-	private Project emptyTree() {
-		Project root = Project.root();
-		root.add(newProjectName);
-		return root;
-	}
+  private Project emptyTree() {
+    Project root = Project.root();
+    root.add(newProjectName);
+    return root;
+  }
 
-	public void save(Project tree) throws IOException {
-		Files.writeString(projectsPath, new ProjectYamlConverter().toYaml(tree));
-	}
+  public void save(Project tree) throws IOException {
+    Files.writeString(projectsPath, new ProjectYamlConverter().toYaml(tree));
+  }
 }

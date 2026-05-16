@@ -25,7 +25,7 @@ import org.hansib.simplertimes.fx.SimplerTimesFx;
  */
 public class SimplerTimesLauncher {
 
-	public static void main(String[] args) {
-		SimplerTimesFx.main(args);
-	}
+  public static void main(String[] args) {
+    SimplerTimesFx.main(args);
+  }
 }

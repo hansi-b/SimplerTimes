@@ -40,65 +40,69 @@ import org.hansib.sundries.fx.StageToggle;
 
 public class SimplerTimesFx extends Application {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	private DataStore dataStore;
-	private ObservableData data;
+  private DataStore dataStore;
+  private ObservableData data;
 
-	private AppPrefs prefs;
+  private AppPrefs prefs;
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
+  @Override
+  public void start(Stage primaryStage) throws Exception {
 
-		log.info("Starting ...");
-		final ExitManager exitManager = ExitManager.get();
+    log.info("Starting ...");
+    final ExitManager exitManager = ExitManager.get();
 
-		L10nSetup.activateEnglish();
+    L10nSetup.activateEnglish();
 
-		prefs = AppPrefs.get();
-		DisclaimerChecker.checkDisclaimer(prefs.disclaimer, exitManager::exit);
+    prefs = AppPrefs.get();
+    DisclaimerChecker.checkDisclaimer(prefs.disclaimer, exitManager::exit);
 
-		dataStore = new DataStore();
-		data = ObservableData.load(dataStore);
+    dataStore = new DataStore();
+    data = ObservableData.load(dataStore);
 
-		TimesMainController timesMainController = ControllerLoader.<TimesMainController>of("timesMain.fxml")
-			.withControllerFactory(() -> new TimesMainController(data, exitManager, prefs)).withTargetStage(primaryStage)
-			.load();
+    TimesMainController timesMainController =
+        ControllerLoader.<TimesMainController>of("timesMain.fxml")
+            .withControllerFactory(() -> new TimesMainController(data, exitManager, prefs))
+            .withTargetStage(primaryStage)
+            .load();
 
-		primaryStage.setTitle(AppNameWindowTitle.fmt());
-		new Resources().loadLogo(logo -> primaryStage.getIcons().add(logo));
+    primaryStage.setTitle(AppNameWindowTitle.fmt());
+    new Resources().loadLogo(logo -> primaryStage.getIcons().add(logo));
 
-		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
-			if (ev.getCode() == KeyCode.Q && ev.isControlDown())
-				exitManager.exit();
-		});
+    primaryStage.addEventHandler(
+        KeyEvent.KEY_PRESSED,
+        ev -> {
+          if (ev.getCode() == KeyCode.Q && ev.isControlDown()) exitManager.exit();
+        });
 
-		if (isSystemTrayMenuSupported()) {
-			new TrayIconMenu(data, timesMainController.getRecorder(), primaryStage, exitManager).show();
-		} else {
-			log.info("System tray menu not supported.");
-			primaryStage.setOnCloseRequest(e -> exitManager.exit());
-		}
-		new StageToggle(() -> primaryStage).toggle();
-		primaryStage.sizeToScene();
+    if (isSystemTrayMenuSupported()) {
+      new TrayIconMenu(data, timesMainController.getRecorder(), primaryStage, exitManager).show();
+    } else {
+      log.info("System tray menu not supported.");
+      primaryStage.setOnCloseRequest(e -> exitManager.exit());
+    }
+    new StageToggle(() -> primaryStage).toggle();
+    primaryStage.sizeToScene();
 
-		prefs.windowPositions.current().main.apply(primaryStage);
-		exitManager.addPreExitAction(() -> prefs.windowPositions.current().main = StageData.of(primaryStage));
-	}
+    prefs.windowPositions.current().main.apply(primaryStage);
+    exitManager.addPreExitAction(
+        () -> prefs.windowPositions.current().main = StageData.of(primaryStage));
+  }
 
-	private static boolean isSystemTrayMenuSupported() {
-		return SystemTray.isSupported() && !GraphicsEnvironment.isHeadless();
-		// && System.getProperty("os.name").toLowerCase().contains("win");
-	}
+  private static boolean isSystemTrayMenuSupported() {
+    return SystemTray.isSupported() && !GraphicsEnvironment.isHeadless();
+    // && System.getProperty("os.name").toLowerCase().contains("win");
+  }
 
-	@Override
-	public void stop() {
-		log.info("Stopping ...");
-		data.store(dataStore);
-		prefs.save();
-	}
+  @Override
+  public void stop() {
+    log.info("Stopping ...");
+    data.store(dataStore);
+    prefs.save();
+  }
 
-	public static void main(String[] args) {
-		launch(SimplerTimesFx.class, args);
-	}
+  public static void main(String[] args) {
+    launch(SimplerTimesFx.class, args);
+  }
 }

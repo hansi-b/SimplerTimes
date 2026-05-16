@@ -28,48 +28,46 @@ import org.hansib.simplertimes.fx.l10n.MenuItems;
 
 record TreeItemActions<T extends TreeItemNode<T>>(TreeItem<T> item) {
 
-	void newTreeItem(TreeView<T> treeview) {
-		T newChild = item.getValue().addChild(MenuItems.NewProject.fmt());
-		TreeItem<T> newItem = new TreeItem<>(newChild);
-		item.getChildren().add(newItem);
-		treeview.getSelectionModel().select(newItem);
-		treeview.edit(newItem);
-	}
+  void newTreeItem(TreeView<T> treeview) {
+    T newChild = item.getValue().addChild(MenuItems.NewProject.fmt());
+    TreeItem<T> newItem = new TreeItem<>(newChild);
+    item.getChildren().add(newItem);
+    treeview.getSelectionModel().select(newItem);
+    treeview.edit(newItem);
+  }
 
-	void removeItem(Predicate<T> acceptRemoval, Runnable itemsChangeHandler) {
-		T node = item.getValue();
+  void removeItem(Predicate<T> acceptRemoval, Runnable itemsChangeHandler) {
+    T node = item.getValue();
 
-		boolean removalAccepted = acceptRemoval == null || acceptRemoval.test(node);
-		if (!removalAccepted)
-			return;
+    boolean removalAccepted = acceptRemoval == null || acceptRemoval.test(node);
+    if (!removalAccepted) return;
 
-		node.remove();
-		item.getParent().getChildren().remove(item);
-		itemsChangeHandler.run();
-	}
+    node.remove();
+    item.getParent().getChildren().remove(item);
+    itemsChangeHandler.run();
+  }
 
-	void sortChildren(Runnable itemsChangeHandler) {
-		item.getChildren().sort(Comparator.comparing(o -> o.getValue().text()));
-		item.getValue().sortChildren(String::compareTo);
-		itemsChangeHandler.run();
-	}
+  void sortChildren(Runnable itemsChangeHandler) {
+    item.getChildren().sort(Comparator.comparing(o -> o.getValue().text()));
+    item.getValue().sortChildren(String::compareTo);
+    itemsChangeHandler.run();
+  }
 
-	void expandChildren() {
-		item.getChildren().forEach(TreeItemActions::expand);
-	}
+  void expandChildren() {
+    item.getChildren().forEach(TreeItemActions::expand);
+  }
 
-	private static <T extends TreeItemNode<T>> void expand(TreeItem<T> item) {
-		item.setExpanded(true);
-		item.getChildren().forEach(TreeItemActions::expand);
-	}
+  private static <T extends TreeItemNode<T>> void expand(TreeItem<T> item) {
+    item.setExpanded(true);
+    item.getChildren().forEach(TreeItemActions::expand);
+  }
 
-	void collapseChildren() {
-		item.getChildren().forEach(TreeItemActions::collapse);
-	}
+  void collapseChildren() {
+    item.getChildren().forEach(TreeItemActions::collapse);
+  }
 
-	private static <T extends TreeItemNode<T>> void collapse(TreeItem<T> item) {
-		item.getChildren().forEach(TreeItemActions::collapse);
-		item.setExpanded(false);
-	}
-
+  private static <T extends TreeItemNode<T>> void collapse(TreeItem<T> item) {
+    item.getChildren().forEach(TreeItemActions::collapse);
+    item.setExpanded(false);
+  }
 }

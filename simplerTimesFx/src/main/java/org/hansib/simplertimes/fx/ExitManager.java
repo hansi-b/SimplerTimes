@@ -33,25 +33,24 @@ import javafx.application.Platform;
 
 public class ExitManager {
 
-	private static ExitManager instance;
+  private static ExitManager instance;
 
-	public static ExitManager get() {
-		if (instance == null)
-			instance = new ExitManager();
-		return instance;
-	}
+  public static ExitManager get() {
+    if (instance == null) instance = new ExitManager();
+    return instance;
+  }
 
-	private final List<Runnable> preExitActions = new ArrayList<>();
+  private final List<Runnable> preExitActions = new ArrayList<>();
 
-	/**
-	 * @param action an action to execute before calling exit on the platform
-	 */
-	public void addPreExitAction(Runnable action) {
-		preExitActions.add(Objects.requireNonNull(action));
-	}
+  /**
+   * @param action an action to execute before calling exit on the platform
+   */
+  public void addPreExitAction(Runnable action) {
+    preExitActions.add(Objects.requireNonNull(action));
+  }
 
-	public void exit() {
-		preExitActions.forEach(Runnable::run);
-		Platform.exit();
-	}
+  public void exit() {
+    preExitActions.forEach(Runnable::run);
+    Platform.exit();
+  }
 }

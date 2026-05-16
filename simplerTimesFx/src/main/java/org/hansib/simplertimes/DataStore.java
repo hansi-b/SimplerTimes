@@ -30,36 +30,36 @@ import org.hansib.simplertimes.yaml.SpansStore;
 
 public class DataStore {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	private final SpansStore spansStore;
-	private final ProjectStore projectStore;
+  private final SpansStore spansStore;
+  private final ProjectStore projectStore;
 
-	public DataStore() {
-		DataPaths appData = DataPaths.atDefault();
+  public DataStore() {
+    DataPaths appData = DataPaths.atDefault();
 
-		spansStore = new SpansStore(appData.spansPath());
-		projectStore = new ProjectStore(appData.projectsPath(), Names.NewProjectName.fmt());
-	}
+    spansStore = new SpansStore(appData.spansPath());
+    projectStore = new ProjectStore(appData.projectsPath(), Names.NewProjectName.fmt());
+  }
 
-	public Project loadProjectTree() {
-		return projectStore.load();
-	}
+  public Project loadProjectTree() {
+    return projectStore.load();
+  }
 
-	public SpansCollection loadSpans(Project projects) {
-		return spansStore.load(projects);
-	}
+  public SpansCollection loadSpans(Project projects) {
+    return spansStore.load(projects);
+  }
 
-	public void save(Project projects, SpansCollection spans) {
-		try {
-			projectStore.save(projects);
-		} catch (IOException e) {
-			log.error("Could not save projects", e);
-		}
-		try {
-			spansStore.save(spans);
-		} catch (IOException e) {
-			log.error("Could not save spans", e);
-		}
-	}
+  public void save(Project projects, SpansCollection spans) {
+    try {
+      projectStore.save(projects);
+    } catch (IOException e) {
+      log.error("Could not save projects", e);
+    }
+    try {
+      spansStore.save(spans);
+    } catch (IOException e) {
+      log.error("Could not save spans", e);
+    }
+  }
 }

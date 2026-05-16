@@ -27,29 +27,33 @@ import org.hansib.sundries.l10n.yaml.errors.L10nFormatError;
 import org.hansib.sundries.testing.VisibleForTesting;
 
 public class L10nSetup {
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	enum Locales {
-		en
-	}
+  enum Locales {
+    en
+  }
 
-	private L10nSetup() {
-		// nothing to do
-	}
+  private L10nSetup() {
+    // nothing to do
+  }
 
-	public static L10n activateEnglish() {
-		Consumer<L10nFormatError> errorHandler = e -> log.warn(e::description);
-		L10n english = loadEnglish(errorHandler);
-		english.activate();
-		return english;
-	}
+  public static L10n activateEnglish() {
+    Consumer<L10nFormatError> errorHandler = e -> log.warn(e::description);
+    L10n english = loadEnglish(errorHandler);
+    english.activate();
+    return english;
+  }
 
-	@VisibleForTesting
-	static L10n loadEnglish(Consumer<L10nFormatError> errorHandler) {
-		L10n english = new L10n().with(General.class) //
-				.with(MenuItems.class).with(Names.class) //
-				.with(Buttons.class).with(Headers.class);
-		english.load("l10n", Locales.en, errorHandler);
-		return english;
-	}
+  @VisibleForTesting
+  static L10n loadEnglish(Consumer<L10nFormatError> errorHandler) {
+    L10n english =
+        new L10n()
+            .with(General.class)
+            .with(MenuItems.class)
+            .with(Names.class)
+            .with(Buttons.class)
+            .with(Headers.class);
+    english.load("l10n", Locales.en, errorHandler);
+    return english;
+  }
 }

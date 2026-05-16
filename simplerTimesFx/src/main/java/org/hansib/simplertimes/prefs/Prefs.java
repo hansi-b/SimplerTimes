@@ -35,76 +35,79 @@ import org.hansib.sundries.fx.StageData;
 
 public interface Prefs {
 
-	enum AppVersion {
-		v1
-	}
+  enum AppVersion {
+    v1
+  }
 
-	class Disclaimer {
-		public boolean isAccepted = false;
-	}
+  class Disclaimer {
+    public boolean isAccepted = false;
+  }
 
-	class Windows {
-		public StageData main = StageData.NONE;
-		public StageData projects = StageData.NONE;
-		public StageData spans = StageData.NONE;
-	}
+  class Windows {
+    public StageData main = StageData.NONE;
+    public StageData projects = StageData.NONE;
+    public StageData spans = StageData.NONE;
+  }
 
-	/**
-	 * Remember stage data by screen configuration to restore them only on known screens. Limit cache size, removing
-	 * least commonly used first.
-	 */
-	class WindowsPositions {
-		private static final int CACHE_SIZE = 5;
+  /**
+   * Remember stage data by screen configuration to restore them only on known screens. Limit cache
+   * size, removing least commonly used first.
+   */
+  class WindowsPositions {
+    private static final int CACHE_SIZE = 5;
 
-		@JsonDeserialize(using = LruMapDeserializer.class)
-		private final Map<String, Windows> byScreenConfig = newLruMap();
+    @JsonDeserialize(using = LruMapDeserializer.class)
+    private final Map<String, Windows> byScreenConfig = newLruMap();
 
-		private static class LruMapDeserializer extends JsonDeserializer<Map<String, Windows>> {
-			@Override
-			public Map<String, Windows> deserialize(JsonParser p, DeserializationContext context) throws IOException {
-				JsonNode node = p.getCodec().readTree(p);
+    private static class LruMapDeserializer extends JsonDeserializer<Map<String, Windows>> {
+      @Override
+      public Map<String, Windows> deserialize(JsonParser p, DeserializationContext context)
+          throws IOException {
+        JsonNode node = p.getCodec().readTree(p);
 
-				Map<String, Windows> result = newLruMap();
-				if (node.isObject()) {
-					ObjectMapper mapper = (ObjectMapper) p.getCodec();
-					for (Map.Entry<String, JsonNode> entry : node.properties()) {
-						Windows value = mapper.treeToValue(entry.getValue(), Windows.class);
-						result.put(entry.getKey(), value);
-					}
-				}
-				return result;
-			}
-		}
+        Map<String, Windows> result = newLruMap();
+        if (node.isObject()) {
+          ObjectMapper mapper = (ObjectMapper) p.getCodec();
+          for (Map.Entry<String, JsonNode> entry : node.properties()) {
+            Windows value = mapper.treeToValue(entry.getValue(), Windows.class);
+            result.put(entry.getKey(), value);
+          }
+        }
+        return result;
+      }
+    }
 
-		private static Map<String, Windows> newLruMap() {
-			return new LinkedHashMap<>(2 * CACHE_SIZE, .75F, true) {
-				@Override
-				protected boolean removeEldestEntry(final Map.Entry<String, Windows> eldest) {
-					return size() > CACHE_SIZE;
-				}
-			};
-		}
+    private static Map<String, Windows> newLruMap() {
+      return new LinkedHashMap<>(2 * CACHE_SIZE, .75F, true) {
+        @Override
+        protected boolean removeEldestEntry(final Map.Entry<String, Windows> eldest) {
+          return size() > CACHE_SIZE;
+        }
+      };
+    }
 
-		/**
-		 * @return either stored positions for the current screen configuration or new (undefined) positions
-		 */
-		public Windows current() {
-			return byScreenConfig.computeIfAbsent(currentScreensCacheKey(), k -> new Windows());
-		}
+    /**
+     * @return either stored positions for the current screen configuration or new (undefined)
+     *     positions
+     */
+    public Windows current() {
+      return byScreenConfig.computeIfAbsent(currentScreensCacheKey(), k -> new Windows());
+    }
 
-		/**
-		 * @return a string representing the current screen configuration for use as a cache key
-		 */
-		static String currentScreensCacheKey() {
-			StringJoiner screenConfigStr = new StringJoiner("+");
-			Screen.getScreens().forEach(s -> screenConfigStr.add(screenCacheKey(s)));
-			return screenConfigStr.toString();
-		}
+    /**
+     * @return a string representing the current screen configuration for use as a cache key
+     */
+    static String currentScreensCacheKey() {
+      StringJoiner screenConfigStr = new StringJoiner("+");
+      Screen.getScreens().forEach(s -> screenConfigStr.add(screenCacheKey(s)));
+      return screenConfigStr.toString();
+    }
 
-		private static String screenCacheKey(Screen screen) {
-			Rectangle2D bounds = screen.getVisualBounds();
-			return String.format("@%s/%s:%sx%s", bounds.getMinX(), bounds.getMinY(), bounds.getWidth(),
-				bounds.getHeight());
-		}
-	}
+    private static String screenCacheKey(Screen screen) {
+      Rectangle2D bounds = screen.getVisualBounds();
+      return String.format(
+          "@%s/%s:%sx%s",
+          bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), bounds.getHeight());
+    }
+  }
 }

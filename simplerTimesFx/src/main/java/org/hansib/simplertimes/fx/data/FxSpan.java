@@ -31,45 +31,46 @@ import org.hansib.simplertimes.spans.Span;
 
 public class FxSpan {
 
-	private final SimpleObjectProperty<FxProject> fxProject;
+  private final SimpleObjectProperty<FxProject> fxProject;
 
-	private final SimpleObjectProperty<OffsetDateTime> start;
-	private final SimpleObjectProperty<OffsetDateTime> end;
-	private final ReadOnlyObjectWrapper<Duration> duration;
+  private final SimpleObjectProperty<OffsetDateTime> start;
+  private final SimpleObjectProperty<OffsetDateTime> end;
+  private final ReadOnlyObjectWrapper<Duration> duration;
 
-	public FxSpan(FxProject project, OffsetDateTime start, OffsetDateTime end) {
-		this.fxProject = new SimpleObjectProperty<>(project);
+  public FxSpan(FxProject project, OffsetDateTime start, OffsetDateTime end) {
+    this.fxProject = new SimpleObjectProperty<>(project);
 
-		this.start = new SimpleObjectProperty<>(start);
-		this.end = new SimpleObjectProperty<>(end);
+    this.start = new SimpleObjectProperty<>(start);
+    this.end = new SimpleObjectProperty<>(end);
 
-		this.duration = new ReadOnlyObjectWrapper<>();
-		duration.bind(Bindings.createObjectBinding(() -> Duration.between(this.start.get(), this.end.get()), this.start,
-				this.end));
-	}
+    this.duration = new ReadOnlyObjectWrapper<>();
+    duration.bind(
+        Bindings.createObjectBinding(
+            () -> Duration.between(this.start.get(), this.end.get()), this.start, this.end));
+  }
 
-	public ObjectProperty<FxProject> fxProject() {
-		return fxProject;
-	}
+  public ObjectProperty<FxProject> fxProject() {
+    return fxProject;
+  }
 
-	public SimpleObjectProperty<OffsetDateTime> start() {
-		return start;
-	}
+  public SimpleObjectProperty<OffsetDateTime> start() {
+    return start;
+  }
 
-	public SimpleObjectProperty<OffsetDateTime> end() {
-		return end;
-	}
+  public SimpleObjectProperty<OffsetDateTime> end() {
+    return end;
+  }
 
-	public ReadOnlyObjectProperty<Duration> duration() {
-		return duration;
-	}
+  public ReadOnlyObjectProperty<Duration> duration() {
+    return duration;
+  }
 
-	Span toSpan() {
-		return new Span(fxProject().get().project(), start().get(), end().get());
-	}
+  Span toSpan() {
+    return new Span(fxProject().get().project(), start().get(), end().get());
+  }
 
-	@Override
-	public String toString() {
-		return "[%s -> %s: %s]".formatted(start.get(), end.get(), fxProject.get());
-	}
+  @Override
+  public String toString() {
+    return "[%s -> %s: %s]".formatted(start.get(), end.get(), fxProject.get());
+  }
 }
