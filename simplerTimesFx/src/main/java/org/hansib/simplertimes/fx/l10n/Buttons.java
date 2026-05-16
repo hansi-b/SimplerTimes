@@ -21,7 +21,7 @@ package org.hansib.simplertimes.fx.l10n;
 import org.hansib.sundries.l10n.FormatKey;
 
 public enum Buttons implements FormatKey {
-	Ok, //
-	Cancel, //
-	Delete
+  Ok,
+  Cancel,
+  Delete
 }

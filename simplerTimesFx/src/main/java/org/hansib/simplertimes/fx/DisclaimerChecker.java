@@ -36,56 +36,56 @@ import org.hansib.sundries.fx.AlertBuilder;
 
 class DisclaimerChecker {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	private final ResourceLoader resourceLoader = new ResourceLoader();
+  private final ResourceLoader resourceLoader = new ResourceLoader();
 
-	static void checkDisclaimer(Prefs.Disclaimer disclaimer, Runnable exitCall) {
-		if (disclaimer.isAccepted)
-			return;
+  static void checkDisclaimer(Prefs.Disclaimer disclaimer, Runnable exitCall) {
+    if (disclaimer.isAccepted) return;
 
-		Platform.runLater(() -> {
-			boolean displayDisclaimerAndAccept = new DisclaimerChecker().askAcceptDisclaimer();
-			disclaimer.isAccepted = displayDisclaimerAndAccept;
-			if (!displayDisclaimerAndAccept) {
-				log.info("Disclaimer was rejected");
-				exitCall.run();
-			}
-		});
-	}
+    Platform.runLater(
+        () -> {
+          boolean displayDisclaimerAndAccept = new DisclaimerChecker().askAcceptDisclaimer();
+          disclaimer.isAccepted = displayDisclaimerAndAccept;
+          if (!displayDisclaimerAndAccept) {
+            log.info("Disclaimer was rejected");
+            exitCall.run();
+          }
+        });
+  }
 
-	private boolean askAcceptDisclaimer() {
-		log.trace("#showDisclaimer");
+  private boolean askAcceptDisclaimer() {
+    log.trace("#showDisclaimer");
 
-		final String disclaimer = loadDisclaimer();
-		if (disclaimer == null)
-			return false;
+    final String disclaimer = loadDisclaimer();
+    if (disclaimer == null) return false;
 
-		final String doYouAccept = "Do you accept this agreement?\n(\"Cancel\" quits the program.)";
-		TextArea textArea = new TextArea("%s%n%s".formatted(disclaimer, doYouAccept));
-		textArea.setEditable(false);
-		textArea.setWrapText(true);
-		textArea.setPrefHeight(300);
-		VBox.setVgrow(textArea, Priority.ALWAYS);
+    final String doYouAccept = "Do you accept this agreement?\n(\"Cancel\" quits the program.)";
+    TextArea textArea = new TextArea("%s%n%s".formatted(disclaimer, doYouAccept));
+    textArea.setEditable(false);
+    textArea.setWrapText(true);
+    textArea.setPrefHeight(300);
+    VBox.setVgrow(textArea, Priority.ALWAYS);
 
-		return new AlertBuilder(AlertType.CONFIRMATION, new VBox(textArea)) //
-				.withTitle("SimplerTimes - Disclaimer") //
-				.withHeaderText("SimplerTimes - Disclaimer") //
-				.withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt()) //
-				.withButton(ButtonType.OK, Buttons.Ok.fmt()) //
-				.resizable(true) //
-				.showAndWaitFor(ButtonType.OK);
-	}
+    return new AlertBuilder(AlertType.CONFIRMATION, new VBox(textArea))
+        .withTitle("SimplerTimes - Disclaimer")
+        .withHeaderText("SimplerTimes - Disclaimer")
+        .withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt())
+        .withButton(ButtonType.OK, Buttons.Ok.fmt())
+        .resizable(true)
+        .showAndWaitFor(ButtonType.OK);
+  }
 
-	private String loadDisclaimer() {
-		try {
-			return resourceLoader.getResourceAsString("disclaimer.txt");
-		} catch (final RuntimeException | IOException e) {
-			log.error("Could not load disclaimer", e);
-			new AlertBuilder(AlertType.ERROR, "The disclaimer could not be loaded: %s".formatted(e.getMessage()))
-					.withTitle("Internal error while loading the disclaimer") //
-					.showAndWait();
-			return null;
-		}
-	}
+  private String loadDisclaimer() {
+    try {
+      return resourceLoader.getResourceAsString("disclaimer.txt");
+    } catch (final RuntimeException | IOException e) {
+      log.error("Could not load disclaimer", e);
+      new AlertBuilder(
+              AlertType.ERROR, "The disclaimer could not be loaded: %s".formatted(e.getMessage()))
+          .withTitle("Internal error while loading the disclaimer")
+          .showAndWait();
+      return null;
+    }
+  }
 }

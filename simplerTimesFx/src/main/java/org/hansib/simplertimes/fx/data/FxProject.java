@@ -33,124 +33,124 @@ import org.hansib.simplertimes.fx.tree.TreeItemNode;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.Strings;
 
-/**
- * Maintains a 1-to-1 mapping with a {@link Project}
- */
+/** Maintains a 1-to-1 mapping with a {@link Project} */
 public class FxProject implements TreeItemNode<FxProject> {
 
-	public static final Comparator<FxProject> nameComparator = (FxProject o1, FxProject o2) -> Project.nameComparator
-			.compare(o1.project, o2.project);
+  public static final Comparator<FxProject> nameComparator =
+      (FxProject o1, FxProject o2) -> Project.nameComparator.compare(o1.project, o2.project);
 
-	private final Map<Project, FxProject> fxByProject;
+  private final Map<Project, FxProject> fxByProject;
 
-	private final Project project;
-	private final StringProperty name;
+  private final Project project;
+  private final StringProperty name;
 
-	private FxProject(Map<Project, FxProject> fxByProject, Project project) {
-		this.fxByProject = fxByProject;
-		this.project = project;
+  private FxProject(Map<Project, FxProject> fxByProject, Project project) {
+    this.fxByProject = fxByProject;
+    this.project = project;
 
-		this.name = new SimpleStringProperty(project.name());
-		this.name.addListener((observable, oldValue, newValue) -> project.setName(newValue));
+    this.name = new SimpleStringProperty(project.name());
+    this.name.addListener((observable, oldValue, newValue) -> project.setName(newValue));
 
-		fxByProject.put(project, this);
-	}
+    fxByProject.put(project, this);
+  }
 
-	static FxProject root(Project project) {
-		return link(new HashMap<>(), project);
-	}
+  static FxProject root(Project project) {
+    return link(new HashMap<>(), project);
+  }
 
-	private static FxProject link(Map<Project, FxProject> fxByProject, Project project) {
-		FxProject fxProject = new FxProject(fxByProject, project);
-		project.children().forEach(c -> link(fxByProject, c));
-		return fxProject;
-	}
+  private static FxProject link(Map<Project, FxProject> fxByProject, Project project) {
+    FxProject fxProject = new FxProject(fxByProject, project);
+    project.children().forEach(c -> link(fxByProject, c));
+    return fxProject;
+  }
 
-	List<FxProject> flatList() {
-		return flatList(new ArrayList<>());
-	}
+  List<FxProject> flatList() {
+    return flatList(new ArrayList<>());
+  }
 
-	private List<FxProject> flatList(List<FxProject> accu) {
-		if (text() != null)
-			accu.add(this);
-		children().forEach(c -> c.flatList(accu));
-		return accu;
-	}
+  private List<FxProject> flatList(List<FxProject> accu) {
+    if (text() != null) accu.add(this);
+    children().forEach(c -> c.flatList(accu));
+    return accu;
+  }
 
-	public Project project() {
-		return project;
-	}
+  public Project project() {
+    return project;
+  }
 
-	@Override
-	public String text() {
-		return name.get();
-	}
+  @Override
+  public String text() {
+    return name.get();
+  }
 
-	public ReadOnlyStringProperty name() {
-		return name;
-	}
+  public ReadOnlyStringProperty name() {
+    return name;
+  }
 
-	public String fullName() {
-		/*
-		 * other options: · • › » ▹ ▷ | – #
-		 */
-		return String.join(" › ", project.namesList());
-	}
+  public String fullName() {
+    /*
+     * other options: · • › » ▹ ▷ | – #
+     */
+    return String.join(" › ", project.namesList());
+  }
 
-	public String formatName(FxProject relativeTo, String delimiter) {
-		return String.join(delimiter, project.namesList(relativeTo.project));
-	}
+  public String formatName(FxProject relativeTo, String delimiter) {
+    return String.join(delimiter, project.namesList(relativeTo.project));
+  }
 
-	public boolean hasChildren() {
-		return project.hasChildren();
-	}
+  public boolean hasChildren() {
+    return project.hasChildren();
+  }
 
-	@Override
-	public Stream<FxProject> children() {
-		return project.children().stream().map(fxByProject::get);
-	}
+  @Override
+  public Stream<FxProject> children() {
+    return project.children().stream().map(fxByProject::get);
+  }
 
-	/**
-	 * @return all children that do not have children (if this project has no
-	 *         children, then an empty stream)
-	 */
-	public Stream<FxProject> leafChildren() {
-		return project.dfStream().filter(c -> c != project && c.children().isEmpty()).map(fxByProject::get);
-	}
+  /**
+   * @return all children that do not have children (if this project has no children, then an empty
+   *     stream)
+   */
+  public Stream<FxProject> leafChildren() {
+    return project
+        .dfStream()
+        .filter(c -> c != project && c.children().isEmpty())
+        .map(fxByProject::get);
+  }
 
-	@Override
-	public void sortChildren(Comparator<String> comparator) {
-		project.sortChildren((o1, o2) -> comparator.compare(o1.name(), o2.name()));
-	}
+  @Override
+  public void sortChildren(Comparator<String> comparator) {
+    project.sortChildren((o1, o2) -> comparator.compare(o1.name(), o2.name()));
+  }
 
-	@Override
-	public void setText(String newText) {
-		name.set(newText);
-	}
+  @Override
+  public void setText(String newText) {
+    name.set(newText);
+  }
 
-	@Override
-	public void remove() {
-		project.parent().remove(project);
-		fxByProject.remove(project);
-	}
+  @Override
+  public void remove() {
+    project.parent().remove(project);
+    fxByProject.remove(project);
+  }
 
-	@Override
-	public FxProject addChild(String childText) {
-		return new FxProject(fxByProject, project.add(childText));
-	}
+  @Override
+  public FxProject addChild(String childText) {
+    return new FxProject(fxByProject, project.add(childText));
+  }
 
-	@Override
-	public boolean canMoveTo(FxProject newParent, int newIndex) {
-		return project.canMoveTo(newParent.project, newIndex);
-	}
+  @Override
+  public boolean canMoveTo(FxProject newParent, int newIndex) {
+    return project.canMoveTo(newParent.project, newIndex);
+  }
 
-	@Override
-	public void moveTo(FxProject newParent, int newIndex) {
-		project.moveTo(newParent.project, newIndex);
-	}
+  @Override
+  public void moveTo(FxProject newParent, int newIndex) {
+    project.moveTo(newParent.project, newIndex);
+  }
 
-	@Override
-	public String toString() {
-		return Strings.idStr(this, name.get());
-	}
+  @Override
+  public String toString() {
+    return Strings.idStr(this, name.get());
+  }
 }

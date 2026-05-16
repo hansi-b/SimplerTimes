@@ -33,75 +33,75 @@ import org.hansib.sundries.testing.VisibleForTesting;
 
 public class IntervalTicker {
 
-	private static class DaemonFactory implements ThreadFactory {
-		@Override
-		public Thread newThread(Runnable r) {
-			Thread t = new Thread(r);
-			t.setDaemon(true);
-			return t;
-		}
-	}
+  private static class DaemonFactory implements ThreadFactory {
+    @Override
+    public Thread newThread(Runnable r) {
+      Thread t = new Thread(r);
+      t.setDaemon(true);
+      return t;
+    }
+  }
 
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0, new DaemonFactory());
-	private ScheduledFuture<?> scheduleAtFixedRate;
+  private final ScheduledExecutorService scheduler =
+      Executors.newScheduledThreadPool(0, new DaemonFactory());
+  private ScheduledFuture<?> scheduleAtFixedRate;
 
-	private final DateTimeSource dtSource;
-	private final Consumer<Interval> tickReceiver;
+  private final DateTimeSource dtSource;
+  private final Consumer<Interval> tickReceiver;
 
-	private ZonedDateTime startedAt;
-	private final AtomicReference<Interval> lastUpdate;
+  private ZonedDateTime startedAt;
+  private final AtomicReference<Interval> lastUpdate;
 
-	public IntervalTicker(Consumer<Interval> tickReceiver) {
-		this(tickReceiver, new DateTimeSource.SystemDateTime());
-	}
+  public IntervalTicker(Consumer<Interval> tickReceiver) {
+    this(tickReceiver, new DateTimeSource.SystemDateTime());
+  }
 
-	@VisibleForTesting
-	IntervalTicker(Consumer<Interval> tickReceiver, DateTimeSource dateTimeSource) {
-		this.tickReceiver = Objects.requireNonNull(tickReceiver);
-		this.dtSource = dateTimeSource;
-		this.lastUpdate = new AtomicReference<>();
-	}
+  @VisibleForTesting
+  IntervalTicker(Consumer<Interval> tickReceiver, DateTimeSource dateTimeSource) {
+    this.tickReceiver = Objects.requireNonNull(tickReceiver);
+    this.dtSource = dateTimeSource;
+    this.lastUpdate = new AtomicReference<>();
+  }
 
-	public synchronized void start() {
-		if (startedAt != null)
-			throw Errors.illegalState("Ticker was already started");
-		startedAt = dtSource.now();
-		updateInterval();
-		scheduleAtFixedRate = scheduler.scheduleAtFixedRate(this::updateInterval, 40, 40, TimeUnit.MILLISECONDS);
-	}
+  public synchronized void start() {
+    if (startedAt != null) throw Errors.illegalState("Ticker was already started");
+    startedAt = dtSource.now();
+    updateInterval();
+    scheduleAtFixedRate =
+        scheduler.scheduleAtFixedRate(this::updateInterval, 40, 40, TimeUnit.MILLISECONDS);
+  }
 
-	private synchronized void updateInterval() {
-		Interval i = new Interval(startedAt, dtSource.now());
-		lastUpdate.set(i);
-		tickReceiver.accept(i);
-	}
+  private synchronized void updateInterval() {
+    Interval i = new Interval(startedAt, dtSource.now());
+    lastUpdate.set(i);
+    tickReceiver.accept(i);
+  }
 
-	public synchronized boolean isStarted() {
-		return startedAt != null;
-	}
+  public synchronized boolean isStarted() {
+    return startedAt != null;
+  }
 
-	/**
-	 * @return the interval from this ticker's last start to the last time the
-	 *         elapsed interval was updated
-	 */
-	public synchronized Interval lastUpdate() {
-		return lastUpdate.get();
-	}
+  /**
+   * @return the interval from this ticker's last start to the last time the elapsed interval was
+   *     updated
+   */
+  public synchronized Interval lastUpdate() {
+    return lastUpdate.get();
+  }
 
-	/**
-	 * Stops this ticker and returns the interval up to the moment the ticker was
-	 * stopped. (Which may be longer than the last update due to the update rate.)
-	 * 
-	 * @return the interval from the last start up to the moment this method was
-	 *         called
-	 */
-	public synchronized Interval stopAndGet() {
-		if (scheduleAtFixedRate == null || startedAt == null)
-			throw Errors.illegalState("Ticker was not started");
-		scheduleAtFixedRate.cancel(true);
-		Interval result = new Interval(startedAt, dtSource.now());
-		startedAt = null;
-		scheduleAtFixedRate = null;
-		return result;
-	}
+  /**
+   * Stops this ticker and returns the interval up to the moment the ticker was stopped. (Which may
+   * be longer than the last update due to the update rate.)
+   *
+   * @return the interval from the last start up to the moment this method was called
+   */
+  public synchronized Interval stopAndGet() {
+    if (scheduleAtFixedRate == null || startedAt == null)
+      throw Errors.illegalState("Ticker was not started");
+    scheduleAtFixedRate.cancel(true);
+    Interval result = new Interval(startedAt, dtSource.now());
+    startedAt = null;
+    scheduleAtFixedRate = null;
+    return result;
+  }
 }

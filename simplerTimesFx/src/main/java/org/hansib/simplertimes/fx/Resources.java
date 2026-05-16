@@ -31,24 +31,25 @@ import org.hansib.sundries.ResourceLoader;
 
 public class Resources {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	private final ResourceLoader loader = new ResourceLoader();
+  private final ResourceLoader loader = new ResourceLoader();
 
-	public void loadLogo(Consumer<Image> logoHandler) {
-		Image logo;
-		try {
-			logo = loader.loadResourceStream("logo.png", Image::new);
-		} catch (IllegalStateException ex) {
-			log.warn("Could not load logo", ex);
-			return;
-		}
-		logoHandler.accept(logo);
-	}
+  public void loadLogo(Consumer<Image> logoHandler) {
+    Image logo;
+    try {
+      logo = loader.loadResourceStream("logo.png", Image::new);
+    } catch (IllegalStateException ex) {
+      log.warn("Could not load logo", ex);
+      return;
+    }
+    logoHandler.accept(logo);
+  }
 
-	public java.awt.Image loadAwtLogo() {
-		URL imageURL = Resources.class.getClassLoader().getResource("logo.png");
-		return new ImageIcon(imageURL, "SimplerTimes Logo").getImage()
-			.getScaledInstance(16, 16, java.awt.Image.SCALE_SMOOTH);
-	}
+  public java.awt.Image loadAwtLogo() {
+    URL imageURL = Resources.class.getClassLoader().getResource("logo.png");
+    return new ImageIcon(imageURL, "SimplerTimes Logo")
+        .getImage()
+        .getScaledInstance(16, 16, java.awt.Image.SCALE_SMOOTH);
+  }
 }

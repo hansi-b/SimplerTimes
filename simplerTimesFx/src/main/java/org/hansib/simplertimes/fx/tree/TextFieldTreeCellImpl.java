@@ -31,100 +31,105 @@ import org.apache.logging.log4j.Logger;
 
 class TextFieldTreeCellImpl<T extends TextNode> extends TreeCell<T> { // NOSONAR
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	private TextField textField;
-	private Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction;
+  private TextField textField;
+  private Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction;
 
-	private final Runnable changeHandler;
+  private final Runnable changeHandler;
 
-	public TextFieldTreeCellImpl(Runnable changeHandler) {
-		super();
-		this.changeHandler = changeHandler;
-	}
+  public TextFieldTreeCellImpl(Runnable changeHandler) {
+    super();
+    this.changeHandler = changeHandler;
+  }
 
-	public TextFieldTreeCellImpl<T> withContextMenu(
-			Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction) {
-		this.cellContextMenuFunction = cellContextMenuFunction;
-		return this;
-	}
+  public TextFieldTreeCellImpl<T> withContextMenu(
+      Function<TextFieldTreeCellImpl<T>, ContextMenu> cellContextMenuFunction) {
+    this.cellContextMenuFunction = cellContextMenuFunction;
+    return this;
+  }
 
-	@Override
-	public void startEdit() {
-		super.startEdit();
-		if (textField == null) {
-			createTextField();
-		}
-		textField.setText(itemText());
-		setText(null);
-		setGraphic(textField);
-		textField.requestFocus();
-	}
+  @Override
+  public void startEdit() {
+    super.startEdit();
+    if (textField == null) {
+      createTextField();
+    }
+    textField.setText(itemText());
+    setText(null);
+    setGraphic(textField);
+    textField.requestFocus();
+  }
 
-	@Override
-	public void cancelEdit() {
-		super.cancelEdit();
+  @Override
+  public void cancelEdit() {
+    super.cancelEdit();
 
-		setText(itemText());
-		setGraphic(getTreeItem().getGraphic());
-	}
+    setText(itemText());
+    setGraphic(getTreeItem().getGraphic());
+  }
 
-	@Override
-	public void updateItem(T item, boolean empty) {
-		super.updateItem(item, empty);
-		setContextMenu(null);
+  @Override
+  public void updateItem(T item, boolean empty) {
+    super.updateItem(item, empty);
+    setContextMenu(null);
 
-		if (empty) {
-			setText(null);
-			setGraphic(null);
-		} else if (isEditing()) {
-			if (textField != null) {
-				textField.setText(itemText());
-			}
-			setText(null);
-			setGraphic(textField);
-		} else {
-			setText(itemText());
-			setGraphic(getTreeItem().getGraphic());
-			if (cellContextMenuFunction != null) {
-				setContextMenu(cellContextMenuFunction.apply(this));
-			}
-		}
-	}
+    if (empty) {
+      setText(null);
+      setGraphic(null);
+    } else if (isEditing()) {
+      if (textField != null) {
+        textField.setText(itemText());
+      }
+      setText(null);
+      setGraphic(textField);
+    } else {
+      setText(itemText());
+      setGraphic(getTreeItem().getGraphic());
+      if (cellContextMenuFunction != null) {
+        setContextMenu(cellContextMenuFunction.apply(this));
+      }
+    }
+  }
 
-	private void createTextField() {
-		textField = new TextField(itemText());
-		textField.setOnKeyPressed(t -> {
-			if (t.getCode() == KeyCode.ESCAPE) {
-				textField.setText(itemText());
-				cancelEdit();
-			}
-		});
-		textField.setOnKeyReleased(t -> {
-			if (t.getCode() == KeyCode.ENTER) {
-				commitNewText();
-			}
-		});
-		textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-			if (Boolean.FALSE.equals(newValue)) {
-				commitNewText();
-			} else if (Boolean.TRUE.equals(newValue)) {
-				Platform.runLater(() -> {
-					if (!textField.getText().isEmpty())
-						textField.selectAll();
-				});
-			}
-		});
-	}
+  private void createTextField() {
+    textField = new TextField(itemText());
+    textField.setOnKeyPressed(
+        t -> {
+          if (t.getCode() == KeyCode.ESCAPE) {
+            textField.setText(itemText());
+            cancelEdit();
+          }
+        });
+    textField.setOnKeyReleased(
+        t -> {
+          if (t.getCode() == KeyCode.ENTER) {
+            commitNewText();
+          }
+        });
+    textField
+        .focusedProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              if (Boolean.FALSE.equals(newValue)) {
+                commitNewText();
+              } else if (Boolean.TRUE.equals(newValue)) {
+                Platform.runLater(
+                    () -> {
+                      if (!textField.getText().isEmpty()) textField.selectAll();
+                    });
+              }
+            });
+  }
 
-	private void commitNewText() {
-		getItem().setText(textField.getText());
-		log.info("Commit new text in {}", this);
-		commitEdit(getItem());
-		changeHandler.run();
-	}
+  private void commitNewText() {
+    getItem().setText(textField.getText());
+    log.info("Commit new text in {}", this);
+    commitEdit(getItem());
+    changeHandler.run();
+  }
 
-	private String itemText() {
-		return String.valueOf(getItem().text());
-	}
+  private String itemText() {
+    return String.valueOf(getItem().text());
+  }
 }

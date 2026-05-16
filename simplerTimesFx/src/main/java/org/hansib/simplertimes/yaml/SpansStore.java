@@ -29,26 +29,27 @@ import org.hansib.simplertimes.spans.SpansCollection;
 
 public class SpansStore {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	private final Path spansPath;
+  private final Path spansPath;
 
-	public SpansStore(Path spansPath) {
-		this.spansPath = spansPath;
-	}
+  public SpansStore(Path spansPath) {
+    this.spansPath = spansPath;
+  }
 
-	public SpansCollection load(Project root) {
-		if (!spansPath.toFile().isFile())
-			return new SpansCollection();
-		try {
-			return SpansYamlConverter.fromYaml(root, Files.readString(spansPath));
-		} catch (IOException e) {
-			log.error(String.format("Encountered exception while trying to read spans from '%s'", spansPath), e);
-			return new SpansCollection();
-		}
-	}
+  public SpansCollection load(Project root) {
+    if (!spansPath.toFile().isFile()) return new SpansCollection();
+    try {
+      return SpansYamlConverter.fromYaml(root, Files.readString(spansPath));
+    } catch (IOException e) {
+      log.error(
+          String.format("Encountered exception while trying to read spans from '%s'", spansPath),
+          e);
+      return new SpansCollection();
+    }
+  }
 
-	public void save(SpansCollection spans) throws IOException {
-		Files.writeString(spansPath, SpansYamlConverter.toYaml(spans));
-	}
+  public void save(SpansCollection spans) throws IOException {
+    Files.writeString(spansPath, SpansYamlConverter.toYaml(spans));
+  }
 }

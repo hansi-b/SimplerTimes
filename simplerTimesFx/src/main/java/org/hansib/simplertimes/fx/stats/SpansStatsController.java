@@ -44,80 +44,88 @@ import org.hansib.sundries.fx.table.TableColumnBuilder;
 
 public class SpansStatsController {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	@FXML
-	private TableView<StatsRow> spansStats;
+  @FXML private TableView<StatsRow> spansStats;
 
-	@FXML
-	private Button monthBack;
-	@FXML
-	private Button weekBack;
-	@FXML
-	private Button today;
-	@FXML
-	private Button weekForward;
-	@FXML
-	private Button monthForward;
+  @FXML private Button monthBack;
+  @FXML private Button weekBack;
+  @FXML private Button today;
+  @FXML private Button weekForward;
+  @FXML private Button monthForward;
 
-	private StatsCalculator calc;
+  private StatsCalculator calc;
 
-	private ObjectProperty<LocalDate> selectedDate;
-	private ObservableValue<SortedSet<LocalDate>> datesShown;
+  private ObjectProperty<LocalDate> selectedDate;
+  private ObservableValue<SortedSet<LocalDate>> datesShown;
 
-	@FXML
-	void initialize() {
-		log.info("Initialising spans stats");
+  @FXML
+  void initialize() {
+    log.info("Initialising spans stats");
 
-		spansStats.getColumns()
-				.add(new TableColumnBuilder<StatsRow, String>(Headers.Project.fmt()).value(StatsRow::project).build());
+    spansStats
+        .getColumns()
+        .add(
+            new TableColumnBuilder<StatsRow, String>(Headers.Project.fmt())
+                .value(StatsRow::project)
+                .build());
 
-		selectedDate = new SimpleObjectProperty<>(LocalDate.now());
-		datesShown = selectedDate.map(Utils::daysOfWeek);
-		datesShown.addListener(observable -> updateStats());
+    selectedDate = new SimpleObjectProperty<>(LocalDate.now());
+    datesShown = selectedDate.map(Utils::daysOfWeek);
+    datesShown.addListener(observable -> updateStats());
 
-		new ButtonBuilder(monthBack) //
-				.graphic(Icons.monthBack()).onAction(e -> shiftDate(Period.ofMonths(-1))).build();
-		new ButtonBuilder(weekBack) //
-				.graphic(Icons.weekBack()).onAction(e -> shiftDate(Period.ofDays(-7))).build();
+    new ButtonBuilder(monthBack)
+        .graphic(Icons.monthBack())
+        .onAction(e -> shiftDate(Period.ofMonths(-1)))
+        .build();
+    new ButtonBuilder(weekBack)
+        .graphic(Icons.weekBack())
+        .onAction(e -> shiftDate(Period.ofDays(-7)))
+        .build();
 
-		new ButtonBuilder(today) //
-				.graphic(Icons.today()).onAction(e -> setDate(LocalDate.now())).build();
-		today.disableProperty()
-				.bind(Bindings.createBooleanBinding(() -> LocalDate.now().equals(selectedDate.get()), selectedDate));
+    new ButtonBuilder(today).graphic(Icons.today()).onAction(e -> setDate(LocalDate.now())).build();
+    today
+        .disableProperty()
+        .bind(
+            Bindings.createBooleanBinding(
+                () -> LocalDate.now().equals(selectedDate.get()), selectedDate));
 
-		new ButtonBuilder(weekForward) //
-				.graphic(Icons.weekForward()).onAction(e -> shiftDate(Period.ofDays(7))).build();
-		new ButtonBuilder(monthForward) //
-				.graphic(Icons.monthForward()).onAction(e -> shiftDate(Period.ofMonths(1))).build();
-	}
+    new ButtonBuilder(weekForward)
+        .graphic(Icons.weekForward())
+        .onAction(e -> shiftDate(Period.ofDays(7)))
+        .build();
+    new ButtonBuilder(monthForward)
+        .graphic(Icons.monthForward())
+        .onAction(e -> shiftDate(Period.ofMonths(1)))
+        .build();
+  }
 
-	public void setSpans(ObservableList<FxSpan> spans) {
-		this.calc = new StatsCalculator(spans);
-		spans.addListener((InvalidationListener) observable -> updateStats());
-		updateStats();
-	}
+  public void setSpans(ObservableList<FxSpan> spans) {
+    this.calc = new StatsCalculator(spans);
+    spans.addListener((InvalidationListener) observable -> updateStats());
+    updateStats();
+  }
 
-	private void setDate(LocalDate newDate) {
-		selectedDate.set(newDate);
-	}
+  private void setDate(LocalDate newDate) {
+    selectedDate.set(newDate);
+  }
 
-	private void shiftDate(Period shift) {
-		setDate(selectedDate.get().plus(shift));
-	}
+  private void shiftDate(Period shift) {
+    setDate(selectedDate.get().plus(shift));
+  }
 
-	public void updateStats() {
-		updateDateColumns();
-		spansStats.setItems(calc.calcItems(datesShown.getValue()));
-	}
+  public void updateStats() {
+    updateDateColumns();
+    spansStats.setItems(calc.calcItems(datesShown.getValue()));
+  }
 
-	private void updateDateColumns() {
-		ObservableList<TableColumn<StatsRow, ?>> columns = spansStats.getColumns();
-		if (columns.size() > 1)
-			columns.remove(1, columns.size());
+  private void updateDateColumns() {
+    ObservableList<TableColumn<StatsRow, ?>> columns = spansStats.getColumns();
+    if (columns.size() > 1) columns.remove(1, columns.size());
 
-		for (LocalDate dt : datesShown.getValue()) {
-			columns.add(new TableColumnBuilder<StatsRow, String>(dt.toString()).value(d -> d.ldStr(dt)).build());
-		}
-	}
+    for (LocalDate dt : datesShown.getValue()) {
+      columns.add(
+          new TableColumnBuilder<StatsRow, String>(dt.toString()).value(d -> d.ldStr(dt)).build());
+    }
+  }
 }

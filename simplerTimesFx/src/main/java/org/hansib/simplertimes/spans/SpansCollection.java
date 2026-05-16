@@ -26,42 +26,41 @@ import java.util.stream.Stream;
 
 public class SpansCollection {
 
-	private final List<Span> spans;
+  private final List<Span> spans;
 
-	private SpansCollection(List<Span> spans) {
-		this.spans = spans;
-	}
+  private SpansCollection(List<Span> spans) {
+    this.spans = spans;
+  }
 
-	public SpansCollection() {
-		this(new ArrayList<>());
-	}
+  public SpansCollection() {
+    this(new ArrayList<>());
+  }
 
-	static SpansCollection with(Span... spans) {
-		return new SpansCollection(new ArrayList<>(Arrays.asList(spans)));
-	}
+  static SpansCollection with(Span... spans) {
+    return new SpansCollection(new ArrayList<>(Arrays.asList(spans)));
+  }
 
-	public void add(Span span) {
-		spans.add(span);
-	}
+  public void add(Span span) {
+    spans.add(span);
+  }
 
-	public Stream<Span> stream() {
-		return spans.stream();
-	}
+  public Stream<Span> stream() {
+    return spans.stream();
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof SpansCollection other))
-			return false;
-		return spans.equals(other.spans);
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof SpansCollection other)) return false;
+    return spans.equals(other.spans);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(spans);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(spans);
+  }
 
-	@Override
-	public String toString() {
-		return String.format("Spans:%s", spans);
-	}
+  @Override
+  public String toString() {
+    return String.format("Spans:%s", spans);
+  }
 }

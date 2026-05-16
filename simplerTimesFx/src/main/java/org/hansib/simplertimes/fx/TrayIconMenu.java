@@ -37,110 +37,120 @@ import org.hansib.simplertimes.fx.l10n.MenuItems;
 
 class TrayIconMenu {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	private final ObservableData data;
-	private final SpanRecorder spanRecorder;
+  private final ObservableData data;
+  private final SpanRecorder spanRecorder;
 
-	private final TrayIcon trayIcon;
+  private final TrayIcon trayIcon;
 
-	private final PopupMenu popup;
+  private final PopupMenu popup;
 
-	private final MenuItem showItem;
-	private final MenuItem stopItem;
-	private final MenuItem exitItem;
+  private final MenuItem showItem;
+  private final MenuItem stopItem;
+  private final MenuItem exitItem;
 
-	TrayIconMenu(ObservableData data, SpanRecorder spanRecorder, Stage primaryStage, ExitManager exitManager) {
-		this.data = data;
-		this.spanRecorder = spanRecorder;
+  TrayIconMenu(
+      ObservableData data, SpanRecorder spanRecorder, Stage primaryStage, ExitManager exitManager) {
+    this.data = data;
+    this.spanRecorder = spanRecorder;
 
-		this.trayIcon = new TrayIcon(new Resources().loadAwtLogo());
-		exitManager.addPreExitAction(() -> SystemTray.getSystemTray().remove(trayIcon));
+    this.trayIcon = new TrayIcon(new Resources().loadAwtLogo());
+    exitManager.addPreExitAction(() -> SystemTray.getSystemTray().remove(trayIcon));
 
-		this.popup = new PopupMenu();
-		this.showItem = createShowItem(primaryStage);
-		this.exitItem = createExitItem(exitManager);
-		this.stopItem = createStopItem();
-		this.stopItem.setEnabled(false);
+    this.popup = new PopupMenu();
+    this.showItem = createShowItem(primaryStage);
+    this.exitItem = createExitItem(exitManager);
+    this.stopItem = createStopItem();
+    this.stopItem.setEnabled(false);
 
-		data.projects().addListener((InvalidationListener) observable -> fillPopup());
-	}
+    data.projects().addListener((InvalidationListener) observable -> fillPopup());
+  }
 
-	void show() {
-		log.info("Showing TrayIcon ...");
-		Platform.setImplicitExit(false);
+  void show() {
+    log.info("Showing TrayIcon ...");
+    Platform.setImplicitExit(false);
 
-		fillPopup();
-		trayIcon.setPopupMenu(popup);
-		try {
-			SystemTray.getSystemTray().add(trayIcon);
-		} catch (AWTException e) {
-			log.error("Could not add tray icon", e);
-		}
-	}
+    fillPopup();
+    trayIcon.setPopupMenu(popup);
+    try {
+      SystemTray.getSystemTray().add(trayIcon);
+    } catch (AWTException e) {
+      log.error("Could not add tray icon", e);
+    }
+  }
 
-	private void fillPopup() {
-		log.info("Filling popup menu");
+  private void fillPopup() {
+    log.info("Filling popup menu");
 
-		popup.removeAll();
-		popup.add(showItem);
-		popup.addSeparator();
+    popup.removeAll();
+    popup.add(showItem);
+    popup.addSeparator();
 
-		data.fxProjectTree().children().map(project -> createMenu(project, stopItem)).forEach(popup::add);
+    data.fxProjectTree()
+        .children()
+        .map(project -> createMenu(project, stopItem))
+        .forEach(popup::add);
 
-		popup.addSeparator();
-		popup.add(stopItem);
-		popup.add(exitItem);
-	}
+    popup.addSeparator();
+    popup.add(stopItem);
+    popup.add(exitItem);
+  }
 
-	private static MenuItem createShowItem(Stage primaryStage) {
-		MenuItem showItem = new MenuItem(MenuItems.MainWindow.fmt());
-		showItem.addActionListener(e -> Platform.runLater(() -> {
-			if (primaryStage.isIconified())
-				primaryStage.setIconified(false);
-			else
-				primaryStage.show();
-		}));
-		return showItem;
-	}
+  private static MenuItem createShowItem(Stage primaryStage) {
+    MenuItem showItem = new MenuItem(MenuItems.MainWindow.fmt());
+    showItem.addActionListener(
+        e ->
+            Platform.runLater(
+                () -> {
+                  if (primaryStage.isIconified()) primaryStage.setIconified(false);
+                  else primaryStage.show();
+                }));
+    return showItem;
+  }
 
-	private MenuItem createStopItem() {
-		MenuItem item = new MenuItem(MenuItems.Stop.fmt());
-		item.addActionListener(e -> {
-			item.setEnabled(false);
-			Platform.runLater(spanRecorder::stopRecording);
-		});
-		return item;
-	}
+  private MenuItem createStopItem() {
+    MenuItem item = new MenuItem(MenuItems.Stop.fmt());
+    item.addActionListener(
+        e -> {
+          item.setEnabled(false);
+          Platform.runLater(spanRecorder::stopRecording);
+        });
+    return item;
+  }
 
-	private MenuItem createExitItem(ExitManager exitManager) {
-		MenuItem item = new MenuItem(MenuItems.Exit.fmt());
-		item.addActionListener(e -> exitManager.exit());
-		return item;
-	}
+  private MenuItem createExitItem(ExitManager exitManager) {
+    MenuItem item = new MenuItem(MenuItems.Exit.fmt());
+    item.addActionListener(e -> exitManager.exit());
+    return item;
+  }
 
-	/*
-	 * Create menu items of all project leaves in this project.
-	 */
-	private MenuItem createMenu(FxProject project, MenuItem stopItem) {
+  /*
+   * Create menu items of all project leaves in this project.
+   */
+  private MenuItem createMenu(FxProject project, MenuItem stopItem) {
 
-		String projectName = project.text();
-		if (!project.hasChildren()) {
-			return createProjectMenuItem(projectName, project, stopItem);
-		}
-		Menu projectMenu = new Menu(projectName);
-		project.leafChildren()
-			.forEach(c -> projectMenu.add(createProjectMenuItem(c.formatName(project, " · "), project, stopItem)));
-		return projectMenu;
-	}
+    String projectName = project.text();
+    if (!project.hasChildren()) {
+      return createProjectMenuItem(projectName, project, stopItem);
+    }
+    Menu projectMenu = new Menu(projectName);
+    project
+        .leafChildren()
+        .forEach(
+            c ->
+                projectMenu.add(
+                    createProjectMenuItem(c.formatName(project, " · "), project, stopItem)));
+    return projectMenu;
+  }
 
-	private MenuItem createProjectMenuItem(String name, FxProject project, MenuItem stopItem) {
-		MenuItem menuItem = new MenuItem(name);
-		menuItem.addActionListener(e -> {
-			Platform.runLater(() -> spanRecorder.startRecording(project));
-			stopItem.setEnabled(true);
-		});
-		return menuItem;
-	}
-
+  private MenuItem createProjectMenuItem(String name, FxProject project, MenuItem stopItem) {
+    MenuItem menuItem = new MenuItem(name);
+    menuItem.addActionListener(
+        e -> {
+          Platform.runLater(() -> spanRecorder.startRecording(project));
+          stopItem.setEnabled(true);
+        });
+    return menuItem;
+  }
 }

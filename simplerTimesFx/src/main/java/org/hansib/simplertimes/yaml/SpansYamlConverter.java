@@ -29,19 +29,20 @@ import org.hansib.simplertimes.spans.SpansCollection;
 
 class SpansYamlConverter {
 
-	private SpansYamlConverter() {
-		// nothing to instantiate yet
-	}
+  private SpansYamlConverter() {
+    // nothing to instantiate yet
+  }
 
-	static SpansCollection fromYaml(Project root, String yamlString) throws IOException {
-		SpansCollection spansCollection = new SpansCollection();
-		for (SpanStub s : YamlMapper.instance().fromString(yamlString, new TypeReference<List<SpanStub>>() {
-		}))
-			spansCollection.add(new Span(root.findById(s.projectId()), s.start(), s.end()));
-		return spansCollection;
-	}
+  static SpansCollection fromYaml(Project root, String yamlString) throws IOException {
+    SpansCollection spansCollection = new SpansCollection();
+    for (SpanStub s :
+        YamlMapper.instance().fromString(yamlString, new TypeReference<List<SpanStub>>() {}))
+      spansCollection.add(new Span(root.findById(s.projectId()), s.start(), s.end()));
+    return spansCollection;
+  }
 
-	static String toYaml(SpansCollection spans) throws IOException {
-		return YamlMapper.instance().asString(spans.stream().sorted(Span.startStopProjectComparator).toList());
-	}
+  static String toYaml(SpansCollection spans) throws IOException {
+    return YamlMapper.instance()
+        .asString(spans.stream().sorted(Span.startStopProjectComparator).toList());
+  }
 }

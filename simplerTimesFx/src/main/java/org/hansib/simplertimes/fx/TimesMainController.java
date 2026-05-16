@@ -44,101 +44,102 @@ import org.hansib.sundries.fx.StageToggle;
 
 public class TimesMainController {
 
-	@FXML
-	private Pane topLevelPane;
+  @FXML private Pane topLevelPane;
 
-	@FXML
-	private SearchableComboBox<FxProject> projectSelection;
+  @FXML private SearchableComboBox<FxProject> projectSelection;
 
-	@FXML
-	private Button startButton;
+  @FXML private Button startButton;
 
-	@FXML
-	private Button stopButton;
+  @FXML private Button stopButton;
 
-	@FXML
-	private Label elapsedTime;
+  @FXML private Label elapsedTime;
 
-	@FXML
-	private Button editTreeButton;
+  @FXML private Button editTreeButton;
 
-	@FXML
-	private Button showSpansButton;
+  @FXML private Button showSpansButton;
 
-	private final ExitManager exitManager;
-	private final ObservableData data;
-	private final AppPrefs prefs;
+  private final ExitManager exitManager;
+  private final ObservableData data;
+  private final AppPrefs prefs;
 
-	private SpanRecorder spanRecorder;
+  private SpanRecorder spanRecorder;
 
-	TimesMainController(ObservableData data, ExitManager exitManager, AppPrefs prefs) {
-		this.data = data;
-		this.exitManager = exitManager;
-		this.prefs = prefs;
-	}
+  TimesMainController(ObservableData data, ExitManager exitManager, AppPrefs prefs) {
+    this.data = data;
+    this.exitManager = exitManager;
+    this.prefs = prefs;
+  }
 
-	@FXML
-	void initialize() {
-		projectSelection.setItems(data.projects());
+  @FXML
+  void initialize() {
+    projectSelection.setItems(data.projects());
 
-		Windows windowPrefs = prefs.windowPositions.current();
-		buildSpansDisplay(showSpansButton, windowPrefs);
-		buildTreeDisplay(editTreeButton, windowPrefs);
+    Windows windowPrefs = prefs.windowPositions.current();
+    buildSpansDisplay(showSpansButton, windowPrefs);
+    buildTreeDisplay(editTreeButton, windowPrefs);
 
-		setElapsedTime(Duration.ZERO);
-		spanRecorder = new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, data);
-		Long savedSelectedProjectId = prefs.selectedProjectId;
-		if (savedSelectedProjectId != null && savedSelectedProjectId != -1) {
-			FilteredList<FxProject> filtered = projectSelection.getItems()
-					.filtered(p -> p.project().id() == savedSelectedProjectId);
-			if (!filtered.isEmpty())
-				projectSelection.setValue(filtered.getFirst());
-		}
-		exitManager.addPreExitAction(() -> {
-			FxProject selectedProject = projectSelection.getValue();
-			prefs.selectedProjectId = selectedProject != null ? selectedProject.project().id() : -1;
-		});
-		editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
-	}
+    setElapsedTime(Duration.ZERO);
+    spanRecorder =
+        new SpanRecorder(projectSelection, startButton, stopButton, this::setElapsedTime, data);
+    Long savedSelectedProjectId = prefs.selectedProjectId;
+    if (savedSelectedProjectId != null && savedSelectedProjectId != -1) {
+      FilteredList<FxProject> filtered =
+          projectSelection.getItems().filtered(p -> p.project().id() == savedSelectedProjectId);
+      if (!filtered.isEmpty()) projectSelection.setValue(filtered.getFirst());
+    }
+    exitManager.addPreExitAction(
+        () -> {
+          FxProject selectedProject = projectSelection.getValue();
+          prefs.selectedProjectId = selectedProject != null ? selectedProject.project().id() : -1;
+        });
+    editTreeButton.disableProperty().bind(spanRecorder.isRecordingProperty());
+  }
 
-	private void setElapsedTime(Duration duration) {
-		Platform.runLater(() -> elapsedTime.setText(Utils.toHmsString(duration)));
-	}
+  private void setElapsedTime(Duration duration) {
+    Platform.runLater(() -> elapsedTime.setText(Utils.toHmsString(duration)));
+  }
 
-	SpanRecorder getRecorder() {
-		return spanRecorder;
-	}
+  SpanRecorder getRecorder() {
+    return spanRecorder;
+  }
 
-	private void buildSpansDisplay(Button showSpansButton, Prefs.Windows windowPrefs) {
+  private void buildSpansDisplay(Button showSpansButton, Prefs.Windows windowPrefs) {
 
-		StageToggle stageToggle = new StageToggle(() -> initSpansStage(windowPrefs), windowPrefs.spans);
-		new ButtonBuilder(showSpansButton) //
-				.graphic(Icons.showSpans()).onAction(event -> stageToggle.toggle()) //
-				.build();
-	}
+    StageToggle stageToggle = new StageToggle(() -> initSpansStage(windowPrefs), windowPrefs.spans);
+    new ButtonBuilder(showSpansButton)
+        .graphic(Icons.showSpans())
+        .onAction(event -> stageToggle.toggle())
+        .build();
+  }
 
-	private Stage initSpansStage(Prefs.Windows windowPrefs) {
-		Stage spansStage = new Stage();
-		spansStage.setTitle(General.SpansWindowTitle.fmt());
+  private Stage initSpansStage(Prefs.Windows windowPrefs) {
+    Stage spansStage = new Stage();
+    spansStage.setTitle(General.SpansWindowTitle.fmt());
 
-		SpansInfoController spansInfoController = ControllerLoader.<SpansInfoController>of("spansInfo.fxml")
-				.withTargetStage(spansStage).load();
-		spansInfoController.setData(data);
+    SpansInfoController spansInfoController =
+        ControllerLoader.<SpansInfoController>of("spansInfo.fxml")
+            .withTargetStage(spansStage)
+            .load();
+    spansInfoController.setData(data);
 
-		new Resources().loadLogo(logo -> spansStage.getIcons().add(logo));
-		exitManager.addPreExitAction(() -> windowPrefs.spans = StageData.of(spansStage));
-		return spansStage;
-	}
+    new Resources().loadLogo(logo -> spansStage.getIcons().add(logo));
+    exitManager.addPreExitAction(() -> windowPrefs.spans = StageData.of(spansStage));
+    return spansStage;
+  }
 
-	private void buildTreeDisplay(Button editTreeButton, Prefs.Windows windowPrefs) {
-		StageToggle stageToggle = new StageToggle(this::initTreeViewStage, windowPrefs.projects);
-		exitManager.addPreExitAction(() -> windowPrefs.projects = StageData.of(stageToggle.getStage()));
-		new ButtonBuilder(editTreeButton).graphic(Icons.editTree()).onAction(event -> stageToggle.toggle()).build();
-	}
+  private void buildTreeDisplay(Button editTreeButton, Prefs.Windows windowPrefs) {
+    StageToggle stageToggle = new StageToggle(this::initTreeViewStage, windowPrefs.projects);
+    exitManager.addPreExitAction(() -> windowPrefs.projects = StageData.of(stageToggle.getStage()));
+    new ButtonBuilder(editTreeButton)
+        .graphic(Icons.editTree())
+        .onAction(event -> stageToggle.toggle())
+        .build();
+  }
 
-	private Stage initTreeViewStage() {
-		TreeViewWindow<FxProject> treeViewWindow = new TreeViewWindow<>(data.fxProjectTree(), data::updateProjectList);
-		treeViewWindow.setPreRemovalChecker(data.fxProjectRemovalCallback());
-		return treeViewWindow.initStage();
-	}
+  private Stage initTreeViewStage() {
+    TreeViewWindow<FxProject> treeViewWindow =
+        new TreeViewWindow<>(data.fxProjectTree(), data::updateProjectList);
+    treeViewWindow.setPreRemovalChecker(data.fxProjectRemovalCallback());
+    return treeViewWindow.initStage();
+  }
 }

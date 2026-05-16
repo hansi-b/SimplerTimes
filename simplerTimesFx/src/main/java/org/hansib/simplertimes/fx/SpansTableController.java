@@ -53,169 +53,189 @@ import org.hansib.sundries.fx.table.TableColumnBuilder;
 
 public class SpansTableController {
 
-	private static class ProjectComboBoxTableCell extends ComboBoxTableCell<FxSpan, FxProject> { // NOSONAR
+  private static class ProjectComboBoxTableCell
+      extends ComboBoxTableCell<FxSpan, FxProject> { // NOSONAR
 
-		private final Runnable updateHandler;
-		private final ObservableValue<String> name;
+    private final Runnable updateHandler;
+    private final ObservableValue<String> name;
 
-		ProjectComboBoxTableCell(ObservableList<FxProject> projects, Runnable updateHandler) {
+    ProjectComboBoxTableCell(ObservableList<FxProject> projects, Runnable updateHandler) {
 
-			super(new StringConverter<>() {
-				@Override
-				public String toString(FxProject project) {
-					return project == null ? null : project.text();
-				}
+      super(
+          new StringConverter<>() {
+            @Override
+            public String toString(FxProject project) {
+              return project == null ? null : project.text();
+            }
 
-				@Override
-				public FxProject fromString(String string) {
-					throw new UnsupportedOperationException();
-				}
-			}, projects);
-			this.updateHandler = updateHandler;
-			this.name = itemProperty().flatMap(FxProject::name);
-			this.name.addListener((obs, oldName, newName) -> updateText());
-		}
+            @Override
+            public FxProject fromString(String string) {
+              throw new UnsupportedOperationException();
+            }
+          },
+          projects);
+      this.updateHandler = updateHandler;
+      this.name = itemProperty().flatMap(FxProject::name);
+      this.name.addListener((obs, oldName, newName) -> updateText());
+    }
 
-		@Override
-		public void startEdit() {
-			super.startEdit();
-			updateText();
-		}
+    @Override
+    public void startEdit() {
+      super.startEdit();
+      updateText();
+    }
 
-		@Override
-		public void commitEdit(FxProject newValue) {
-			super.commitEdit(newValue);
-			updateHandler.run();
-		}
+    @Override
+    public void commitEdit(FxProject newValue) {
+      super.commitEdit(newValue);
+      updateHandler.run();
+    }
 
-		@Override
-		public void updateItem(FxProject item, boolean empty) {
-			super.updateItem(item, empty);
-			updateText();
-			updateHandler.run();
-		}
+    @Override
+    public void updateItem(FxProject item, boolean empty) {
+      super.updateItem(item, empty);
+      updateText();
+      updateHandler.run();
+    }
 
-		private void updateText() {
-			setText(isEditing() ? null : name.getValue());
-		}
-	}
+    private void updateText() {
+      setText(isEditing() ? null : name.getValue());
+    }
+  }
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	@FXML
-	private TableColumn<FxSpan, FxProject> projectCol;
+  @FXML private TableColumn<FxSpan, FxProject> projectCol;
 
-	@FXML
-	private TableColumn<FxSpan, OffsetDateTime> startCol;
+  @FXML private TableColumn<FxSpan, OffsetDateTime> startCol;
 
-	@FXML
-	private TableColumn<FxSpan, OffsetDateTime> endCol;
+  @FXML private TableColumn<FxSpan, OffsetDateTime> endCol;
 
-	@FXML
-	private TableColumn<FxSpan, Duration> durationCol;
+  @FXML private TableColumn<FxSpan, Duration> durationCol;
 
-	@FXML
-	private TableView<FxSpan> spansTable;
+  @FXML private TableView<FxSpan> spansTable;
 
-	private ObservableList<FxProject> projects;
+  private ObservableList<FxProject> projects;
 
-	private Runnable updateHandler;
+  private Runnable updateHandler;
 
-	@FXML
-	void initialize() {
-		log.info("Initialising spans table");
+  @FXML
+  void initialize() {
+    log.info("Initialising spans table");
 
-		DateTimeHandler dtHandler = new DateTimeHandler();
+    DateTimeHandler dtHandler = new DateTimeHandler();
 
-		spansTable.setEditable(true);
-		spansTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    spansTable.setEditable(true);
+    spansTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-		new TableColumnBuilder<>(startCol).headerText(Headers.Start.fmt()) //
-				.value(FxSpan::start) //
-				.cellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
-						(cell, text) -> {
-							OffsetDateTime newStartTime = dtHandler.parseToOffsetDateTime(text);
-							return newStartTime != null && withReferenceOffset(newStartTime, cell.getItem()).isBefore(
-									endCol.getCellData(cell.getIndex()));
-						})) //
-				.onEditCommit(e -> setNewDateTime(e, FxSpan::start)) //
-				.build();
+    new TableColumnBuilder<>(startCol)
+        .headerText(Headers.Start.fmt())
+        .value(FxSpan::start)
+        .cellFactory(
+            list ->
+                new EditingCell<>(
+                    dtHandler.getConverter(),
+                    (cell, text) -> {
+                      OffsetDateTime newStartTime = dtHandler.parseToOffsetDateTime(text);
+                      return newStartTime != null
+                          && withReferenceOffset(newStartTime, cell.getItem())
+                              .isBefore(endCol.getCellData(cell.getIndex()));
+                    }))
+        .onEditCommit(e -> setNewDateTime(e, FxSpan::start))
+        .build();
 
-		new TableColumnBuilder<>(endCol).headerText(Headers.End.fmt()) //
-				.value(FxSpan::end) //
-				.cellFactory(list -> new EditingCell<>(dtHandler.getConverter(), //
-						(cell, text) -> {
-							OffsetDateTime newEndTime = dtHandler.parseToOffsetDateTime(text);
-							return newEndTime != null && withReferenceOffset(newEndTime, cell.getItem()).isAfter(
-									startCol.getCellData(cell.getIndex()));
-						})) //
-				.onEditCommit(e -> setNewDateTime(e, FxSpan::end)) //
-				.build();
+    new TableColumnBuilder<>(endCol)
+        .headerText(Headers.End.fmt())
+        .value(FxSpan::end)
+        .cellFactory(
+            list ->
+                new EditingCell<>(
+                    dtHandler.getConverter(),
+                    (cell, text) -> {
+                      OffsetDateTime newEndTime = dtHandler.parseToOffsetDateTime(text);
+                      return newEndTime != null
+                          && withReferenceOffset(newEndTime, cell.getItem())
+                              .isAfter(startCol.getCellData(cell.getIndex()));
+                    }))
+        .onEditCommit(e -> setNewDateTime(e, FxSpan::end))
+        .build();
 
-		new TableColumnBuilder<>(projectCol).headerText(Headers.Project.fmt()) //
-				.value(FxSpan::fxProject) //
-				.cellFactory(list -> new ProjectComboBoxTableCell(projects, updateHandler)) //
-				.editable() //
-				.comparator(FxProject.nameComparator) //
-				.build();
+    new TableColumnBuilder<>(projectCol)
+        .headerText(Headers.Project.fmt())
+        .value(FxSpan::fxProject)
+        .cellFactory(list -> new ProjectComboBoxTableCell(projects, updateHandler))
+        .editable()
+        .comparator(FxProject.nameComparator)
+        .build();
 
-		new TableColumnBuilder<>(durationCol).headerText(Headers.Duration.fmt()) //
-				.value(FxSpan::duration) //
-				.cellFactory(new CellFactoryBuilder<>(durationCol).format(Utils::toHmsString).build()) //
-				.build();
+    new TableColumnBuilder<>(durationCol)
+        .headerText(Headers.Duration.fmt())
+        .value(FxSpan::duration)
+        .cellFactory(new CellFactoryBuilder<>(durationCol).format(Utils::toHmsString).build())
+        .build();
 
-		startCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.25));
-		endCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.25));
-		projectCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.35));
+    startCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.25));
+    endCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.25));
+    projectCol.prefWidthProperty().bind(spansTable.widthProperty().multiply(.35));
 
-		final DoubleBinding colsWidth = projectCol.widthProperty() //
-				.add(startCol.widthProperty()).add(endCol.widthProperty()) //
-				.multiply(1.03);
+    final DoubleBinding colsWidth =
+        projectCol
+            .widthProperty()
+            .add(startCol.widthProperty())
+            .add(endCol.widthProperty())
+            .multiply(1.03);
 
-		durationCol.prefWidthProperty().bind(spansTable.widthProperty().subtract(colsWidth));
+    durationCol.prefWidthProperty().bind(spansTable.widthProperty().subtract(colsWidth));
 
-		spansTable.setContextMenu(new ContextMenuBuilder() //
-				.item(MenuItems.Delete.fmt(), e -> deleteSelected()).build());
-	}
+    spansTable.setContextMenu(
+        new ContextMenuBuilder().item(MenuItems.Delete.fmt(), e -> deleteSelected()).build());
+  }
 
-	void setUpdateHandler(Runnable updateHandler) {
-		this.updateHandler = updateHandler;
-	}
+  void setUpdateHandler(Runnable updateHandler) {
+    this.updateHandler = updateHandler;
+  }
 
-	void setData(ObservableData data) {
+  void setData(ObservableData data) {
 
-		this.projects = data.projects();
+    this.projects = data.projects();
 
-		spansTable.setItems(data.spans());
-		spansTable.getSortOrder().add(startCol);
-		spansTable.getSortOrder().add(endCol);
-		spansTable.getSortOrder().add(projectCol);
-	}
+    spansTable.setItems(data.spans());
+    spansTable.getSortOrder().add(startCol);
+    spansTable.getSortOrder().add(endCol);
+    spansTable.getSortOrder().add(projectCol);
+  }
 
-	private void setNewDateTime(CellEditEvent<FxSpan, OffsetDateTime> event,
-			Function<FxSpan, SimpleObjectProperty<OffsetDateTime>> propertyGetter) {
-		FxSpan spanRow = event.getTableView().getItems().get(event.getTablePosition().getRow());
-		propertyGetter.apply(spanRow).set(withReferenceOffset(event.getNewValue(), event.getOldValue()));
-		spansTable.sort();
-		updateHandler.run();
-	}
+  private void setNewDateTime(
+      CellEditEvent<FxSpan, OffsetDateTime> event,
+      Function<FxSpan, SimpleObjectProperty<OffsetDateTime>> propertyGetter) {
+    FxSpan spanRow = event.getTableView().getItems().get(event.getTablePosition().getRow());
+    propertyGetter
+        .apply(spanRow)
+        .set(withReferenceOffset(event.getNewValue(), event.getOldValue()));
+    spansTable.sort();
+    updateHandler.run();
+  }
 
-	private static OffsetDateTime withReferenceOffset(OffsetDateTime target, OffsetDateTime offsetReferences) {
-		return target.withOffsetSameLocal(offsetReferences.getOffset());
-	}
+  private static OffsetDateTime withReferenceOffset(
+      OffsetDateTime target, OffsetDateTime offsetReferences) {
+    return target.withOffsetSameLocal(offsetReferences.getOffset());
+  }
 
-	private void deleteSelected() {
-		final ObservableList<FxSpan> selectedItems = spansTable.getSelectionModel().getSelectedItems();
+  private void deleteSelected() {
+    final ObservableList<FxSpan> selectedItems = spansTable.getSelectionModel().getSelectedItems();
 
-		boolean userAgreed = new AlertBuilder(AlertType.WARNING,
-				"The deletion of the %d selected item(s) cannot be undone.".formatted(selectedItems.size())) //
-				.withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt()) //
-				.withButton(ButtonType.YES, Buttons.Delete.fmt()) //
-				.showAndWaitFor(ButtonType.YES);
+    boolean userAgreed =
+        new AlertBuilder(
+                AlertType.WARNING,
+                "The deletion of the %d selected item(s) cannot be undone."
+                    .formatted(selectedItems.size()))
+            .withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt())
+            .withButton(ButtonType.YES, Buttons.Delete.fmt())
+            .showAndWaitFor(ButtonType.YES);
 
-		if (userAgreed) {
-			spansTable.getItems().removeAll(selectedItems);
-			updateHandler.run();
-		}
-	}
+    if (userAgreed) {
+      spansTable.getItems().removeAll(selectedItems);
+      updateHandler.run();
+    }
+  }
 }

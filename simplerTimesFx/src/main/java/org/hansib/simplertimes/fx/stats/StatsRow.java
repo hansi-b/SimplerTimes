@@ -31,25 +31,26 @@ import org.hansib.simplertimes.times.Utils;
 
 record StatsRow(ReadOnlyStringProperty project, Map<LocalDate, ReadOnlyStringProperty> durations) {
 
-	static StatsRow of(FxProject p, Map<LocalDate, Duration> durations) {
-		Map<LocalDate, ReadOnlyStringProperty> res = new HashMap<>();
-		durations.forEach((odt, d) -> res.put(odt, new ReadOnlyStringWrapper(Utils.toHmsString(d))));
-		return new StatsRow(p.name(), res);
-	}
+  static StatsRow of(FxProject p, Map<LocalDate, Duration> durations) {
+    Map<LocalDate, ReadOnlyStringProperty> res = new HashMap<>();
+    durations.forEach((odt, d) -> res.put(odt, new ReadOnlyStringWrapper(Utils.toHmsString(d))));
+    return new StatsRow(p.name(), res);
+  }
 
-	ReadOnlyStringProperty ldStr(LocalDate odt) {
-		return durations.get(odt);
-	}
+  ReadOnlyStringProperty ldStr(LocalDate odt) {
+    return durations.get(odt);
+  }
 
-	public boolean equalsByValues(StatsRow other) {
-		if (this == other)
-			return true;
-		return other != null && //
-				project.get().equals(other.project.get()) && //
-				durations.size() == other.durations.size() && //
-				durations.entrySet().stream().allMatch(e -> {
-					ReadOnlyStringProperty otherProp = other.durations.get(e.getKey());
-					return otherProp != null && otherProp.get().equals(e.getValue().get());
-				});
-	}
+  public boolean equalsByValues(StatsRow other) {
+    if (this == other) return true;
+    return other != null
+        && project.get().equals(other.project.get())
+        && durations.size() == other.durations.size()
+        && durations.entrySet().stream()
+            .allMatch(
+                e -> {
+                  ReadOnlyStringProperty otherProp = other.durations.get(e.getKey());
+                  return otherProp != null && otherProp.get().equals(e.getValue().get());
+                });
+  }
 }

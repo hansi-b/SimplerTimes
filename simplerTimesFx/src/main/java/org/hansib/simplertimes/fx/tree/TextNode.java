@@ -20,7 +20,7 @@ package org.hansib.simplertimes.fx.tree;
 
 public interface TextNode {
 
-	String text();
+  String text();
 
-	void setText(String newText);
+  void setText(String newText);
 }

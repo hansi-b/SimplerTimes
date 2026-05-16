@@ -26,43 +26,43 @@ import net.harawata.appdirs.AppDirsFactory;
 import org.hansib.sundries.Errors;
 
 public class DataPaths {
-	private final Path dataDir;
+  private final Path dataDir;
 
-	private DataPaths(Path dataDir) {
-		assertDataDir(dataDir);
-		this.dataDir = dataDir;
-	}
+  private DataPaths(Path dataDir) {
+    assertDataDir(dataDir);
+    this.dataDir = dataDir;
+  }
 
-	private static void assertDataDir(Path dataDir) {
-		if (Files.exists(dataDir)) {
-			if (!Files.isDirectory(dataDir))
-				throw Errors.illegalArg("Data directory argument '%s' exists, but is not a directory", dataDir);
-		} else if (!dataDir.toFile().mkdirs())
-			throw Errors.illegalArg("Could not create data directory '%s'", dataDir);
-	}
+  private static void assertDataDir(Path dataDir) {
+    if (Files.exists(dataDir)) {
+      if (!Files.isDirectory(dataDir))
+        throw Errors.illegalArg(
+            "Data directory argument '%s' exists, but is not a directory", dataDir);
+    } else if (!dataDir.toFile().mkdirs())
+      throw Errors.illegalArg("Could not create data directory '%s'", dataDir);
+  }
 
-	public static DataPaths atDefault() {
-		return at(Path.of(AppDirsFactory.getInstance().getUserDataDir("SimplerTimes", "", "HansiB")));
-	}
+  public static DataPaths atDefault() {
+    return at(Path.of(AppDirsFactory.getInstance().getUserDataDir("SimplerTimes", "", "HansiB")));
+  }
 
-	public static DataPaths at(Path dataDir) {
-		return new DataPaths(dataDir);
+  public static DataPaths at(Path dataDir) {
+    return new DataPaths(dataDir);
+  }
 
-	}
+  public Path projectsPath() {
+    return dataPath("projects.yml");
+  }
 
-	public Path projectsPath() {
-		return dataPath("projects.yml");
-	}
+  public Path spansPath() {
+    return dataPath("spans.yml");
+  }
 
-	public Path spansPath() {
-		return dataPath("spans.yml");
-	}
+  public Path prefsPath() {
+    return dataPath("preferences.yml");
+  }
 
-	public Path prefsPath() {
-		return dataPath("preferences.yml");
-	}
-
-	private Path dataPath(String filename) {
-		return dataDir.resolve(filename);
-	}
+  private Path dataPath(String filename) {
+    return dataDir.resolve(filename);
+  }
 }

@@ -25,41 +25,39 @@ import java.time.temporal.TemporalAmount;
 
 interface DateTimeSource {
 
-	/**
-	 * @return the current time of this date time source
-	 */
-	ZonedDateTime now();
+  /**
+   * @return the current time of this date time source
+   */
+  ZonedDateTime now();
 
-	static class SystemDateTime implements DateTimeSource {
-		@Override
-		public ZonedDateTime now() {
-			return ZonedDateTime.now();
-		}
-	}
+  static class SystemDateTime implements DateTimeSource {
+    @Override
+    public ZonedDateTime now() {
+      return ZonedDateTime.now();
+    }
+  }
 
-	/**
-	 * A "manual" clock which has to be set programmatically. Used for tests.
-	 */
-	static class ManualDateTime implements DateTimeSource {
+  /** A "manual" clock which has to be set programmatically. Used for tests. */
+  static class ManualDateTime implements DateTimeSource {
 
-		private ZonedDateTime now;
+    private ZonedDateTime now;
 
-		ManualDateTime() {
-			now = ZonedDateTime.now();
-		}
+    ManualDateTime() {
+      now = ZonedDateTime.now();
+    }
 
-		ManualDateTime(int seconds) {
-			now = ZonedDateTime.ofInstant(Instant.ofEpochSecond(seconds), ZoneId.systemDefault());
-		}
+    ManualDateTime(int seconds) {
+      now = ZonedDateTime.ofInstant(Instant.ofEpochSecond(seconds), ZoneId.systemDefault());
+    }
 
-		@Override
-		public ZonedDateTime now() {
-			return now;
-		}
+    @Override
+    public ZonedDateTime now() {
+      return now;
+    }
 
-		ZonedDateTime turnForward(TemporalAmount amount) {
-			now = now.plus(amount);
-			return now;
-		}
-	}
+    ZonedDateTime turnForward(TemporalAmount amount) {
+      now = now.plus(amount);
+      return now;
+    }
+  }
 }

@@ -25,11 +25,14 @@ import org.hansib.sundries.fx.Converters;
 
 class FxConverters {
 
-	static void setComboBoxProjectConverter(ComboBox<FxProject> projectSelection) {
-		projectSelection.setConverter( //
-				new Converters().stringConverter( //
-						proj -> proj == null ? "" : proj.fullName(), //
-						projName -> projName == null || projName.isBlank() ? null
-								: projectSelection.getSelectionModel().getSelectedItem()));
-	}
+  static void setComboBoxProjectConverter(ComboBox<FxProject> projectSelection) {
+    projectSelection.setConverter(
+        new Converters()
+            .stringConverter(
+                proj -> proj == null ? "" : proj.fullName(),
+                projName ->
+                    projName == null || projName.isBlank()
+                        ? null
+                        : projectSelection.getSelectionModel().getSelectedItem()));
+  }
 }

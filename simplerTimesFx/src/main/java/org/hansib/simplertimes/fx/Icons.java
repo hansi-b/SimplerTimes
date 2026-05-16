@@ -24,39 +24,39 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 public class Icons {
 
-	public static Node start() {
-		return new FontIcon("codicon-play-circle");
-	}
+  public static Node start() {
+    return new FontIcon("codicon-play-circle");
+  }
 
-	public static Node stop() {
-		return new FontIcon("codicon-stop-circle");
-	}
+  public static Node stop() {
+    return new FontIcon("codicon-stop-circle");
+  }
 
-	public static Node editTree() {
-		return new FontIcon("codicon-list-tree");
-	}
+  public static Node editTree() {
+    return new FontIcon("codicon-list-tree");
+  }
 
-	public static Node showSpans() {
-		return new FontIcon("codicon-calendar");
-	}
+  public static Node showSpans() {
+    return new FontIcon("codicon-calendar");
+  }
 
-	public static Node weekBack() {
-		return new FontIcon("unil-angle-left");
-	}
+  public static Node weekBack() {
+    return new FontIcon("unil-angle-left");
+  }
 
-	public static Node weekForward() {
-		return new FontIcon("unil-angle-right");
-	}
+  public static Node weekForward() {
+    return new FontIcon("unil-angle-right");
+  }
 
-	public static Node monthBack() {
-		return new FontIcon("unil-angle-double-left");
-	}
+  public static Node monthBack() {
+    return new FontIcon("unil-angle-double-left");
+  }
 
-	public static Node monthForward() {
-		return new FontIcon("unil-angle-double-right");
-	}
+  public static Node monthForward() {
+    return new FontIcon("unil-angle-double-right");
+  }
 
-	public static Node today() {
-		return new FontIcon("unil-circle");
-	}
+  public static Node today() {
+    return new FontIcon("unil-circle");
+  }
 }

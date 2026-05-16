@@ -30,42 +30,39 @@ import org.hansib.sundries.Errors;
 
 public record Span(Project project, OffsetDateTime start, OffsetDateTime end) {
 
-	/**
-	 * Compares two spans by start, stop, and project name.
-	 */
-	public static Comparator<Span> startStopProjectComparator = (o1, o2) -> {
-		int startCmp = o1.start().compareTo(o2.start());
-		if (startCmp != 0)
-			return startCmp;
-		int endCmp = o1.end().compareTo(o2.end());
-		if (endCmp != 0)
-			return endCmp;
+  /** Compares two spans by start, stop, and project name. */
+  public static Comparator<Span> startStopProjectComparator =
+      (o1, o2) -> {
+        int startCmp = o1.start().compareTo(o2.start());
+        if (startCmp != 0) return startCmp;
+        int endCmp = o1.end().compareTo(o2.end());
+        if (endCmp != 0) return endCmp;
 
-		return Project.nameComparator.compare(o1.project(), o2.project());
-	};
+        return Project.nameComparator.compare(o1.project(), o2.project());
+      };
 
-	public Span {
-		Objects.requireNonNull(project);
-		Objects.requireNonNull(start);
-		Objects.requireNonNull(end);
+  public Span {
+    Objects.requireNonNull(project);
+    Objects.requireNonNull(start);
+    Objects.requireNonNull(end);
 
-		if (start.compareTo(end) >= 0)
-			throw Errors.illegalArg("End (%s) must be after start (%s)", end, start);
-	}
+    if (start.compareTo(end) >= 0)
+      throw Errors.illegalArg("End (%s) must be after start (%s)", end, start);
+  }
 
-	public Span(Project project, ZonedDateTime start, ZonedDateTime end) {
-		this(project, truncate(start), truncate(end));
-	}
+  public Span(Project project, ZonedDateTime start, ZonedDateTime end) {
+    this(project, truncate(start), truncate(end));
+  }
 
-	private static OffsetDateTime truncate(ZonedDateTime ldt) {
-		return ldt.truncatedTo(ChronoUnit.SECONDS).toOffsetDateTime();
-	}
+  private static OffsetDateTime truncate(ZonedDateTime ldt) {
+    return ldt.truncatedTo(ChronoUnit.SECONDS).toOffsetDateTime();
+  }
 
-	/**
-	 * @return the duration a span between the argument start and end would have
-	 *         given precision and rounding
-	 */
-	public static Duration effectiveDuration(ZonedDateTime start, ZonedDateTime end) {
-		return Duration.between(truncate(start), truncate(end));
-	}
+  /**
+   * @return the duration a span between the argument start and end would have given precision and
+   *     rounding
+   */
+  public static Duration effectiveDuration(ZonedDateTime start, ZonedDateTime end) {
+    return Duration.between(truncate(start), truncate(end));
+  }
 }

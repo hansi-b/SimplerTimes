@@ -21,8 +21,8 @@ package org.hansib.simplertimes.fx.l10n;
 import org.hansib.sundries.l10n.FormatKey;
 
 public enum Headers implements FormatKey {
-	Start, //
-	End, //
-	Project, //
-	Duration
+  Start,
+  End,
+  Project,
+  Duration
 }

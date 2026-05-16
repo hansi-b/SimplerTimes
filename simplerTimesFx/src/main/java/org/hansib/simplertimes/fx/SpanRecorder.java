@@ -43,89 +43,117 @@ import org.hansib.sundries.testing.VisibleForTesting;
 
 class SpanRecorder {
 
-	private static final Logger log = LogManager.getLogger();
+  private static final Logger log = LogManager.getLogger();
 
-	private static final Duration minimumSpanDuration = Duration.ofSeconds(1);
+  private static final Duration minimumSpanDuration = Duration.ofSeconds(1);
 
-	private final SearchableComboBox<FxProject> projectSelection;
+  private final SearchableComboBox<FxProject> projectSelection;
 
-	private final IntervalTicker intervalTicker;
-	private final ObservableData spanReceiver;
+  private final IntervalTicker intervalTicker;
+  private final ObservableData spanReceiver;
 
-	private final BooleanProperty isRecording = new SimpleBooleanProperty(false);
+  private final BooleanProperty isRecording = new SimpleBooleanProperty(false);
 
-	SpanRecorder(SearchableComboBox<FxProject> projectSelection, Button startButton, Button stopButton,
-		Consumer<Duration> elapsedTimeDisplay, ObservableData spanReceiver) {
+  SpanRecorder(
+      SearchableComboBox<FxProject> projectSelection,
+      Button startButton,
+      Button stopButton,
+      Consumer<Duration> elapsedTimeDisplay,
+      ObservableData spanReceiver) {
 
-		this(projectSelection, startButton, stopButton, elapsedTimeDisplay, spanReceiver,
-			new IntervalTicker(i -> elapsedTimeDisplay.accept(Span.effectiveDuration(i.start(), i.end()))));
-	}
+    this(
+        projectSelection,
+        startButton,
+        stopButton,
+        elapsedTimeDisplay,
+        spanReceiver,
+        new IntervalTicker(
+            i -> elapsedTimeDisplay.accept(Span.effectiveDuration(i.start(), i.end()))));
+  }
 
-	@VisibleForTesting
-	SpanRecorder(SearchableComboBox<FxProject> projectSelection, Button startButton, Button stopButton,
-		Consumer<Duration> elapsedTimeDisplay, ObservableData spanReceiver, IntervalTicker intervalTicker) {
+  @VisibleForTesting
+  SpanRecorder(
+      SearchableComboBox<FxProject> projectSelection,
+      Button startButton,
+      Button stopButton,
+      Consumer<Duration> elapsedTimeDisplay,
+      ObservableData spanReceiver,
+      IntervalTicker intervalTicker) {
 
-		this.projectSelection = projectSelection;
+    this.projectSelection = projectSelection;
 
-		this.intervalTicker = intervalTicker;
-		this.spanReceiver = spanReceiver;
+    this.intervalTicker = intervalTicker;
+    this.spanReceiver = spanReceiver;
 
-		new ButtonBuilder(startButton) //
-			.graphic(Icons.start()).onAction(a -> startRecording()).disabled().build();
-		new ButtonBuilder(stopButton) //
-			.graphic(Icons.stop()).onAction(a -> stopRecording()).disabled().build();
+    new ButtonBuilder(startButton)
+        .graphic(Icons.start())
+        .onAction(a -> startRecording())
+        .disabled()
+        .build();
+    new ButtonBuilder(stopButton)
+        .graphic(Icons.stop())
+        .onAction(a -> stopRecording())
+        .disabled()
+        .build();
 
-		startButton.disableProperty()
-			.bind(projectSelection.getSelectionModel().selectedItemProperty().isNull().or(isRecording));
-		stopButton.disableProperty().bind(isRecording.not());
-		projectSelection.disableProperty().bind(isRecording);
+    startButton
+        .disableProperty()
+        .bind(projectSelection.getSelectionModel().selectedItemProperty().isNull().or(isRecording));
+    stopButton.disableProperty().bind(isRecording.not());
+    projectSelection.disableProperty().bind(isRecording);
 
-		FxConverters.setComboBoxProjectConverter(projectSelection);
-		projectSelection.showingProperty()
-			.addListener((observable, oldValue, newValue) -> elapsedTimeDisplay.accept(Duration.ZERO));
-		projectSelection.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-			if (event.getCode() == KeyCode.ENTER) {
-				Platform.runLater(startButton::requestFocus);
-			}
-		});
-	}
+    FxConverters.setComboBoxProjectConverter(projectSelection);
+    projectSelection
+        .showingProperty()
+        .addListener((observable, oldValue, newValue) -> elapsedTimeDisplay.accept(Duration.ZERO));
+    projectSelection.addEventHandler(
+        KeyEvent.KEY_RELEASED,
+        event -> {
+          if (event.getCode() == KeyCode.ENTER) {
+            Platform.runLater(startButton::requestFocus);
+          }
+        });
+  }
 
-	ReadOnlyBooleanProperty isRecordingProperty() {
-		return isRecording;
-	}
+  ReadOnlyBooleanProperty isRecordingProperty() {
+    return isRecording;
+  }
 
-	void startRecording(FxProject project) {
+  void startRecording(FxProject project) {
 
-		if (intervalTicker.isStarted()) {
-			log.info("Implicitly stopping {}", projectSelection.getValue());
-			stopRecording();
-		}
+    if (intervalTicker.isStarted()) {
+      log.info("Implicitly stopping {}", projectSelection.getValue());
+      stopRecording();
+    }
 
-		log.info("Starting {}", project);
-		projectSelection.setValue(project);
-		startRecording();
-	}
+    log.info("Starting {}", project);
+    projectSelection.setValue(project);
+    startRecording();
+  }
 
-	private void startRecording() {
-		isRecording.set(true);
-		intervalTicker.start();
-	}
+  private void startRecording() {
+    isRecording.set(true);
+    intervalTicker.start();
+  }
 
-	void stopRecording() {
-		isRecording.set(false);
-		intervalTicker.stopAndGet();
+  void stopRecording() {
+    isRecording.set(false);
+    intervalTicker.stopAndGet();
 
-		FxProject project = projectSelection.getValue();
-		Interval t = intervalTicker.lastUpdate();
+    FxProject project = projectSelection.getValue();
+    Interval t = intervalTicker.lastUpdate();
 
-		if (Duration.between(t.start(), t.end()).compareTo(minimumSpanDuration) > 0) {
-			log.info("Registering {} during {}", project, t);
-			spanReceiver.addSpan(project, t.start(), t.end());
-		} else {
-			log.info("Ignoring interval {} - {} (is smaller than {})", t::start, t::end,
-				() -> Utils.toHmsString(minimumSpanDuration));
-		}
+    if (Duration.between(t.start(), t.end()).compareTo(minimumSpanDuration) > 0) {
+      log.info("Registering {} during {}", project, t);
+      spanReceiver.addSpan(project, t.start(), t.end());
+    } else {
+      log.info(
+          "Ignoring interval {} - {} (is smaller than {})",
+          t::start,
+          t::end,
+          () -> Utils.toHmsString(minimumSpanDuration));
+    }
 
-		projectSelection.requestFocus();
-	}
+    projectSelection.requestFocus();
+  }
 }
