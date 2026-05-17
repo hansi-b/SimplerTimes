@@ -23,5 +23,10 @@ import org.hansib.sundries.l10n.FormatKey;
 public enum Buttons implements FormatKey {
   Ok,
   Cancel,
-  Delete
+  Delete,
+  Today,
+  PreviousWeek,
+  NextWeek,
+  PreviousMonth,
+  NextMonth
 }
