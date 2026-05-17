@@ -72,10 +72,10 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
     TreeItemBindings<T> bindings = new TreeItemBindings<>(treeItem);
     TreeItemActions<T> actions = new TreeItemActions<>(treeItem);
     return new ContextMenuBuilder()
-        .item(MenuItems.NewSubproject.fmt(), e -> actions.newTreeItem(cell.getTreeView()))
+        .item(MenuItems.NewSubproject.fmt(), e -> actions.addNewChild(cell.getTreeView()))
         .item(
             MenuItems.Delete.fmt(),
-            e -> actions.removeItem(n -> removalChecker.removalAccepted(n), itemsChangeHandler),
+            e -> actions.remove(n -> removalChecker.removalAccepted(n), itemsChangeHandler),
             bindings.isLastProject())
         .item(
             MenuItems.SortChildren.fmt(),
@@ -108,7 +108,7 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
     TreeItemActions<T> actions = new TreeItemActions<>(root);
     ContextMenu contextMenu =
         new ContextMenuBuilder()
-            .item(MenuItems.NewProject.fmt(), t -> actions.newTreeItem(treeView))
+            .item(MenuItems.NewProject.fmt(), t -> actions.addNewChild(treeView))
             .separator()
             .item(
                 MenuItems.ExpandAll.fmt(),

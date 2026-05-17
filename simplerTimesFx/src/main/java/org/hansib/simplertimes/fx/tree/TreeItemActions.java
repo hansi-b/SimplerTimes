@@ -28,7 +28,7 @@ import org.hansib.simplertimes.fx.l10n.MenuItems;
 
 record TreeItemActions<T extends TreeItemNode<T>>(TreeItem<T> item) {
 
-  void newTreeItem(TreeView<T> treeview) {
+  void addNewChild(TreeView<T> treeview) {
     T newChild = item.getValue().addChild(MenuItems.NewProject.fmt());
     TreeItem<T> newItem = new TreeItem<>(newChild);
     item.getChildren().add(newItem);
@@ -36,7 +36,7 @@ record TreeItemActions<T extends TreeItemNode<T>>(TreeItem<T> item) {
     treeview.edit(newItem);
   }
 
-  void removeItem(Predicate<T> acceptRemoval, Runnable itemsChangeHandler) {
+  void remove(Predicate<T> acceptRemoval, Runnable itemsChangeHandler) {
     T node = item.getValue();
 
     boolean removalAccepted = acceptRemoval == null || acceptRemoval.test(node);
