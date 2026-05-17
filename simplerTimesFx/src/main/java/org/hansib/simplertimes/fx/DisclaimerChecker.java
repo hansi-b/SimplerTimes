@@ -18,8 +18,6 @@
  */
 package org.hansib.simplertimes.fx;
 
-import java.io.IOException;
-
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -30,15 +28,13 @@ import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.l10n.Buttons;
+import org.hansib.simplertimes.fx.l10n.Disclaimer;
 import org.hansib.simplertimes.prefs.Prefs;
-import org.hansib.sundries.ResourceLoader;
 import org.hansib.sundries.fx.AlertBuilder;
 
 class DisclaimerChecker {
 
   private static final Logger log = LogManager.getLogger();
-
-  private final ResourceLoader resourceLoader = new ResourceLoader();
 
   static void checkDisclaimer(Prefs.Disclaimer disclaimer, Runnable exitCall) {
     if (disclaimer.isAccepted) return;
@@ -57,35 +53,19 @@ class DisclaimerChecker {
   private boolean askAcceptDisclaimer() {
     log.trace("#showDisclaimer");
 
-    final String disclaimer = loadDisclaimer();
-    if (disclaimer == null) return false;
-
-    final String doYouAccept = "Do you accept this agreement?\n(\"Cancel\" quits the program.)";
-    TextArea textArea = new TextArea("%s%n%s".formatted(disclaimer, doYouAccept));
+    TextArea textArea = new TextArea("%s%n%s".formatted(Disclaimer.Text.fmt(), Disclaimer.Question.fmt()));
     textArea.setEditable(false);
     textArea.setWrapText(true);
     textArea.setPrefHeight(300);
     VBox.setVgrow(textArea, Priority.ALWAYS);
 
+    final String title = Disclaimer.Title.fmt();
     return new AlertBuilder(AlertType.CONFIRMATION, new VBox(textArea))
-        .withTitle("SimplerTimes - Disclaimer")
-        .withHeaderText("SimplerTimes - Disclaimer")
+        .withTitle(title)
+        .withHeaderText(title)
         .withDefaultButton(ButtonType.CANCEL, Buttons.Cancel.fmt())
         .withButton(ButtonType.OK, Buttons.Ok.fmt())
         .resizable(true)
         .showAndWaitFor(ButtonType.OK);
-  }
-
-  private String loadDisclaimer() {
-    try {
-      return resourceLoader.getResourceAsString("disclaimer.txt");
-    } catch (final RuntimeException | IOException e) {
-      log.error("Could not load disclaimer", e);
-      new AlertBuilder(
-              AlertType.ERROR, "The disclaimer could not be loaded: %s".formatted(e.getMessage()))
-          .withTitle("Internal error while loading the disclaimer")
-          .showAndWait();
-      return null;
-    }
   }
 }

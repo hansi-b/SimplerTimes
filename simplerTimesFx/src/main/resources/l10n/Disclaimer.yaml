@@ -1,0 +1,13 @@
+Title:
+  en: SimplerTimes - Disclaimer
+Text:
+  en: |
+    https://github.com/hansi-b/SimplerTimes
+
+    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+    By using this program, you agree to be bound by the terms of the GNU General Public License v3.0. If you do not agree to these terms, do not use the program.
+
+    You should have received a copy of the GNU General Public License along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.html.
+Question:
+  en: "Do you accept this agreement? (\"Cancel\" quits the program.)"

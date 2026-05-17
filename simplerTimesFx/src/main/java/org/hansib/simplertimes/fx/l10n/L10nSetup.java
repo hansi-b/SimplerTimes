@@ -52,7 +52,8 @@ public class L10nSetup {
             .with(MenuItems.class)
             .with(Names.class)
             .with(Buttons.class)
-            .with(Headers.class);
+            .with(Headers.class)
+            .with(Disclaimer.class);
     english.load("l10n", Locales.en, errorHandler);
     return english;
   }
