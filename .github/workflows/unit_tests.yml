@@ -21,14 +21,17 @@ jobs:
       with:
         java-version: '21'
         distribution: 'zulu'
-    - name: Build with Gradle
+    - name: Setup Gradle
       env:
         GITHUB_ACTOR: hansi-b
         # this is defined the Github repository settings
         GITHUB_REPO_PAT_RO: ${{ secrets.REPO_PAT_RO }}
       uses: gradle/actions/setup-gradle@v3
-      with:
-        arguments: check jacocoTestReport -PheadlessFxMode=true --info
+    - name: Run unit tests
+      env:
+        GITHUB_ACTOR: hansi-b
+        GITHUB_REPO_PAT_RO: ${{ secrets.REPO_PAT_RO }}
+      run: ./gradlew check jacocoTestReport -PheadlessFxMode=true --info
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v6
       env:
