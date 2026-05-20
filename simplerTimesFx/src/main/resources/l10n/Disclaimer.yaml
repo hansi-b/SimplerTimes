@@ -1,5 +1,7 @@
 Title:
   en: SimplerTimes - Disclaimer
+  de: SimplerTimes - Haftungsausschluss
+  fr: SimplerTimes - Avis de non-responsabilité
 Text:
   en: |
     https://github.com/hansi-b/SimplerTimes
@@ -9,5 +11,23 @@ Text:
     By using this program, you agree to be bound by the terms of the GNU General Public License v3.0. If you do not agree to these terms, do not use the program.
 
     You should have received a copy of the GNU General Public License along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.html.
+  de: |
+    https://github.com/hansi-b/SimplerTimes
+
+    Dieses Programm wird in der Hoffnung verbreitet, dass es nützlich ist, jedoch OHNE JEDE GARANTIE; ohne die ausdrückliche Zusicherung der MARKTFÄHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Weitere Informationen finden Sie in der GNU General Public License.
+
+    Durch die Nutzung dieses Programms erklären Sie sich mit den Bedingungen der GNU General Public License Version 3.0 einverstanden. Wenn Sie diesen Bedingungen nicht zustimmen, verwenden Sie das Programm nicht.
+
+    Eine Kopie der GNU General Public License sollte Ihnen zusammen mit diesem Programm vorliegen. Falls nicht, siehe https://www.gnu.org/licenses/gpl-3.0.html.
+  fr: |
+    https://github.com/hansi-b/SimplerTimes
+
+    Ce programme est distribué dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE ; sans même la garantie implicite de QUALITÉ MARCHANDE ou D'ADAPTATION À UN USAGE PARTICULIER. Voir la GNU General Public License pour plus de détails.
+
+    En utilisant ce programme, vous acceptez d'être lié par les termes de la GNU General Public License v3.0. Si vous n'acceptez pas ces conditions, n'utilisez pas ce programme.
+
+    Vous devriez avoir reçu une copie de la GNU General Public License avec ce programme. Si ce n'est pas le cas, voir https://www.gnu.org/licenses/gpl-3.0.html.
 Question:
   en: "Do you accept this agreement? (\"Cancel\" quits the program.)"
+  de: "Akzeptieren Sie diese Vereinbarung? (\"Abbrechen\" beendet das Programm.)"
+  fr: "Acceptez-vous cet accord ? (\"Annuler\" quitte le programme.)"

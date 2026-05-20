@@ -29,32 +29,34 @@ import org.hansib.sundries.testing.VisibleForTesting;
 public class L10nSetup {
   private static final Logger log = LogManager.getLogger();
 
-  enum Locales {
-    en
+  public static enum Locales {
+    en,
+    de,
+    fr
   }
 
   private L10nSetup() {
     // nothing to do
   }
 
-  public static L10n activateEnglish() {
+  public static L10n activate(Locales locale) {
     Consumer<L10nFormatError> errorHandler = e -> log.warn(e::description);
-    L10n english = loadEnglish(errorHandler);
-    english.activate();
-    return english;
+    L10n l10n = load(locale, errorHandler);
+    l10n.activate();
+    return l10n;
   }
 
   @VisibleForTesting
-  static L10n loadEnglish(Consumer<L10nFormatError> errorHandler) {
-    L10n english =
-        new L10n()
-            .with(General.class)
-            .with(MenuItems.class)
-            .with(Names.class)
-            .with(Buttons.class)
-            .with(Headers.class)
-            .with(Disclaimer.class);
-    english.load("l10n", Locales.en, errorHandler);
-    return english;
+  static L10n load(Locales locale, Consumer<L10nFormatError> errorHandler) {
+    L10n l10n = new L10n()
+        .with(General.class)
+        .with(MenuItems.class)
+        .with(Names.class)
+        .with(Buttons.class)
+        .with(Headers.class)
+        .with(Disclaimer.class);
+    l10n.load("l10n", locale, errorHandler);
+    return l10n;
   }
+
 }

@@ -1,8 +1,16 @@
 Project:
   en: Project
+  de: Projekt
+  fr: Projet
 Start:
   en: Start
+  de: Beginn
+  fr: Début
 End:
   en: End
+  de: Ende
+  fr: Fin
 Duration:
   en: Duration
+  de: Dauer
+  fr: Durée

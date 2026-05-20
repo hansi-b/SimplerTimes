@@ -1,16 +1,32 @@
 Cancel:
   en: Cancel
+  de: Abbrechen
+  fr: Annuler
 Ok:
   en: OK
+  de: OK
+  fr: OK
 Delete:
   en: Delete
+  de: Löschen
+  fr: Supprimer
 Today:
   en: Today
+  de: Heute
+  fr: Aujourd'hui
 PreviousWeek:
   en: Previous Week
+  de: Vorherige Woche
+  fr: Semaine précédente
 NextWeek:
   en: Next Week
+  de: Nächste Woche
+  fr: Semaine suivante
 PreviousMonth:
   en: Previous Month
+  de: Vorheriger Monat
+  fr: Mois précédent
 NextMonth:
   en: Next Month
+  de: Nächster Monat
+  fr: Mois suivant

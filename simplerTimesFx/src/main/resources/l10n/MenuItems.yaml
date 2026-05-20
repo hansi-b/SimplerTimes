@@ -1,18 +1,36 @@
 MainWindow:
   en: SimplerTimes
+  de: SimplerTimes
+  fr: SimplerTimes
 NewProject:
   en: New Project
+  de: Neues Projekt
+  fr: Nouveau projet
 NewSubproject:
   en: New Subproject
+  de: Neues Teilprojekt
+  fr: Nouveau sous-projet
 Delete:
   en: Delete
+  de: Löschen
+  fr: Supprimer
 SortChildren:
   en: Sort Children
+  de: Kinder sortieren
+  fr: Trier les enfants
 ExpandAll:
   en: Expand All
+  de: Alle aufklappen
+  fr: Tout développer
 CollapseAll:
   en: Collapse All
+  de: Alle schließen
+  fr: Tout réduire
 Stop:
   en: Stop
+  de: Stoppen
+  fr: Arrêter
 Exit:
   en: Exit
+  de: Beenden
+  fr: Quitter
