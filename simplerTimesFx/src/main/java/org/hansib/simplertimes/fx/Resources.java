@@ -35,6 +35,7 @@ public class Resources {
   private static final Resources INSTANCE = new Resources();
 
   private final ResourceLoader loader = new ResourceLoader();
+  private Image logoCache;
 
   private Resources() {
     // Private constructor to prevent instantiation
@@ -45,14 +46,17 @@ public class Resources {
   }
 
   public void loadLogo(Consumer<Image> logoHandler) {
-    Image logo;
-    try {
-      logo = loader.loadResourceStream("logo.png", Image::new);
-    } catch (IllegalStateException ex) {
-      log.warn("Could not load logo", ex);
-      return;
+    synchronized (INSTANCE) {
+      if (logoCache == null) {
+        try {
+          logoCache = loader.loadResourceStream("logo.png", Image::new);
+        } catch (IllegalStateException ex) {
+          log.warn("Could not load logo", ex);
+          return;
+        }
+      }
     }
-    logoHandler.accept(logo);
+    logoHandler.accept(logoCache);
   }
 
   public java.awt.Image loadAwtLogo() {
