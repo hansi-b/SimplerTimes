@@ -92,7 +92,7 @@ public class TreeViewWindow<T extends TreeItemNode<T>> {
     Stage treeStage = new Stage();
     treeStage.setTitle(General.ProjectsWindowTitle.fmt());
 
-    new Resources().loadLogo(logo -> treeStage.getIcons().add(logo));
+    Resources.getInstance().loadLogo(logo -> treeStage.getIcons().add(logo));
 
     treeStage.setScene(initTreePaneScene());
     return treeStage;

@@ -32,8 +32,17 @@ import org.hansib.sundries.ResourceLoader;
 public class Resources {
 
   private static final Logger log = LogManager.getLogger();
+  private static final Resources INSTANCE = new Resources();
 
   private final ResourceLoader loader = new ResourceLoader();
+
+  private Resources() {
+    // Private constructor to prevent instantiation
+  }
+
+  public static Resources getInstance() {
+    return INSTANCE;
+  }
 
   public void loadLogo(Consumer<Image> logoHandler) {
     Image logo;

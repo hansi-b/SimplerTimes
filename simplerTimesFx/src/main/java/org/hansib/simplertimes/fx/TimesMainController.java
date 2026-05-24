@@ -122,7 +122,7 @@ public class TimesMainController {
             .load();
     spansInfoController.setData(data);
 
-    new Resources().loadLogo(logo -> spansStage.getIcons().add(logo));
+    Resources.getInstance().loadLogo(logo -> spansStage.getIcons().add(logo));
     exitManager.addPreExitAction(() -> windowPrefs.spans = StageData.of(spansStage));
     return spansStage;
   }

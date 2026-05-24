@@ -68,7 +68,7 @@ public class SimplerTimesFx extends Application {
             .load();
 
     primaryStage.setTitle(AppNameWindowTitle.fmt());
-    new Resources().loadLogo(logo -> primaryStage.getIcons().add(logo));
+    Resources.getInstance().loadLogo(logo -> primaryStage.getIcons().add(logo));
 
     primaryStage.addEventHandler(
         KeyEvent.KEY_PRESSED,

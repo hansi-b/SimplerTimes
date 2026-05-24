@@ -55,7 +55,7 @@ class TrayIconMenu {
     this.data = data;
     this.spanRecorder = spanRecorder;
 
-    this.trayIcon = new TrayIcon(new Resources().loadAwtLogo());
+    this.trayIcon = new TrayIcon(Resources.getInstance().loadAwtLogo());
     exitManager.addPreExitAction(() -> SystemTray.getSystemTray().remove(trayIcon));
 
     this.popup = new PopupMenu();
