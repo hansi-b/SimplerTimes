@@ -84,6 +84,7 @@ public class SimplerTimesFx extends Application {
     }
     new StageToggle(() -> primaryStage).toggle();
     primaryStage.sizeToScene();
+    primaryStage.setResizable(false);
 
     prefs.windowPositions.current().main.apply(primaryStage);
     exitManager.addPreExitAction(
