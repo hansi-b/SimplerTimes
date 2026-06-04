@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  checks: write
 
 jobs:
   build:
@@ -26,12 +27,23 @@ jobs:
         GITHUB_ACTOR: hansi-b
         # this is defined the Github repository settings
         GITHUB_REPO_PAT_RO: ${{ secrets.REPO_PAT_RO }}
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4.2.0
+      with:
+        gradle-home-cache-cleanup: true
     - name: Run unit tests
       env:
         GITHUB_ACTOR: hansi-b
         GITHUB_REPO_PAT_RO: ${{ secrets.REPO_PAT_RO }}
-      run: ./gradlew check jacocoTestReport -PheadlessFxMode=true --info
+      run: ./gradlew check jacocoTestReport -PheadlessFxMode=true --info --build-cache
+      continue-on-error: true
+    - name: Publish test results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: JUnit Test Results
+        path: '**/build/test-results/test/TEST-*.xml'
+        reporter: java-junit
+        fail-on-error: true
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v6
       env:
