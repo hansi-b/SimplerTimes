@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: '0 0 1 * *' # Runs monthly at midnight UTC
   workflow_dispatch:    # Allows manual triggering from GitHub UI
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   cleanup:
