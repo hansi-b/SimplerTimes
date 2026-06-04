@@ -11,7 +11,7 @@ public class L10nSetupSpec extends Specification {
 	def 'english is complete' () {
 		when:
 		def errors = []
-		def english = L10nSetup.load(L10nSetup.Locales.en, k -> errors.add(k))
+		def english = L10nSetup.load(L10nSetup.Locale.en, k -> errors.add(k))
 		then:
 		assert errors == [], "Errors:\n" + errors.collect { L10nFormatError e ->
 			e.description()
@@ -29,7 +29,7 @@ public class L10nSetupSpec extends Specification {
 	def 'german is complete' () {
 		when:
 		def errors = []
-		def german = L10nSetup.load(L10nSetup.Locales.de, k -> errors.add(k))
+		def german = L10nSetup.load(L10nSetup.Locale.de, k -> errors.add(k))
 		then:
 		assert errors == [], "Errors:\n" + errors.collect { L10nFormatError e ->
 			e.description()
@@ -47,7 +47,7 @@ public class L10nSetupSpec extends Specification {
 	def 'french is complete' () {
 		when:
 		def errors = []
-		def french = L10nSetup.load(L10nSetup.Locales.fr, k -> errors.add(k))
+		def french = L10nSetup.load(L10nSetup.Locale.fr, k -> errors.add(k))
 		then:
 		assert errors == [], "Errors:\n" + errors.collect { L10nFormatError e ->
 			e.description()

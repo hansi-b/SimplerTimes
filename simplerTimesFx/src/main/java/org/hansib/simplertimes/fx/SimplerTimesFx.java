@@ -51,7 +51,7 @@ public class SimplerTimesFx extends Application {
     log.info("Starting ...");
     final ExitManager exitManager = ExitManager.get();
 
-    L10nSetup.activate(L10nSetup.Locales.en);
+    L10nSetup.activate(L10nSetup.Locale.en);
 
     prefs = AppPrefs.get();
     DisclaimerChecker.checkDisclaimer(prefs.disclaimer, exitManager::exit);

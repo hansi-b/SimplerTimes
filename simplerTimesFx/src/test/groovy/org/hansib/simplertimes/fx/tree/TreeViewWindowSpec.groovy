@@ -18,7 +18,7 @@ public class TreeViewWindowSpec extends AbstractAppSpec {
 	TreeViewWindow treeWindow
 
 	def 'setupSpec'() {
-		L10nSetup.activate(L10nSetup.Locales.en)
+		L10nSetup.activate(L10nSetup.Locale.en)
 	}
 
 	@Override

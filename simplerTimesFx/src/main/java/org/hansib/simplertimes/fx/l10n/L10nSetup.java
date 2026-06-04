@@ -28,7 +28,7 @@ import org.hansib.sundries.testing.VisibleForTesting;
 public class L10nSetup {
   private static final Logger log = LogManager.getLogger();
 
-  public static enum Locales {
+  public enum Locale {
     en,
     de,
     fr
@@ -38,7 +38,7 @@ public class L10nSetup {
     // nothing to do
   }
 
-  public static L10n activate(Locales locale) {
+  public static L10n activate(Locale locale) {
     Consumer<L10nFormatError> errorHandler = e -> log.warn(e::description);
     L10n l10n = load(locale, errorHandler);
     l10n.activate();
@@ -46,16 +46,16 @@ public class L10nSetup {
   }
 
   @VisibleForTesting
-  static L10n load(Locales locale, Consumer<L10nFormatError> errorHandler) {
-    L10n l10n = new L10n()
-        .with(General.class)
-        .with(MenuItems.class)
-        .with(Names.class)
-        .with(Buttons.class)
-        .with(Headers.class)
-        .with(Disclaimer.class);
+  static L10n load(Locale locale, Consumer<L10nFormatError> errorHandler) {
+    L10n l10n =
+        new L10n()
+            .with(General.class)
+            .with(MenuItems.class)
+            .with(Names.class)
+            .with(Buttons.class)
+            .with(Headers.class)
+            .with(Disclaimer.class);
     l10n.load("l10n", locale, errorHandler);
     return l10n;
   }
-
 }
