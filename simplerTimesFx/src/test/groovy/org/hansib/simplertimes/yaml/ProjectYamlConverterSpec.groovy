@@ -1,7 +1,6 @@
 package org.hansib.simplertimes.yaml;
 
 import org.hansib.simplertimes.projects.Project
-
 import spock.lang.Specification
 
 public class ProjectYamlConverterSpec extends Specification {

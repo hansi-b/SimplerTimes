@@ -1,7 +1,6 @@
 package org.hansib.simplertimes;
 
 import java.nio.file.Path
-
 import spock.lang.Specification
 import spock.lang.TempDir
 

@@ -19,7 +19,6 @@
 package org.hansib.simplertimes.fx.l10n;
 
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.sundries.l10n.L10n;

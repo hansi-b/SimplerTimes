@@ -1,17 +1,10 @@
 package org.hansib.simplertimes.fx.stats
 
-import java.time.Duration
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-
-import org.hansib.simplertimes.fx.data.FxProject
-import org.hansib.simplertimes.fx.data.FxSpan
-
 import javafx.beans.property.ReadOnlyStringWrapper
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import org.hansib.simplertimes.fx.data.FxProject
+import org.hansib.simplertimes.fx.data.FxSpan
 import spock.lang.Shared
 import spock.lang.Specification
 

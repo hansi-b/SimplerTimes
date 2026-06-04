@@ -1,14 +1,10 @@
 package org.hansib.simplertimes.fx
 
-import java.time.Duration
-import java.time.ZonedDateTime
 import java.util.function.Consumer
-
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.VBox
-
 import org.controlsfx.control.SearchableComboBox
 import org.hansib.simplertimes.fx.data.FxProject
 import org.hansib.simplertimes.fx.data.ObservableData

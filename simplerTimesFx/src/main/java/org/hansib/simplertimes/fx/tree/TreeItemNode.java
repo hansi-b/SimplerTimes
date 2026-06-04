@@ -20,7 +20,6 @@ package org.hansib.simplertimes.fx.tree;
 
 import java.util.Comparator;
 import java.util.stream.Stream;
-
 import javafx.scene.control.TreeItem;
 
 public interface TreeItemNode<T extends TreeItemNode<T>> extends TextNode {

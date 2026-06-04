@@ -19,13 +19,11 @@
 package org.hansib.simplertimes.fx.tree;
 
 import java.util.function.Function;
-
 import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.KeyCode;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -20,7 +20,6 @@ package org.hansib.simplertimes.fx.tree;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;

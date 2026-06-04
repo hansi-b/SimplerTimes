@@ -1,12 +1,8 @@
 package org.hansib.simplertimes.yaml
 
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-
 import org.hansib.simplertimes.projects.Project
 import org.hansib.simplertimes.spans.Span
 import org.hansib.simplertimes.spans.SpansCollection
-
 import spock.lang.Specification
 
 public class SpansYamlConverterSpec extends Specification {

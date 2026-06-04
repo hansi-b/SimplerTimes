@@ -20,11 +20,8 @@ package org.hansib.simplertimes.fx;
 
 import java.net.URL;
 import java.util.function.Consumer;
-
-import javax.swing.ImageIcon;
-
 import javafx.scene.image.Image;
-
+import javax.swing.ImageIcon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.sundries.ResourceLoader;

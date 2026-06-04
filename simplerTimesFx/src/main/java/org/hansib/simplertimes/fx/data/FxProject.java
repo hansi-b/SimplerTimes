@@ -24,11 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-
 import org.hansib.simplertimes.fx.tree.TreeItemNode;
 import org.hansib.simplertimes.projects.Project;
 import org.hansib.sundries.Strings;

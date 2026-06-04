@@ -19,7 +19,6 @@
 package org.hansib.simplertimes.yaml;
 
 import java.io.IOException;
-
 import org.hansib.simplertimes.projects.Project;
 
 class ProjectYamlConverter {

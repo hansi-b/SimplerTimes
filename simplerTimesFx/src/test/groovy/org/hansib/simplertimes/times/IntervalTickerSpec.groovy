@@ -2,8 +2,6 @@ package org.hansib.simplertimes.times
 
 import static org.awaitility.Awaitility.await
 
-import java.time.Duration
-
 import spock.lang.Specification
 
 public class IntervalTickerSpec extends Specification {

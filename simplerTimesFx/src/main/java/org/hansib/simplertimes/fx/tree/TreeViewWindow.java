@@ -24,7 +24,6 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
 import org.hansib.simplertimes.fx.Resources;
 import org.hansib.simplertimes.fx.l10n.General;
 import org.hansib.simplertimes.fx.l10n.MenuItems;

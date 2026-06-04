@@ -1,11 +1,7 @@
 package org.hansib.simplertimes.fx.stats;
 
-import java.time.Duration
-import java.time.LocalDate
-
-import org.hansib.simplertimes.fx.data.FxProject
-
 import javafx.beans.property.ReadOnlyStringWrapper
+import org.hansib.simplertimes.fx.data.FxProject
 import spock.lang.Shared
 import spock.lang.Specification
 

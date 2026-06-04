@@ -28,7 +28,6 @@ package org.hansib.simplertimes.fx;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import javafx.application.Platform;
 
 public class ExitManager {

@@ -1,7 +1,6 @@
 package org.hansib.simplertimes.fx.data;
 
 import org.hansib.simplertimes.projects.Project
-
 import spock.lang.Specification
 
 public class FxProjectSpec extends Specification {

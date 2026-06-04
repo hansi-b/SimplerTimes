@@ -3,13 +3,11 @@ package org.hansib.simplertimes.fx.tree
 import javafx.scene.Scene
 import javafx.scene.control.MenuItem
 import javafx.scene.input.KeyCode
-
 import org.hansib.simplertimes.fx.AbstractAppSpec
 import org.hansib.simplertimes.fx.data.FxProject
 import org.hansib.simplertimes.fx.data.ObservableData
 import org.hansib.simplertimes.fx.l10n.L10nSetup
 import org.hansib.simplertimes.projects.Project
-import org.testfx.util.WaitForAsyncUtils
 import spock.lang.IgnoreIf
 
 public class TreeViewWindowSpec extends AbstractAppSpec {

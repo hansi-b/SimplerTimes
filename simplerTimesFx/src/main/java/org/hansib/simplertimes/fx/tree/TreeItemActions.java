@@ -20,10 +20,8 @@ package org.hansib.simplertimes.fx.tree;
 
 import java.util.Comparator;
 import java.util.function.Predicate;
-
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-
 import org.hansib.simplertimes.fx.l10n.MenuItems;
 
 record TreeItemActions<T extends TreeItemNode<T>>(TreeItem<T> item) {

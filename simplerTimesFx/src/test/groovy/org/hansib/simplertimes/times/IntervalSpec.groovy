@@ -1,7 +1,5 @@
 package org.hansib.simplertimes.times;
 
-import java.time.ZonedDateTime
-
 import spock.lang.Specification
 
 public class IntervalSpec extends Specification {

@@ -1,13 +1,12 @@
 package org.hansib.simplertimes.fx
 
+import javafx.scene.Scene
+import javafx.stage.Stage
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.testfx.api.FxToolkit
 import org.testfx.framework.spock.ApplicationSpec
 import org.testfx.util.WaitForAsyncUtils
-
-import javafx.scene.Scene
-import javafx.stage.Stage
 
 /**
  * This is a copy of the AppSpecWithScene in SundriesFx. Will want to unify that at some point.

@@ -4,7 +4,6 @@ import org.hansib.sundries.l10n.L10nChecker
 import org.hansib.sundries.l10n.L10nChecker.MissingKeys
 import org.hansib.sundries.l10n.L10nChecker.MissingKeysHandleMode
 import org.hansib.sundries.l10n.yaml.errors.L10nFormatError
-
 import spock.lang.Specification
 
 public class L10nSetupSpec extends Specification {

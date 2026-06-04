@@ -20,9 +20,7 @@ package org.hansib.simplertimes;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import net.harawata.appdirs.AppDirsFactory;
-
 import org.hansib.sundries.Errors;
 
 public class DataPaths {

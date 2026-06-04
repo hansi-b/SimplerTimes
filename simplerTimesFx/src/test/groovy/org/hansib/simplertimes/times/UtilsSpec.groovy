@@ -1,7 +1,5 @@
 package org.hansib.simplertimes.times;
 
-import java.time.LocalDate
-
 import spock.lang.Specification
 
 public class UtilsSpec extends Specification {

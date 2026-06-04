@@ -22,12 +22,10 @@ import static org.hansib.simplertimes.fx.l10n.General.AppNameWindowTitle;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.SystemTray;
-
 import javafx.application.Application;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.DataStore;

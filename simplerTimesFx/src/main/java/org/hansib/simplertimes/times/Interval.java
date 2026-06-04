@@ -20,7 +20,6 @@ package org.hansib.simplertimes.times;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
-
 import org.hansib.sundries.Errors;
 
 public record Interval(ZonedDateTime start, ZonedDateTime end) {

@@ -1,8 +1,5 @@
 package org.hansib.simplertimes.fx;
 
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-
 import spock.lang.Specification
 
 public class DateTimeHandlerSpec extends Specification {

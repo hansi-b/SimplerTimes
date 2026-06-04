@@ -16,21 +16,18 @@
  */
 package org.hansib.simplertimes.prefs;
 
-import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.StringJoiner;
-
-import javafx.geometry.Rectangle2D;
-import javafx.stage.Screen;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.StringJoiner;
+import javafx.geometry.Rectangle2D;
+import javafx.stage.Screen;
 import org.hansib.sundries.fx.StageData;
 
 public interface Prefs {

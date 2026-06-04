@@ -21,7 +21,6 @@ package org.hansib.simplertimes.fx.stats;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.SortedSet;
-
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -32,7 +31,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hansib.simplertimes.fx.Icons;

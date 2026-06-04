@@ -1,9 +1,6 @@
 package org.hansib.simplertimes.spans
 
-import java.time.OffsetDateTime
-
 import org.hansib.simplertimes.projects.Project
-
 import spock.lang.Specification
 
 public class SpansCollectionSpec extends Specification {

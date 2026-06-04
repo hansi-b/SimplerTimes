@@ -1,10 +1,6 @@
 package org.hansib.simplertimes.spans;
 
-import java.time.ZoneId
-import java.time.ZonedDateTime
-
 import org.hansib.simplertimes.projects.Project
-
 import spock.lang.Specification
 
 public class SpanSpec extends Specification {
