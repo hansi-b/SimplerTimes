@@ -38,11 +38,32 @@ public class L10nSetup {
     // nothing to do
   }
 
+  public static L10n activate(String languageName) {
+    Locale locale = parseLocale(languageName);
+    Consumer<L10nFormatError> errorHandler = e -> log.warn(e::description);
+    L10n l10n = load(locale, errorHandler);
+    l10n.activate();
+    return l10n;
+  }
+
   public static L10n activate(Locale locale) {
     Consumer<L10nFormatError> errorHandler = e -> log.warn(e::description);
     L10n l10n = load(locale, errorHandler);
     l10n.activate();
     return l10n;
+  }
+
+  private static Locale parseLocale(String languageName) {
+    if (languageName == null || languageName.isEmpty()) {
+      log.info("Using default language english");
+      return Locale.en;
+    }
+    try {
+      return Locale.valueOf(languageName.toLowerCase());
+    } catch (IllegalArgumentException e) {
+      log.warn("Unknown language '{}', falling back to english", languageName);
+      return Locale.en;
+    }
   }
 
   @VisibleForTesting

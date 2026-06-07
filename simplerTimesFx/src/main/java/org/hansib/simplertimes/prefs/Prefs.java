@@ -36,8 +36,9 @@ public interface Prefs {
     v1
   }
 
-  class Disclaimer {
-    public boolean isAccepted = false;
+  class General {
+    public boolean isDisclaimerAccepted = false;
+    public String language = "en";
   }
 
   class Windows {

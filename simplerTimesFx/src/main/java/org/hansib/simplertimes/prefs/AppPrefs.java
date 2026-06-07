@@ -36,7 +36,7 @@ public class AppPrefs {
 
   public Prefs.AppVersion version = Prefs.AppVersion.v1;
 
-  public Prefs.Disclaimer disclaimer = new Prefs.Disclaimer();
+  public Prefs.General general = new Prefs.General();
   public Prefs.WindowsPositions windowPositions = new Prefs.WindowsPositions();
 
   public Long selectedProjectId;

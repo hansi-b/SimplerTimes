@@ -35,13 +35,13 @@ class DisclaimerChecker {
 
   private static final Logger log = LogManager.getLogger();
 
-  static void checkDisclaimer(Prefs.Disclaimer disclaimer, Runnable exitCall) {
-    if (disclaimer.isAccepted) return;
+  static void checkDisclaimer(Prefs.General prefs, Runnable exitCall) {
+    if (prefs.isDisclaimerAccepted) return;
 
     Platform.runLater(
         () -> {
           boolean displayDisclaimerAndAccept = new DisclaimerChecker().askAcceptDisclaimer();
-          disclaimer.isAccepted = displayDisclaimerAndAccept;
+          prefs.isDisclaimerAccepted = displayDisclaimerAndAccept;
           if (!displayDisclaimerAndAccept) {
             log.info("Disclaimer was rejected");
             exitCall.run();
@@ -52,7 +52,8 @@ class DisclaimerChecker {
   private boolean askAcceptDisclaimer() {
     log.trace("#showDisclaimer");
 
-    TextArea textArea = new TextArea("%s%n%s".formatted(Disclaimer.Text.fmt(), Disclaimer.Question.fmt()));
+    TextArea textArea =
+        new TextArea("%s%n%s".formatted(Disclaimer.Text.fmt(), Disclaimer.Question.fmt()));
     textArea.setEditable(false);
     textArea.setWrapText(true);
     textArea.setPrefHeight(300);
