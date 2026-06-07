@@ -11,10 +11,10 @@
 <TabPane xmlns="http://javafx.com/javafx/11.0.1"
 	xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="org.hansib.simplertimes.fx.SpansInfoController">
-	<Tab text="Spans Table" closable="false" fx:id="spansTableTab">
+	<Tab closable="false" fx:id="spansTableTab">
 		<fx:include source="spansTable.fxml" fx:id="spansTable" />
 	</Tab>
-	<Tab text="Spans Statistics" closable="false">
+	<Tab closable="false" fx:id="spansStatsTab">
 		<fx:include source="spansStats.fxml" fx:id="spansStats" />
 	</Tab>
 </TabPane>

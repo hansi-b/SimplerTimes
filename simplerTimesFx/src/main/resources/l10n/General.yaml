@@ -10,3 +10,11 @@ SpansWindowTitle:
   en: Spans
   de: Zeiträume
   fr: Périodes
+SpansTableTabTitle:
+  en: Spans Table
+  de: Zeiträume-Tabelle
+  fr: Tableau des périodes
+SpansStatsTabTitle:
+  en: Spans Statistics
+  de: Zeiträume-Statistiken
+  fr: Statistiques des périodes

@@ -23,5 +23,7 @@ import org.hansib.sundries.l10n.FormatKey;
 public enum General implements FormatKey {
   AppNameWindowTitle,
   ProjectsWindowTitle,
-  SpansWindowTitle
+  SpansWindowTitle,
+  SpansTableTabTitle,
+  SpansStatsTabTitle
 }
