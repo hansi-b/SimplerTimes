@@ -80,10 +80,9 @@ public class SimplerTimesFx extends Application {
       primaryStage.setOnCloseRequest(e -> exitManager.exit());
     }
     new StageToggle(() -> primaryStage).toggle();
+    prefs.windowPositions.current().main.apply(primaryStage);
     primaryStage.sizeToScene();
     primaryStage.setResizable(false);
-
-    prefs.windowPositions.current().main.apply(primaryStage);
     exitManager.addPreExitAction(
         () -> prefs.windowPositions.current().main = StageData.of(primaryStage));
   }
