@@ -28,6 +28,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -42,6 +43,7 @@ import org.hansib.simplertimes.fx.data.ObservableData;
 import org.hansib.simplertimes.fx.l10n.Buttons;
 import org.hansib.simplertimes.fx.l10n.Headers;
 import org.hansib.simplertimes.fx.l10n.MenuItems;
+import org.hansib.simplertimes.fx.l10n.Placeholders;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.AlertBuilder;
 import org.hansib.sundries.fx.ContextMenuBuilder;
@@ -125,6 +127,7 @@ public class SpansTableController {
 
     spansTable.setEditable(true);
     spansTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    spansTable.setPlaceholder(new Label(Placeholders.NothingAvailable.fmt()));
 
     new TableColumnBuilder<>(startCol)
         .headerText(Headers.Start.fmt())

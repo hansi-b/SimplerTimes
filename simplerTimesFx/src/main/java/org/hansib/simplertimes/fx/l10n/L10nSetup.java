@@ -75,6 +75,7 @@ public class L10nSetup {
             .with(Names.class)
             .with(Buttons.class)
             .with(Headers.class)
+            .with(Placeholders.class)
             .with(Disclaimer.class);
     l10n.load("l10n", locale, errorHandler);
     return l10n;

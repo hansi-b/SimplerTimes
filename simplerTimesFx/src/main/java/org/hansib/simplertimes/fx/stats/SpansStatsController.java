@@ -29,6 +29,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +38,7 @@ import org.hansib.simplertimes.fx.Icons;
 import org.hansib.simplertimes.fx.data.FxSpan;
 import org.hansib.simplertimes.fx.l10n.Buttons;
 import org.hansib.simplertimes.fx.l10n.Headers;
+import org.hansib.simplertimes.fx.l10n.Placeholders;
 import org.hansib.simplertimes.times.Utils;
 import org.hansib.sundries.fx.ButtonBuilder;
 import org.hansib.sundries.fx.table.TableColumnBuilder;
@@ -68,6 +70,7 @@ public class SpansStatsController {
             new TableColumnBuilder<StatsRow, String>(Headers.Project.fmt())
                 .value(StatsRow::project)
                 .build());
+    spansStats.setPlaceholder(new Label(Placeholders.NothingAvailableForThisTimeFrame.fmt()));
 
     selectedDate = new SimpleObjectProperty<>(LocalDate.now());
     datesShown = selectedDate.map(Utils::daysOfWeek);
